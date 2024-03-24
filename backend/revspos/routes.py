@@ -1,6 +1,5 @@
 from flask import request
 from flask_restx import Api, Resource, fields
-from functools import wraps
 
 api = Api(version="1.0", title="RevsPos API")
 
