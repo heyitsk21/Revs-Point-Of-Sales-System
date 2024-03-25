@@ -14,8 +14,45 @@ def create_app(test_config=None):
     else:
         app.config.from_mapping(test_config)
 
+    url = ConnectToDatabase()
+
     @app.route('/hello')
     def hello():
         return 'Hello, World!'
 
     return app
+
+
+def ConnectToDatabase():
+    database_user = ""
+    database_password = ""
+    try:
+        with open('login.txt', 'r') as file:
+            lines = file.readlines()
+            database_user = lines[0].strip()
+            database_password = lines[1].strip()
+    except FileNotFoundError:
+        print('login.txt file not found.')
+        exit(1)
+
+    database_name = 'csce315_902_01_db'
+
+    url_object = URL.create(
+        'postgresql',
+        username = database_user,
+        password = database_password,
+        host = 'csce-315-db.engr.tamu.edu',
+        database = database_name,
+    )
+    #database_url = f'postgresql://{database_user}:{database_password}@localhost/{database_name}'
+    #engine = create_engine(database_url)
+
+    #engine = create_engine(url_object)
+
+    # @api.expect(test_model, validate=True)
+    # def post(self):
+    #     req = request.get_json()
+    #     return {"Field":"processed" + req.get("field")}, 200
+
+    #return engine
+    return url_object
