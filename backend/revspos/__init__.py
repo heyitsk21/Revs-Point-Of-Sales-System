@@ -3,25 +3,8 @@
 
 from flask import Flask
 from .routes import api
-
-def create_app(test_config=None):
-    app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(SECRET_KEY='woah its a secret key') #TODO actually create a secret key 
-    api.init_app(app)
-
-    if test_config is None: 
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        app.config.from_mapping(test_config)
-
-    url = ConnectToDatabase()
-
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
-
-    return app
-
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine, URL
 
 def ConnectToDatabase():
     database_user = ""
@@ -56,3 +39,26 @@ def ConnectToDatabase():
 
     #return engine
     return url_object
+
+
+def create_app(test_config=None):
+    app = Flask(__name__, instance_relative_config=True)
+    app.config.from_mapping(SECRET_KEY='woah its a secret key') #TODO actually create a secret key 
+    api.init_app(app)
+
+    if test_config is None: 
+        app.config.from_pyfile('config.py', silent=True)
+    else:
+        app.config.from_mapping(test_config)
+
+    url = ConnectToDatabase()
+
+    #do sm sql here
+
+    @app.route('/hello')
+    def hello():
+        return 'Hello, World!' #return whatever here
+
+    return app
+
+
