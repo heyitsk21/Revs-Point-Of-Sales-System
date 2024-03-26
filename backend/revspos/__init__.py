@@ -1,12 +1,12 @@
 # to run in backend dir $/flask --app revspos run 
 
 
-from flask import Flask
+from flask import Flask, jsonify
 from .routes import api
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import create_engine, URL
+from sqlalchemy import create_engine, URL, text
 
-def ConnectToDatabase():
+def GetDatabaseURL():
     database_user = ""
     database_password = ""
     try:
@@ -51,13 +51,23 @@ def create_app(test_config=None):
     else:
         app.config.from_mapping(test_config)
 
-    url = ConnectToDatabase()
+    url = GetDatabaseURL()
 
+    engine = create_engine(url)
+    
     #do sm sql here
+    with engine.connect() as conn:
+        result = conn.execution_options(stream_results=True).execute(text("select * from menuitems"))
+        # with conn.begin():
+        menuitemlist = {} 
+        for row in result:
+            menuitemlist[row.menuid] = row.itemname #f"menuid: {row.menuid} - itemname: {row.itemname}"
 
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!' #return whatever here
+
+    @app.route('/getmenuitems')
+    def getmenuitems():
+        #return 'Hello, World!' #return whatever here
+        return jsonify(menuitemlist), 200
 
     return app
 
