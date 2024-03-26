@@ -9,15 +9,15 @@ api = Api(version="1.0", title="RevsPos API")
 
 db = Database()
 
-test_model = api.model('SignUpModel', {"field": fields.String(required=True, min_length=1, max_length=64)})
+test_model = api.model('SignUpModel', {"menugroup": fields.Integer(required=True)}) #String:     , min_length=1, max_length=64
 
 @api.route('/api/test')
 class Test(Resource):
     #api for testing
     @api.expect(test_model, validate=True)
     def post(self):
-        req = request.get_json()
-        return {"Field":"processed" + req.get("field")}, 200
+        req = request.get_json().get("menugroup")
+        return {"Field":"processed " + req.get("menugroup")}, 200
 
 
 # def alchemyencoder(obj):
@@ -29,11 +29,23 @@ class Test(Resource):
 
 @api.route('/api/manager/getmenuitems')
 class GetMenuItems(Resource):
+
+    #getting a section of the menu
+    @api.expect(test_model, validate=True)
+    def post(self):
+        menugroup = request.get_json().get("menugroup")
+        with db.engine.connect() as conn:
+            result = conn.execution_options(stream_results=True).execute(text("select * from menuitems"))
+            menuitemlist = []
+            for row in result:
+                if(row.menuid > menugroup and row.menuid < menugroup + 100):
+                    menuitemlist.append({"menuid":row.menuid, "itemname":row.itemname, "price":row.price})
+        return jsonify(menuitemlist)
+
     def get(self):
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(text("select * from menuitems"))
             menuitemlist = []
-            row_data = {}
             for row in result:
                 menuitemlist.append({"menuid":row.menuid, "itemname":row.itemname, "price":row.price})
         return jsonify(menuitemlist)
