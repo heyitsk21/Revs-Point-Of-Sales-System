@@ -1,7 +1,7 @@
 # to run in backend dir $/flask --app revspos run 
 
 from flask import Flask
-from .routes import api
+from .api_master import api
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
