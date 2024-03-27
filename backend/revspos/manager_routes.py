@@ -4,7 +4,7 @@ from sqlalchemy import text
 # import os, decimal, datetime
 from .api_master import api, db
 
-UpdateOrder_model = api.model('UpdateOrder', {"orderid":fields.Integer(required=True), "customername":fields.String, "baseprice":fields.Float, "employeeid":fields.int})
+UpdateOrder_model = api.model('UpdateOrder', {"orderid":fields.Integer(required=True), "customername":fields.String, "baseprice":fields.Float, "employeeid":fields.Integer})
 
 GenerateExcessReport_model = api.model('GenerateExcessReport',{"startdate": fields.DateTime(required=True)})
 GenerateProductUsage_model = api.model('GenerateProductUsage',{"startdate": fields.DateTime(required=True), "enddate": fields.DateTime(required=True)})
@@ -56,9 +56,9 @@ Katelyn TODO:
 class UpdateOrder(Resource):
     @api.expect(UpdateOrder_model, validate=True)
     def post(self): 
-        orderid = 0
+        orderid = -1
         orderid = request.get_json().get("orderid") #TODO: PARAMETERIZE??? What integers are valid?
-        orderid_str = text(orderid)
+        #orderid_str = text(orderid)
 
         customername = ""
         customername = request.get_json().get("customername") #TODO: PARAMETERIZE??? NEED TO MAKE SURE THIS ISN'T VULNERABLE TO SQL INJECTION!
@@ -70,19 +70,21 @@ class UpdateOrder(Resource):
         employeeid = request.get_json().get("employeeid") #TODO: PARAMETERIZE??? What ints are valid?
 
         update_order_query = ""
-        if (orderid != 0 and customername != ""):
+        if (orderid >= 0 and customername != ""):
             update_order_query = "UPDATE orders SET CustomerName = '{inputcustomername}' WHERE orderid = {inputorderid}".format(inputcustomername = customername, inputorderid = orderid)
-        elif (orderid != 0 and baseprice > 0):
-            update_order_query = "UPDATE orders SET baseprice = {inputbaseprice} WHERE orderid = {inputorderid}".format(inputbaseprice = baseprice, inputorderid = orderid)
-            update_order_query += "; UPDATE orders SET taxprice = {calculatedtax} WHERE orderid = {inputorderid}".format(calculatedtax = baseprice*0.0825, inputorderid = orderid)
-        elif (orderid != 0 and employeeid > 0):
+        elif (orderid >= 0 and baseprice > 0):
+            update_order_query = "UPDATE orders SET baseprice = {inputbaseprice}, taxprice = {calculatedtax} WHERE orderid = {inputorderid}".format(inputbaseprice = baseprice, calculatedtax = baseprice*0.0825, inputorderid = orderid)
+        elif (orderid >= 0 and employeeid > 0):
             update_order_query = "UPDATE orders SET employeeID = {inputemployeeid} WHERE orderid = {inputorderid}".format(inputemployeeid = employeeid, inputorderid = orderid)
 
         with db.engine.connect() as conn:
-            update_order_query += "; SELECT * FROM orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
-            result = conn.execution_options(stream_results=True).execute(text(update_order_query))
+            #update_order_query += "; SELECT * FROM orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
+            result = conn.execute(text(update_order_query)) #execution_options(stream_results=True).
+
+            select_updated_order_query = "SELECT * FROM orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
+            resultselect = conn.execution_options(stream_results=True).execute(text(select_updated_order_query))
             orderlist = []
-            for row in result:
+            for row in resultselect:
                 orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
                 #TODO: front end report will only need to show Ingredient Name and Total Amount Changed!
         return jsonify(orderlist)
