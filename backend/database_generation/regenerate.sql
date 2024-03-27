@@ -81,6 +81,7 @@ CREATE TABLE OrderMenuItems (
     CONSTRAINT fk_order
         FOREIGN KEY(OrderID) 
         REFERENCES Orders(OrderID)   
+        ON DELETE CASCADE
 );
 
 
