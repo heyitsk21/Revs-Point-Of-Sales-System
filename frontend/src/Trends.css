@@ -1,5 +1,15 @@
-.trends {
+  .trends {
     padding: 20px;
+  }
+
+  .trends h2 {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+
+  /* Add this rule for larger text */
+  .large-text .trends, .large-text .date-fields, .large-text .trend-buttons button {
+    font-size: 20px; /* Adjust the size as needed */
   }
   
   .date-fields {

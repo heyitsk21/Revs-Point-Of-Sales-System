@@ -6,6 +6,11 @@
     align-items: center;
 }
 
+  /* Add this rule for larger text */
+  .large-text .manager-menu-items, .large-text .h2, .large-text .left-panel, .large-text .right-panel, .large-text .selected {
+    font-size: 30px; /* Adjust the size as needed */
+  }
+
 .left-panel {
     width: 45%;
 }
@@ -100,4 +105,10 @@ button:disabled {
 
 .bottom-nav button {
     margin: 0 10px; /* Add spacing between buttons */
+}
+
+#google_translate_element {
+    overflow: hidden; /* Hides overflow content */
+    border-right: 1px solid #ccc; /* Adds a right border */
+    margin-bottom: 20px; /* Add some space below the button */
 }

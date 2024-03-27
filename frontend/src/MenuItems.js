@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './MenuItems.css'; // Import CSS file for styling
+import { useTextSize } from './TextSizeContext'; // Import the useTextSize hook
 
 const MenuItems = ({ onPageChange }) => {
     // Example menu item
@@ -15,6 +16,7 @@ const MenuItems = ({ onPageChange }) => {
     const [selectedItem, setSelectedItem] = useState(null); // State to store the selected menu item
     const [checkedItems, setCheckedItems] = useState([]); // State to store checked ingredients
     const [newMenuItem, setNewMenuItem] = useState({ id: null, name: '', price: '', ingredients: [] }); // State to store new menu item data
+    const { textSize, toggleTextSize } = useTextSize(); // Get textSize and toggleTextSize from context
 
     // Helper function to enable or disable buttons based on the provided boolean value
     const setButtonState = (enabled) => {
@@ -60,8 +62,28 @@ const MenuItems = ({ onPageChange }) => {
         ));
     };
 
+    // Load Google Translate when component mounts
+    useEffect(() => {
+        // Check if Google Translate API is already loaded
+        if (!window.google || !window.google.translate || !window.google.translate.TranslateElement) {
+            const script = document.createElement('script');
+            script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            script.async = true;
+            document.body.appendChild(script);
+
+            // Initialize Google Translate button
+            window.googleTranslateElementInit = () => {
+                new window.google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
+            };
+        }
+    }, []);
+
     return (
-        <div className="manager-menu-items">
+        <div className={`manager-menu-items ${textSize === 'large' ? 'large-text' : ''}`}>
+            <div className="toggle-button-container">
+                {/* Button to toggle text size */}
+                <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
+            </div>
             {/* Left panel with menu items table */}
             <div className="left-panel">
                 <h2>Menu Items</h2>
@@ -110,6 +132,8 @@ const MenuItems = ({ onPageChange }) => {
                     </>
                 )}
             </div>
+            {/* Google Translate button */}
+            <div id="google_translate_element"></div>
             {/* Bottom navigation */}
             <div className="bottom-nav">
                 <button onClick={() => onPageChange('trends')}>Trends</button>

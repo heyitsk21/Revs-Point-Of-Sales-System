@@ -6,6 +6,11 @@
     align-items: center;
 }
 
+  /* Add this rule for larger text */
+  .large-text .order-history, .large-text .order-list, .large-text .h2, .large-text .order-item {
+    font-size: 20px; /* Adjust the size as needed */
+  }
+
 .order-list {
     flex: 1;
     max-width: 30%;

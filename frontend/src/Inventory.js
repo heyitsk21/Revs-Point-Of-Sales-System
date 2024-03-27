@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './Inventory.css'; // Import CSS file for styling
+import { useTextSize } from './TextSizeContext'; // Import the useTextSize hook
 
 const Inventory = ({ onPageChange }) => {
     const [inventory, setInventory] = useState([]); // State to store inventory items
     const [selectedItem, setSelectedItem] = useState(null); // State to store the selected inventory item
+    const { textSize, toggleTextSize } = useTextSize(); // Get textSize and toggleTextSize from context
 
     // Function to format the inventory data for display
     const formatInventory = () => {
@@ -22,11 +24,10 @@ const Inventory = ({ onPageChange }) => {
 
     // Function to handle the event when the user updates an inventory item
     const handleItemUpdate = (itemId, updatedData) => {
-        // Update the inventory item with the new data
-        const updatedInventory = inventory.map(item =>
+        // Update the inventory item with the new data using functional update
+        setInventory(prevInventory => prevInventory.map(item =>
             item.id === itemId ? { ...item, ...updatedData } : item
-        );
-        setInventory(updatedInventory);
+        ));
     };
 
     // Function to render the inventory items
@@ -47,7 +48,11 @@ const Inventory = ({ onPageChange }) => {
     }, []); // Empty dependency array ensures this effect runs only once on mount
 
     return (
-        <div className="inventory">
+        <div className={`inventory ${textSize === 'large' ? 'large-text' : ''}`}>
+            <div className="toggle-button-container">
+                {/* Button to toggle text size */}
+                <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
+            </div>
             <div className="inventory-list">
                 <h2>Inventory Items</h2>
                 {renderInventoryItems()}

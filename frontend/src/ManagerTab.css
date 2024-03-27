@@ -42,8 +42,23 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 36px;
     font-weight: bold;
+}
+
+/* Larger font size when textSize is 'large' */
+.large-text .middle-content h1 {
+    font-size: 80px;
+}
+
+/* Larger font size for buttons when textSize is 'large' */
+.large-text .top-bar button,
+.large-text .bottom-nav button {
+    font-size: 24px; /* Adjust the size as needed */
+}
+
+/* Default font size */
+.middle-content h1 {
+    font-size: 36px;
 }
 
 /* Bottom navigation */

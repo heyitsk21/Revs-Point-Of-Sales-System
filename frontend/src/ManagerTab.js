@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ManagerTab.css'; // Import CSS file for styling
+import { useTextSize } from './TextSizeContext'; // Import the useTextSize hook
 
 const ManagerTab = ({ onPageChange }) => {
+    const { textSize, toggleTextSize } = useTextSize(); // Get textSize and toggleTextSize from context
     const [loggedIn, setLoggedIn] = useState(false); // State to track login status
     const [username, setUsername] = useState(''); // State to store username
     const [currentTime, setCurrentTime] = useState(''); // State to store current time
@@ -27,10 +29,29 @@ const ManagerTab = ({ onPageChange }) => {
     };
 
     // Set interval to update current time every second
-    setInterval(updateTime, 1000);
+    useEffect(() => {
+        const interval = setInterval(updateTime, 1000);
+        return () => clearInterval(interval); // Cleanup interval on component unmount
+    }, []);
+
+    // Load Google Translate when component mounts
+    useEffect(() => {
+        // Check if Google Translate API is already loaded
+        if (!window.google || !window.google.translate || !window.google.translate.TranslateElement) {
+            const script = document.createElement('script');
+            script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            script.async = true;
+            document.body.appendChild(script);
+
+            // Initialize Google Translate button
+            window.googleTranslateElementInit = () => {
+                new window.google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
+            };
+        }
+    }, []);
 
     return (
-        <div className="manager-tab">
+        <div className={`manager-tab ${textSize === 'large' ? 'large-text' : ''}`}>
             {/* Top bar */}
             <div className="top-bar">
                 <div className="user-info">
@@ -38,7 +59,12 @@ const ManagerTab = ({ onPageChange }) => {
                     <span>{currentTime}</span>
                 </div>
                 <button onClick={handleLoginLogout}>{loggedIn ? 'Logout' : 'Login'}</button>
+                {/* Button to toggle text size */}
+                <button onClick={toggleTextSize}>Toggle Text Size</button>
             </div>
+
+            {/* Google Translate button */}
+            <div id="google_translate_element"></div>
 
             {/* Middle content */}
             <div className="middle-content">

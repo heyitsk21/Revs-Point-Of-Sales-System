@@ -1,14 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Trends.css'; // Import CSS file for styling
+import { useTextSize } from './TextSizeContext'; // Import the useTextSize hook
 
 const Trends = ({ onPageChange }) => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const { textSize, toggleTextSize } = useTextSize(); // Get textSize and toggleTextSize from context
+
+    const isValidDate = (date) => {
+        return date.match(/\d{4}-\d{2}-\d{2}/);
+    };
+
+    useEffect(() => {
+        if (!window.google || !window.google.translate || !window.google.translate.TranslateElement) {
+            const script = document.createElement('script');
+            script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            script.async = true;
+            document.body.appendChild(script);
+
+            window.googleTranslateElementInit = () => {
+                new window.google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
+            };
+        }
+    }, []);
 
     const handleGenerateProdUsage = () => {
         if (isValidDate(startDate) && isValidDate(endDate)) {
-            // Implement logic to generate ProdUsage
-            console.log('Generating ProdUsage report...');
+            onPageChange('prodUsage');
         } else {
             alert('Please enter valid dates (YYYY-MM-DD).');
         }
@@ -16,8 +34,7 @@ const Trends = ({ onPageChange }) => {
 
     const handleGenerateSalesReport = () => {
         if (isValidDate(startDate) && isValidDate(endDate)) {
-            // Implement logic to generate Sales Report
-            console.log('Generating Sales Report...');
+            onPageChange('salesReport');
         } else {
             alert('Please enter valid dates (YYYY-MM-DD).');
         }
@@ -25,33 +42,29 @@ const Trends = ({ onPageChange }) => {
 
     const handleGenerateExcessReport = () => {
         if (isValidDate(startDate)) {
-            // Implement logic to generate Excess Report
-            console.log('Generating Excess Report...');
+            onPageChange('excessReport');
         } else {
             alert('Please enter a valid start date (YYYY-MM-DD).');
         }
     };
 
     const handleGenerateRestockReport = () => {
-        // Implement logic to generate Restock Report
-        console.log('Generating Restock Report...');
+        onPageChange('restockReport');
     };
 
     const handleGenerateOrderTrendReport = () => {
         if (isValidDate(startDate) && isValidDate(endDate)) {
-            // Implement logic to generate Order Trend Report
-            console.log('Generating Order Trend Report...');
+            onPageChange('orderTrend');
         } else {
             alert('Please enter valid dates (YYYY-MM-DD).');
         }
     };
 
-    const isValidDate = (date) => {
-        return date.match(/\d{4}-\d{2}-\d{2}/);
-    };
-
     return (
-        <div className="trends">
+        <div className={`trends ${textSize === 'large' ? 'large-text' : ''}`}>
+            <div id="google_translate_element"></div>
+            {/* Button to toggle text size */}
+            <button onClick={toggleTextSize}>Toggle Text Size</button>
             <h2>Trends</h2>
             <div className="date-fields">
                 <label>Start Date:</label>

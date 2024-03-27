@@ -1,9 +1,29 @@
-/* inventory.css */
-
 .inventory {
     display: flex;
     flex-direction: column;
     height: 100%;
+}
+
+  /* Add this rule for larger text */
+  .large-text .inventory, .large-text .inventory-details, .large-text .inventory-item, .large-text .selected-item {
+    font-size: 20px; /* Adjust the size as needed */
+  }
+
+.toggle-button-container {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.toggle-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .inventory-list {

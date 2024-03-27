@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './OrderHistory.css'; // Import CSS file for styling
+import { useTextSize } from './TextSizeContext'; // Import the useTextSize hook
 
 const OrderHistory = ({ onPageChange }) => {
     // Example order data
@@ -11,6 +12,7 @@ const OrderHistory = ({ onPageChange }) => {
     // State variables for UI components
     const [orders, setOrders] = useState(exampleOrders); // State to store order items
     const [selectedOrder, setSelectedOrder] = useState(null); // State to store the selected order
+    const { textSize, toggleTextSize } = useTextSize(); // Get textSize and toggleTextSize from context
 
     // Function to handle row selection in the order list
     const handleOrderClick = (order) => {
@@ -36,7 +38,11 @@ const OrderHistory = ({ onPageChange }) => {
     };
 
     return (
-        <div className="order-history">
+        <div className={`order-history ${textSize === 'large' ? 'large-text' : ''}`}>
+            <div className="toggle-button-container">
+                {/* Button to toggle text size */}
+                <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
+            </div>
             <div className="order-list">
                 <h2>Order History</h2>
                 {renderOrderItems()}

@@ -1,0 +1,26 @@
+/* SalesReport.css */
+
+.sales-report {
+    padding: 20px;
+  }
+  
+  .report-list {
+    margin-top: 20px;
+  }
+  
+  .report-item {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .report-item span {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .report-item span:last-child {
+    margin-bottom: 0;
+  }
+  
