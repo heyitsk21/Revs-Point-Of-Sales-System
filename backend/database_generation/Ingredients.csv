@@ -1,0 +1,64 @@
+IngredientID,IngeredientName,PPU,Count,MinAmount
+1,Bacon,0.10,200,100
+2,American Cheese,0.05,200,100
+3,Hamburger Bun,0.08,300,150
+4,Beef patty,0.50,300,150
+5,Chicken breast,1.00,150,75
+6,Onions,0.03,200,100
+7,Texas Toast,0.15,150,75
+8,Black bean patty,0.60,150,75
+9,Grilled chicken breast,1.20,150,75
+10,Sandwich bun,0.10,200,100
+11,Spicy chicken breast,1.30,100,50
+12,Chicken breast,0.05,100,50
+13,Lettuce,0.10,200,100
+14,Tomato,0.75,200,100
+15,Corn Dog,0.50,200,100
+16,Hot Dog,0.80,200,100
+17,Chicken Tenders,0.03,150,75
+18,Potato fries,0.50,300,150
+19,Shake base - Chocolate,0.60,150,75
+20,Shake base - Oreo Cookie,0.40,150,75
+21,Shake base - Vanilla,0.45,150,75
+22,Shake base - Strawberry,0.50,150,75
+23,Ice cream,0.10,100,50
+24,Cookie crumbles,0.25,100,50
+25,Root beer,0.15,100,50
+26,16 oz. of Aquafina water,0.20,100,50
+27,20 oz. of Aquafina water,0.10,100,50
+28,Fountain drink,0.25,200,100
+29,Wrap,1.50,150,75
+30,BBQ ribs,0.05,100,50
+31,BBQ sauce,0.05,100,50
+32,Tortilla ,0.75,150,75
+33,Pickles,1.00,100,50
+34,Gravy,0.05,100,50
+35,Steak fingers,0.05,40,20
+36,Gig em sauce,0.10,200,100
+37,Onion rings,0.01,150,75
+38,Texas toast,0.01,150,75
+39,Napkins,0.02,300,150
+40,Straws,0.02,300,150
+41,Forks,0.02,300,150
+42,Knives,0.05,300,150
+43,Spoons,0.05,300,150
+44,Cups,0.10,300,150
+45,Basket,0.01,600,300
+46,Ketchup,0.10,200,100
+47,Mustard,0.10,200,100
+48,Salt packets,0.10,200,100
+49,Pepper packets,1.00,200,100
+50,Salad dressing packets,1.00,100,50
+51,To-go containers,0.05,150,75
+52,Paper towels,0.10,200,100
+53,Cleaning supplies,1.00,40,20
+54,Receipt paper,0.15,200,100
+55,Trash bags,1.00,100,50
+56,Ice,0.50,200,100
+57,Freezer bags,1.00,40,20
+58,Swiss Cheese,0.50,100,50
+59,Guacamole,1.50,100,50
+60,Mayo,0.25,200,100
+61,Bowl,0.10,200,100
+62,Fish Patty,0.20,150,75
+63,Tuna,0.05,150,75

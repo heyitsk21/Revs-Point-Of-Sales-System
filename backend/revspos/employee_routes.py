@@ -9,8 +9,6 @@ menuGet_model = api.model('GetMenuModel', {"menugroup": fields.Integer(required=
 placeOrder_model = api.model('PlaceOrderModel',{'menuitems': fields.List(fields.Integer),
                                                 'customername':fields.String(required=True),
                                                 'employeeid':fields.Integer(required=True)})
-
-
 # def alchemyencoder(obj):
 #     """JSON encoder function for SQLAlchemy special classes."""
 #     if isinstance(obj, datetime.date):
@@ -31,11 +29,23 @@ class GetMenuItems(Resource):
                     menuitemlist.append({"menuid":row.menuid, "itemname":row.itemname, "price":row.price})
         return jsonify(menuitemlist)
 
-
+GET_TOTAL_ING_USED = "SELECT Ingredients.IngredientID, Ingredients.MinAmount, Ingredients.Count, COUNT(menuitems.MenuID) AS SelectionCountFROM menuitems JOIN menuitemingredients ON menuitems.MenuID = menuitemingredients.MenuID JOIN Ingredients ON menuitemingredients.IngredientID = Ingredients.IngredientID WHERE menuitems.MenuID IN () GROUP BY Ingredients.IngredientID, Ingredients.MinAmount"
 @api.route('/api/employee/placeorder')
 class PlaceOrder(Resource):
     @api.expect(placeOrder_model, validate=True)
     def post(self):
+        name = request.get_json().get("customername")
+        employeeid = request.get_json().get("employeeid")
+        menuids = request.get_json().get("menuitems")
+
+        menuItemsInString ='(' + ','.join(str(x) for x in menuids) + ')'
+        totalprice = 0
+        with db.engine.connect() as conn:
+            result = conn.execution_options(stream_results=True).execute(text("SELECT SUM(Price) FROM MenuItems WHERE MenuID IN " + menuItemsInString + ";")) 
+            for row in result:
+                totalprice = row.sum
+
+        print(totalprice)
         return None
     
 def init():

@@ -1,0 +1,9 @@
+EmployeeID,EmployeeName,IsManager,Salary,Password
+1,Katelyn Nguyen,FALSE,10,thisisaPassword1234%
+2,Joseph Nuccitelli,FALSE,10,p3ssw@rd
+3,Darren Collingwood,FALSE,10,631-81-2467
+4,Joshua Robert,FALSE,10,meowmeow69!
+5,Jessica Jakubik,TRUE,13,bestTable
+6,Anjali Varghese,FALSE,10,cashierpassword#6
+7,admin,TRUE,0,admin
+8,test,FALSE,0,test
