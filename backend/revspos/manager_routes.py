@@ -7,6 +7,8 @@ from .api_master import api, db
 GenerateExcessReport_model = api.model('GenerateExcessReport',{"startdate": fields.DateTime(required=True)})
 GenerateProductUsage_model = api.model('GenerateProductUsage',{"startdate": fields.DateTime(required=True),
                                                                "enddate": fields.DateTime(required=True)})
+GenerateSalesReport_model = api.model('GenerateSalesReport',{"startdate": fields.DateTime(required=True),
+                                                               "enddate": fields.DateTime(required=True)})
 
 @api.route('/api/manager/getmenuitems')
 class GetMenuItems(Resource):
@@ -57,6 +59,22 @@ class GenerateProductUsage(Resource):
             for row in result:
                 ingredientslist.append({"ingredientname":row.ingredientname, "totalamountchanged":row.totalamountchanged})
         return jsonify(ingredientslist)
+    
+@api.route('/api/manager/reports/generatesalesreport')
+class GenerateSalesReport(Resource):
+    @api.expect(GenerateSalesReport_model, validate=True)
+    def post(self): 
+        startdate = request.get_json().get("startdate") #TODO: PARAMETERIZE???
+        startdate_str = text(startdate)
+        enddate = request.get_json().get("enddate") #TODO: PARAMETERIZE???
+        enddate_str = text(enddate)
+        prod_usage_query = "SELECT menuitems.MenuID, menuitems.ItemName, SUM(menuitems.Price) AS TotalSales, COUNT(*) AS OrderCount FROM orders JOIN ordermenuitems ON orders.OrderID = ordermenuitems.OrderID JOIN menuitems ON ordermenuitems.MenuID = menuitems.MenuID WHERE orders.OrderDateTime BETWEEN TO_TIMESTAMP('{inputstart}', 'YYYY-MM-DD') AND TO_TIMESTAMP('{inputend}', 'YYYY-MM-DD') GROUP BY menuitems.MenuID, menuitems.ItemName ORDER BY TotalSales DESC".format(inputstart = startdate_str, inputend = enddate_str)
+        with db.engine.connect() as conn:
+            result = conn.execution_options(stream_results=True).execute(text(prod_usage_query))
+            menuitemlist = []
+            for row in result:
+                menuitemlist.append({"menuid":row.menuid, "itemname":row.itemname, "totalsales":row.totalsales, "ordercount":row.ordercount})
+        return jsonify(menuitemlist)
 
 @api.route('/api/manager/reports/generateexcessreport')
 class GenerateExcessReport(Resource):
