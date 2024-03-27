@@ -2,6 +2,8 @@
 
 from flask import Flask
 from .api_master import api
+from .employee_routes import init
+from .manager_routes import init
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)

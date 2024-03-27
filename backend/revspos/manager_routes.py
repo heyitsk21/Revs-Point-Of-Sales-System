@@ -15,3 +15,17 @@ class GetMenuItems(Resource):
             for row in result:
                 menuitemlist.append({"menuid":row.menuid, "itemname":row.itemname, "price":row.price})
         return jsonify(menuitemlist)
+    
+@api.route('/api/manager/getingredients')
+class GetIngredients(Resource):
+    def get(self):
+        with db.engine.connect() as conn:
+            result = conn.execution_options(stream_results=True).execute(text("select * from ingredients"))
+            menuitemlist = []
+            for row in result:
+                menuitemlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount})
+        return jsonify(menuitemlist)
+    
+        
+def init():
+    pass

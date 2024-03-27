@@ -3,7 +3,7 @@ from flask_restx import  Resource, fields
 from sqlalchemy import text
 # import os, decimal, datetime
 from .api_master import api, db
-
+print("got here")
 menuGet_model = api.model('GetMenuModel', {"menugroup": fields.Integer(required=True)}) #String:     , min_length=1, max_length=64
 
 placeOrder_model = api.model('PlaceOrderModel',{'menuitems': fields.List(fields.Integer),
@@ -37,3 +37,6 @@ class PlaceOrder(Resource):
     @api.expect(placeOrder_model, validate=True)
     def post(self):
         return None
+    
+def init():
+    return 
