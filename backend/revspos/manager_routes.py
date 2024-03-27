@@ -5,7 +5,8 @@ from sqlalchemy import text
 from .api_master import api, db
 
 GenerateExcessReport_model = api.model('GenerateExcessReport',{"startdate": fields.DateTime(required=True)})
-
+GenerateProductUsage_model = api.model('GenerateProductUsage',{"startdate": fields.DateTime(required=True),
+                                                               "enddate": fields.DateTime(required=True)})
 
 @api.route('/api/manager/getmenuitems')
 class GetMenuItems(Resource):
@@ -41,7 +42,21 @@ class GetOrderHistory(Resource):
 
 
 
-
+@api.route('/api/manager/reports/generateproductusage')
+class GenerateProductUsage(Resource):
+    @api.expect(GenerateProductUsage_model, validate=True)
+    def post(self): 
+        startdate = request.get_json().get("startdate") #TODO: PARAMETERIZE???
+        startdate_str = text(startdate)
+        enddate = request.get_json().get("enddate") #TODO: PARAMETERIZE???
+        enddate_str = text(enddate)
+        prod_usage_query = "SELECT IL.IngredientID, I.IngredientName, SUM(IL.AmountChanged) AS TotalAmountChanged FROM InventoryLog IL JOIN Ingredients I ON IL.IngredientID = I.IngredientID WHERE IL.AmountChanged < 0 AND DATE(IL.LogDateTime) BETWEEN CAST('{inputstart}' AS DATE) AND CAST('{inputend}' AS DATE) GROUP BY IL.IngredientID, I.IngredientName".format(inputstart = startdate_str, inputend = enddate_str)
+        with db.engine.connect() as conn:
+            result = conn.execution_options(stream_results=True).execute(text(prod_usage_query))
+            ingredientslist = []
+            for row in result:
+                ingredientslist.append({"ingredientname":row.ingredientname, "totalamountchanged":row.totalamountchanged})
+        return jsonify(ingredientslist)
 
 @api.route('/api/manager/reports/generateexcessreport')
 class GenerateExcessReport(Resource):
