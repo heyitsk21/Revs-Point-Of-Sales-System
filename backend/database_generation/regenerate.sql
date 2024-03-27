@@ -95,7 +95,7 @@ CREATE TABLE OrderMenuItems (
 
 \COPY Employee (EmployeeID, EmployeeName, IsManager, Salary, Password) FROM 'DatabaseGenerationScript/Employee.csv' DELIMITER ',' CSV HEADER;
 
-\COPY Orders (OrderID, CustomerName, TaxPrice, BasePrice, OrderDateTime, EmployeeID) FROM 'DatabaseGenerationScript/Orders.csv' DELIMITER ',' CSV HEADER;
+\COPY Orders (CustomerName, TaxPrice, BasePrice, OrderDateTime, EmployeeID) FROM 'DatabaseGenerationScript/Orders.csv' DELIMITER ',' CSV HEADER;
 
 \COPY InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) FROM 'DatabaseGenerationScript/InventoryLog.csv' DELIMITER ',' CSV HEADER;
 
