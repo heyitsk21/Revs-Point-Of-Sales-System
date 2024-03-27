@@ -30,11 +30,11 @@ class GetIngredients(Resource):
 class GetOrderHistory(Resource):
     def get(self):
         with db.engine.connect() as conn:
-            result = conn.execution_options(stream_results=True).execute(text("select * from orders"))
-            menuitemlist = []
+            result = conn.execution_options(stream_results=True).execute(text("select * from orders LIMIT 100"))
+            orderlist = []
             for row in result:
-                menuitemlist.append({"orderid":row.orderid, "customername":row.customername, "taxprice":row.taxprice,"baseprice":row.baseprice,"orderdatetime":row.orderdatetime,"employeeid":row.employeeid})
-        return jsonify(menuitemlist)
+                orderlist.append({"orderid":row.orderid, "customername":row.customername, "taxprice":row.taxprice,"baseprice":row.baseprice,"orderdatetime":row.orderdatetime,"employeeid":row.employeeid})
+        return jsonify(orderlist)
     
         
 def init():
