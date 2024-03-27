@@ -29,7 +29,6 @@ class GetMenuItems(Resource):
                     menuitemlist.append({"menuid":row.menuid, "itemname":row.itemname, "price":row.price})
         return jsonify(menuitemlist)
 
-GET_TOTAL_ING_USED = "SELECT Ingredients.IngredientID, Ingredients.MinAmount, Ingredients.Count, COUNT(menuitems.MenuID) AS SelectionCountFROM menuitems JOIN menuitemingredients ON menuitems.MenuID = menuitemingredients.MenuID JOIN Ingredients ON menuitemingredients.IngredientID = Ingredients.IngredientID WHERE menuitems.MenuID IN () GROUP BY Ingredients.IngredientID, Ingredients.MinAmount"
 @api.route('/api/employee/placeorder')
 class PlaceOrder(Resource):
     @api.expect(placeOrder_model, validate=True)
@@ -44,6 +43,9 @@ class PlaceOrder(Resource):
             result = conn.execution_options(stream_results=True).execute(text("SELECT SUM(Price) FROM MenuItems WHERE MenuID IN " + menuItemsInString + ";")) 
             for row in result:
                 totalprice = row.sum
+            result = conn.execution_options(stream_results=True).execute(text("SELECT Ingredients.IngredientID, Ingredients.MinAmount, Ingredients.Count, COUNT(menuitems.MenuID) AS SelectionCount FROM menuitems JOIN menuitemingredients ON menuitems.MenuID = menuitemingredients.MenuID JOIN Ingredients ON menuitemingredients.IngredientID = Ingredients.IngredientID WHERE menuitems.MenuID IN "+ menuItemsInString + " GROUP BY Ingredients.IngredientID, Ingredients.MinAmount"))
+            for row in result:
+                print(row.selectioncount)
 
         print(totalprice)
         return None

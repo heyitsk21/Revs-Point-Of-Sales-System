@@ -87,18 +87,18 @@ CREATE TABLE OrderMenuItems (
 --COPY CHUNKS BELOW
 -- Copy data from CSV files into their corresponding tables
 
-\COPY Ingredients (IngredientID, IngredientName, PPU, Count, MinAmount) FROM 'DatabaseGenerationScript/Ingredients.csv' DELIMITER ',' CSV HEADER;
+\COPY Ingredients (IngredientID, IngredientName, PPU, Count, MinAmount) FROM 'database_generation/Ingredients.csv' DELIMITER ',' CSV HEADER;
 
-\COPY MenuItems (MenuID, ItemName, Price) FROM 'DatabaseGenerationScript/MenuItems.csv' DELIMITER ',' CSV HEADER;
+\COPY MenuItems (MenuID, ItemName, Price) FROM 'database_generation/MenuItems.csv' DELIMITER ',' CSV HEADER;
 
-\COPY MenuItemIngredients (MenuID, IngredientID) FROM 'DatabaseGenerationScript/MenuItemsIngredients.csv' DELIMITER ',' CSV HEADER;
+\COPY MenuItemIngredients (MenuID, IngredientID) FROM 'database_generation/MenuItemsIngredients.csv' DELIMITER ',' CSV HEADER;
 
-\COPY Employee (EmployeeID, EmployeeName, IsManager, Salary, Password) FROM 'DatabaseGenerationScript/Employee.csv' DELIMITER ',' CSV HEADER;
+\COPY Employee (EmployeeID, EmployeeName, IsManager, Salary, Password) FROM 'database_generation/Employee.csv' DELIMITER ',' CSV HEADER;
 
-\COPY Orders (CustomerName, TaxPrice, BasePrice, OrderDateTime, EmployeeID) FROM 'DatabaseGenerationScript/Orders.csv' DELIMITER ',' CSV HEADER;
+\COPY Orders (CustomerName, TaxPrice, BasePrice, OrderDateTime, EmployeeID) FROM 'database_generation/Orders.csv' DELIMITER ',' CSV HEADER;
 
-\COPY InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) FROM 'DatabaseGenerationScript/InventoryLog.csv' DELIMITER ',' CSV HEADER;
+\COPY InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) FROM 'database_generation/InventoryLog.csv' DELIMITER ',' CSV HEADER;
 
-\COPY OrderMenuItems  (OrderID, MenuID) FROM 'DatabaseGenerationScript/JunctionOrdersMenu.csv' DELIMITER ',' CSV HEADER;
+\COPY OrderMenuItems  (OrderID, MenuID) FROM 'database_generation/JunctionOrdersMenu.csv' DELIMITER ',' CSV HEADER;
 
--- For demo, Josephs path: \i C:/Users/jnucc/Desktop/CSCE/project-2-database-gui-group-21/DatabaseGenerationScript/regenerate.sql
+-- For demo, Josephs path: \i C:/Users/jnucc/Desktop/CSCE/project-3-full-stack-agile-web-team-21/backend/database_generation/regenerate.sql
