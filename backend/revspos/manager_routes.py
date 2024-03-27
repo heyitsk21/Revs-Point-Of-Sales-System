@@ -5,6 +5,7 @@ from sqlalchemy import text
 from .api_master import api, db
 
 UpdateOrder_model = api.model('UpdateOrder', {"orderid":fields.Integer(required=True), "customername":fields.String, "baseprice":fields.Float, "employeeid":fields.Integer})
+DeleteOrder_model = api.model('DeleteOrder', {"orderid":fields.Integer(required=True)})
 
 GenerateExcessReport_model = api.model('GenerateExcessReport',{"startdate": fields.DateTime(required=True)})
 GenerateProductUsage_model = api.model('GenerateProductUsage',{"startdate": fields.DateTime(required=True), "enddate": fields.DateTime(required=True)})
@@ -51,7 +52,7 @@ Katelyn TODO:
 -delete order
 '''
 
-
+'''Update and Delete Orders'''
 @api.route('/api/manager/updateorder')
 class UpdateOrder(Resource):
     @api.expect(UpdateOrder_model, validate=True)
@@ -78,7 +79,6 @@ class UpdateOrder(Resource):
             update_order_query = "UPDATE orders SET employeeID = {inputemployeeid} WHERE orderid = {inputorderid}".format(inputemployeeid = employeeid, inputorderid = orderid)
 
         with db.engine.connect() as conn:
-            #update_order_query += "; SELECT * FROM orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
             result = conn.execute(text(update_order_query)) #execution_options(stream_results=True).
 
             select_updated_order_query = "SELECT * FROM orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
@@ -86,8 +86,33 @@ class UpdateOrder(Resource):
             orderlist = []
             for row in resultselect:
                 orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
-                #TODO: front end report will only need to show Ingredient Name and Total Amount Changed!
         return jsonify(orderlist)
+
+@api.route('/api/manager/deleteorder')
+class DeleteOrder(Resource):
+    @api.expect(DeleteOrder_model, validate=True)
+    def post(self): 
+        orderid = -1
+        orderid = request.get_json().get("orderid") #TODO: PARAMETERIZE??? What integers are valid?
+        if (orderid >= 0):
+            delete_order_query = "DELETE FROM Orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
+
+        with db.engine.connect() as conn:
+            select_updated_order_query = "SELECT * FROM orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
+            resultselect = conn.execution_options(stream_results=True).execute(text(select_updated_order_query))
+            
+            orderlist = []
+            for row in resultselect:
+                orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
+
+            conn.execute(text(delete_order_query))
+            
+            orderlist.append({"status":"successfully deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
+
+        return jsonify(orderlist)
+
+
+
 
 '''Manager Reports'''
 @api.route('/api/manager/reports/generateproductusage')
