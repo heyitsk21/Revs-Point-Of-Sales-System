@@ -47,7 +47,7 @@ class GetOrderHistory(Resource):
 class GenerateExcessReport(Resource):
     @api.expect(GenerateExcessReport_model, validate=True)
     def post(self): 
-        startdate = request.get_json().get("startdate")
+        startdate = request.get_json().get("startdate") #TODO: PARAMETERIZE???
         startdate_str = text(startdate)
         excess_query = "SELECT DISTINCT mi.MenuID, mi.ItemName FROM ingredients i JOIN menuitemingredients mii ON i.ingredientid = mii.ingredientid JOIN menuitems mi ON mii.menuid = mi.menuid LEFT JOIN ( SELECT ingredientid, SUM(amountchanged) AS total_sold FROM InventoryLog WHERE amountchanged < 1 AND logdatetime BETWEEN CAST('{inputdate}' AS TIMESTAMP) AND NOW() GROUP BY ingredientid ) il ON i.ingredientid = il.ingredientid WHERE (il.total_sold IS NULL OR -1*il.total_sold < 0.1 * i.count);".format(inputdate = startdate_str)
         with db.engine.connect() as conn:
