@@ -42,6 +42,13 @@ const Inventory = ({ onPageChange }) => {
         ));
     };
 
+    // Function to speak text using text-to-speech API
+    const speakText = (text) => {
+        const utterance = new SpeechSynthesisUtterance();
+        utterance.text = text;
+        window.speechSynthesis.speak(utterance);
+    };
+
     useEffect(() => {
         // Call the formatInventory function to initialize inventory data
         formatInventory();
@@ -50,6 +57,8 @@ const Inventory = ({ onPageChange }) => {
     return (
         <div className={`inventory ${textSize === 'large' ? 'large-text' : ''}`}>
             <div className="toggle-button-container">
+                {/* Button to speak out "Inventory" */}
+                <button onClick={() => speakText("Inventory Items... Selected Item Details... Trends... Inventory... Menu Items... Order History... ")}>Speak</button>
                 {/* Button to toggle text size */}
                 <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             </div>

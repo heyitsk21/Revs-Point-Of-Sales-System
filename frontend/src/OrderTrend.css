@@ -2,6 +2,10 @@
     font-family: Arial, sans-serif;
     padding: 20px;
   }
+
+  .large-text .order-trend, .large-text .report-item, .large-text .report-list, .large-text .header-item {
+    font-size: 30px;
+  }
   
   .order-trend h2 {
     margin-bottom: 20px;

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './OrderTrend.css'; // Import CSS file for styling
+import { useTextSize } from './TextSizeContext'; // Import the useTextSize hook
 
 const OrderTrend = ({ startDate, endDate, onPageChange }) => {
     const [menuID1, setMenuID1] = useState([]);
     const [menuID2, setMenuID2] = useState([]);
     const [count, setCount] = useState([]);
+    const { textSize, toggleTextSize } = useTextSize(); // Get textSize and toggleTextSize from context
 
     useEffect(() => {
         fetchData(startDate, endDate);
@@ -28,7 +30,9 @@ const OrderTrend = ({ startDate, endDate, onPageChange }) => {
     };
 
     return (
-        <div className="order-trend">
+        <div className={`order-trend ${textSize === 'large' ? 'large-text' : ''}`}>
+            {/* Button to toggle text size */}
+            <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             <h2>Order Trend Report</h2>
             <div className="report-list">
                 <div className="report-header">

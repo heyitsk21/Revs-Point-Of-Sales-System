@@ -37,9 +37,18 @@ const OrderHistory = ({ onPageChange }) => {
         return date.toLocaleString();
     };
 
+    // Function to speak text using text-to-speech API
+    const speakText = (text) => {
+        const utterance = new SpeechSynthesisUtterance();
+        utterance.text = text;
+        window.speechSynthesis.speak(utterance);
+    };
+
     return (
         <div className={`order-history ${textSize === 'large' ? 'large-text' : ''}`}>
             <div className="toggle-button-container">
+                {/* Button to speak out "MenuItems" */}
+                <button onClick={() => speakText("Order History... ID:... Customer:... Price:... Date/Time:... Select an Order to View Details... Trends... Inventory... Menu Items... Order History")}>Speak</button>
                 {/* Button to toggle text size */}
                 <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             </div>

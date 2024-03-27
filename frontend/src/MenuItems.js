@@ -78,9 +78,18 @@ const MenuItems = ({ onPageChange }) => {
         }
     }, []);
 
+    // Function to speak text using text-to-speech API
+    const speakText = (text) => {
+        const utterance = new SpeechSynthesisUtterance();
+        utterance.text = text;
+        window.speechSynthesis.speak(utterance);
+    };
+
     return (
         <div className={`manager-menu-items ${textSize === 'large' ? 'large-text' : ''}`}>
             <div className="toggle-button-container">
+                {/* Button to speak out "MenuItems" */}
+                <button onClick={() => speakText("Menu Items... ID...	Name...	Price... Delete... Add New Menu Item... Name:... Price:... Add... Select a Menu Item to Edit... Trends... Inventory... Menu Items... Order History")}>Speak</button>
                 {/* Button to toggle text size */}
                 <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             </div>

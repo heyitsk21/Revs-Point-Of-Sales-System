@@ -60,9 +60,18 @@ const Trends = ({ onPageChange }) => {
         }
     };
 
+    // Function to speak text using text-to-speech API
+    const speakText = (text) => {
+        const utterance = new SpeechSynthesisUtterance();
+        utterance.text = text;
+        window.speechSynthesis.speak(utterance);
+    };
+
     return (
         <div className={`trends ${textSize === 'large' ? 'large-text' : ''}`}>
             <div id="google_translate_element"></div>
+            {/* Button to speak out "Trends" */}
+            <button onClick={() => speakText("... Trends... Start Date... End Date... Generate Prodoct Usage... Generate Sales Report... Generate Excess Report... Generate Restock Report... Generate Order Trend Report... Trends... Inventory... Menu Items... Order History... ")}>Speak</button>
             {/* Button to toggle text size */}
             <button onClick={toggleTextSize}>Toggle Text Size</button>
             <h2>Trends</h2>
@@ -83,7 +92,7 @@ const Trends = ({ onPageChange }) => {
                 />
             </div>
             <div className="trend-buttons">
-                <button onClick={handleGenerateProdUsage}>Generate ProdUsage</button>
+                <button onClick={handleGenerateProdUsage}>Generate Product Usage</button>
                 <button onClick={handleGenerateSalesReport}>Generate Sales Report</button>
                 <button onClick={handleGenerateExcessReport}>Generate Excess Report</button>
                 <button onClick={handleGenerateRestockReport}>Generate Restock Report</button>

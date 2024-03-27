@@ -34,21 +34,12 @@ const ManagerTab = ({ onPageChange }) => {
         return () => clearInterval(interval); // Cleanup interval on component unmount
     }, []);
 
-    // Load Google Translate when component mounts
-    useEffect(() => {
-        // Check if Google Translate API is already loaded
-        if (!window.google || !window.google.translate || !window.google.translate.TranslateElement) {
-            const script = document.createElement('script');
-            script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-            script.async = true;
-            document.body.appendChild(script);
-
-            // Initialize Google Translate button
-            window.googleTranslateElementInit = () => {
-                new window.google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
-            };
-        }
-    }, []);
+    // Function to speak text using text-to-speech API
+    const speakText = (text) => {
+        const utterance = new SpeechSynthesisUtterance();
+        utterance.text = text;
+        window.speechSynthesis.speak(utterance);
+    };
 
     return (
         <div className={`manager-tab ${textSize === 'large' ? 'large-text' : ''}`}>
@@ -59,6 +50,8 @@ const ManagerTab = ({ onPageChange }) => {
                     <span>{currentTime}</span>
                 </div>
                 <button onClick={handleLoginLogout}>{loggedIn ? 'Logout' : 'Login'}</button>
+                {/* Button to speak out "Manager" */}
+                <button onClick={() => speakText("Manager... Trends... Inventory... Menu Items... Order History")}>Speak</button>
                 {/* Button to toggle text size */}
                 <button onClick={toggleTextSize}>Toggle Text Size</button>
             </div>

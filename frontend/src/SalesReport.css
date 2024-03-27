@@ -1,7 +1,11 @@
 /* SalesReport.css */
 
-.sales-report {
-    padding: 20px;
+  .sales-report {
+      padding: 20px;
+    }
+
+  .large-text .sales-report, .large-text .report-item, .large-text .report-list {
+    font-size: 30px; /* Adjust the size as needed */
   }
   
   .report-list {

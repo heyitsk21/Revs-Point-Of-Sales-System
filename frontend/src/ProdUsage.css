@@ -5,6 +5,10 @@
     margin-top: 20px;
 }
 
+.large-text .prod-usage, .large-text .bar-container, .large-text .label, .large-text .chart, .large-text .h1, .large-text .prod-usage, .large-text .bar, .large-text .h1 {
+    font-size: 30px;
+}
+
 .bar-container {
     display: flex;
     flex-direction: column;

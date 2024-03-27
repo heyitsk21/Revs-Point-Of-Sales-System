@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import './ProdUsage.css'; // Import CSS file for styling
+import { useTextSize } from './TextSizeContext'; // Import the useTextSize hook
 
 const ProdUsage = ({ startDate, endDate, onPageChange }) => {
     const [ingredientNames, setIngredientNames] = useState([]);
     const [totalAmountChangedList, setTotalAmountChangedList] = useState([]);
+    const { textSize, toggleTextSize } = useTextSize(); // Get textSize and toggleTextSize from context
 
     // Function to fetch data from the backend API
     const fetchData = async (startDate, endDate) => {
         // Placeholder for backend API request
         try {
-            // Example of how to make a backend API request using fetch
-            // const response = await fetch(`/api/prodUsage?startDate=${startDate}&endDate=${endDate}`);
-            // const data = await response.json();
-
             // Simulate response data
             const mockIngredientNames = ["Ingredient A", "Ingredient B", "Ingredient C"];
             const mockTotalAmountChangedList = [100, 200, 150];
@@ -31,7 +29,9 @@ const ProdUsage = ({ startDate, endDate, onPageChange }) => {
     }, [startDate, endDate]);
 
     return (
-        <div>
+        <div className={`prod-usage ${textSize === 'large' ? 'large-text' : ''}`}>
+            {/* Button to toggle text size */}
+            <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             <h1>Produce Usage (negative)</h1>
             <div className="chart">
                 {/* Draw bars based on fetched data */}
