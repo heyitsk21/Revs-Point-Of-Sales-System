@@ -26,6 +26,16 @@ class GetIngredients(Resource):
                 menuitemlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount})
         return jsonify(menuitemlist)
     
+@api.route('/api/manager/getorderhistory')
+class GetOrderHistory(Resource):
+    def get(self):
+        with db.engine.connect() as conn:
+            result = conn.execution_options(stream_results=True).execute(text("select * from orders"))
+            menuitemlist = []
+            for row in result:
+                menuitemlist.append({"orderid":row.orderid, "customername":row.customername, "taxprice":row.taxprice,"baseprice":row.baseprice,"orderdatetime":row.orderdatetime,"employeeid":row.employeeid})
+        return jsonify(menuitemlist)
+    
         
 def init():
-    pass
+    return 
