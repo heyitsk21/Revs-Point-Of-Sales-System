@@ -47,6 +47,7 @@ class PlaceOrder(Resource):
             for row in result:
                 print(row.selectioncount)
 
+
         print(totalprice)
         return None
     
