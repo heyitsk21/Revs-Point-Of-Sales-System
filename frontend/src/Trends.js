@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import './Trends.css'; // Import CSS file for styling
-import { useTextSize } from './TextSizeContext'; // Import the useTextSize hook
+import './Trends.css';
+import { useTextSize } from './TextSizeContext';
 
 const Trends = ({ onPageChange }) => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
-    const { textSize, toggleTextSize } = useTextSize(); // Get textSize and toggleTextSize from context
+    const { textSize, toggleTextSize } = useTextSize();
 
     const isValidDate = (date) => {
         return date.match(/\d{4}-\d{2}-\d{2}/);
@@ -60,7 +60,6 @@ const Trends = ({ onPageChange }) => {
         }
     };
 
-    // Function to speak text using text-to-speech API
     const speakText = (text) => {
         const utterance = new SpeechSynthesisUtterance();
         utterance.text = text;
@@ -70,9 +69,7 @@ const Trends = ({ onPageChange }) => {
     return (
         <div className={`trends ${textSize === 'large' ? 'large-text' : ''}`}>
             <div id="google_translate_element"></div>
-            {/* Button to speak out "Trends" */}
             <button onClick={() => speakText("... Trends... Start Date... End Date... Generate Prodoct Usage... Generate Sales Report... Generate Excess Report... Generate Restock Report... Generate Order Trend Report... Trends... Inventory... Menu Items... Order History... ")}>Speak</button>
-            {/* Button to toggle text size */}
             <button onClick={toggleTextSize}>Toggle Text Size</button>
             <h2>Trends</h2>
             <div className="date-fields">
@@ -98,7 +95,6 @@ const Trends = ({ onPageChange }) => {
                 <button onClick={handleGenerateRestockReport}>Generate Restock Report</button>
                 <button onClick={handleGenerateOrderTrendReport}>Generate Order Trend Report</button>
             </div>
-            {/* Bottom navigation */}
             <div className="bottom-nav">
                 <button onClick={() => onPageChange('trends')}>Trends</button>
                 <button onClick={() => onPageChange('inventory')}>Inventory</button>

@@ -1,26 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import './OrderTrend.css'; // Import CSS file for styling
-import { useTextSize } from './TextSizeContext'; // Import the useTextSize hook
+import './OrderTrend.css';
+import { useTextSize } from './TextSizeContext';
 
 const OrderTrend = ({ startDate, endDate, onPageChange }) => {
     const [menuID1, setMenuID1] = useState([]);
     const [menuID2, setMenuID2] = useState([]);
     const [count, setCount] = useState([]);
-    const { textSize, toggleTextSize } = useTextSize(); // Get textSize and toggleTextSize from context
+    const { textSize, toggleTextSize } = useTextSize();
 
     useEffect(() => {
         fetchData(startDate, endDate);
     }, [startDate, endDate]);
 
     const fetchData = async (startDate, endDate) => {
-        // Placeholder for backend API request
         try {
-            // Simulated data
             const mockMenuID1 = ["MenuID1_A", "MenuID1_B", "MenuID1_C"];
             const mockMenuID2 = ["MenuID2_A", "MenuID2_B", "MenuID2_C"];
             const mockCount = [10, 20, 15];
 
-            // Set state with mock data
             setMenuID1(mockMenuID1);
             setMenuID2(mockMenuID2);
             setCount(mockCount);
@@ -31,7 +28,6 @@ const OrderTrend = ({ startDate, endDate, onPageChange }) => {
 
     return (
         <div className={`order-trend ${textSize === 'large' ? 'large-text' : ''}`}>
-            {/* Button to toggle text size */}
             <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             <h2>Order Trend Report</h2>
             <div className="report-list">
@@ -48,7 +44,6 @@ const OrderTrend = ({ startDate, endDate, onPageChange }) => {
                     </div>
                 ))}
             </div>
-            {/* Button to navigate back to Trends */}
             <button onClick={() => onPageChange('trends')}>Back to Trends</button>
         </div>
     );

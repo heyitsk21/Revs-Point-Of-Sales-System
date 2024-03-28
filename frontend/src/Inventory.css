@@ -4,9 +4,8 @@
     height: 100%;
 }
 
-  /* Add this rule for larger text */
   .large-text .inventory, .large-text .inventory-details, .large-text .inventory-item, .large-text .selected-item {
-    font-size: 20px; /* Adjust the size as needed */
+    font-size: 20px;
   }
 
 .toggle-button-container {
@@ -83,10 +82,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: auto; /* Push the navigation buttons to the bottom */
+    margin-top: auto;
     padding: 20px;
 }
 
 .bottom-nav button {
-    margin: 0 10px; /* Add spacing between buttons */
+    margin: 0 10px;
 }

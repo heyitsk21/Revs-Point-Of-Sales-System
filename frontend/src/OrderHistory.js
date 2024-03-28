@@ -1,25 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import './OrderHistory.css'; // Import CSS file for styling
-import { useTextSize } from './TextSizeContext'; // Import the useTextSize hook
+import './OrderHistory.css'; 
+import { useTextSize } from './TextSizeContext';
 
 const OrderHistory = ({ onPageChange }) => {
-    // Example order data
     const exampleOrders = [
         { id: 1, customerName: 'John Doe', taxPrice: 2.5, basePrice: 20.0, totalPrice: 22.5, dateTime: '2024-03-25 15:30:00', employeeID: 101 },
         { id: 2, customerName: 'Jane Smith', taxPrice: 1.75, basePrice: 15.0, totalPrice: 16.75, dateTime: '2024-03-26 12:45:00', employeeID: 102 }
     ];
 
-    // State variables for UI components
-    const [orders, setOrders] = useState(exampleOrders); // State to store order items
-    const [selectedOrder, setSelectedOrder] = useState(null); // State to store the selected order
-    const { textSize, toggleTextSize } = useTextSize(); // Get textSize and toggleTextSize from context
+    const [orders, setOrders] = useState(exampleOrders);
+    const [selectedOrder, setSelectedOrder] = useState(null); 
+    const { textSize, toggleTextSize } = useTextSize(); 
 
-    // Function to handle row selection in the order list
     const handleOrderClick = (order) => {
         setSelectedOrder(order);
     };
 
-    // Function to render order items in the list
     const renderOrderItems = () => {
         return orders.map(order => (
             <div key={order.id} className={`order-item ${selectedOrder && selectedOrder.id === order.id ? 'selected' : ''}`} onClick={() => handleOrderClick(order)}>
@@ -31,13 +27,11 @@ const OrderHistory = ({ onPageChange }) => {
         ));
     };
 
-    // Function to format the date/time string
     const formatDate = (dateTime) => {
         const date = new Date(dateTime);
         return date.toLocaleString();
     };
 
-    // Function to speak text using text-to-speech API
     const speakText = (text) => {
         const utterance = new SpeechSynthesisUtterance();
         utterance.text = text;
@@ -47,9 +41,7 @@ const OrderHistory = ({ onPageChange }) => {
     return (
         <div className={`order-history ${textSize === 'large' ? 'large-text' : ''}`}>
             <div className="toggle-button-container">
-                {/* Button to speak out "MenuItems" */}
                 <button onClick={() => speakText("Order History... ID:... Customer:... Price:... Date/Time:... Select an Order to View Details... Trends... Inventory... Menu Items... Order History")}>Speak</button>
-                {/* Button to toggle text size */}
                 <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             </div>
             <div className="order-list">
@@ -70,7 +62,6 @@ const OrderHistory = ({ onPageChange }) => {
                     </div>
                 )}
             </div>
-            {/* Bottom navigation */}
             <div className="bottom-nav">
                 <button onClick={() => onPageChange('trends')}>Trends</button>
                 <button onClick={() => onPageChange('inventory')}>Inventory</button>

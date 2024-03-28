@@ -6,9 +6,8 @@
     align-items: center;
 }
 
-  /* Add this rule for larger text */
   .large-text .order-history, .large-text .order-list, .large-text .h2, .large-text .order-item {
-    font-size: 20px; /* Adjust the size as needed */
+    font-size: 20px;
   }
 
 .order-list {
@@ -69,10 +68,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: auto; /* Push the navigation buttons to the bottom */
+    margin-top: auto;
     padding: 20px;
 }
 
 .bottom-nav button {
-    margin: 0 10px; /* Add spacing between buttons */
+    margin: 0 10px;
 }

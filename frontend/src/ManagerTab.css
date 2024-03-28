@@ -1,13 +1,11 @@
 /* ManagerTab.css */
 
-/* Overall Manager Tab layout */
 .manager-tab {
     display: flex;
     flex-direction: column;
     height: 100%;
 }
 
-/* Top bar */
 .top-bar {
     background-color: #333;
     color: #fff;
@@ -17,12 +15,10 @@
     align-items: center;
 }
 
-/* User info section in the top bar */
 .user-info span {
     margin-right: 10px;
 }
 
-/* Login/logout button in the top bar */
 .top-bar button {
     background-color: #007bff;
     color: #fff;
@@ -36,7 +32,6 @@
     background-color: #0056b3;
 }
 
-/* Middle content */
 .middle-content {
     flex: 1;
     display: flex;
@@ -45,23 +40,19 @@
     font-weight: bold;
 }
 
-/* Larger font size when textSize is 'large' */
 .large-text .middle-content h1 {
     font-size: 80px;
 }
 
-/* Larger font size for buttons when textSize is 'large' */
 .large-text .top-bar button,
 .large-text .bottom-nav button {
-    font-size: 24px; /* Adjust the size as needed */
+    font-size: 24px;
 }
 
-/* Default font size */
 .middle-content h1 {
     font-size: 36px;
 }
 
-/* Bottom navigation */
 .bottom-nav {
     background-color: #f8f9fa;
     display: flex;
@@ -70,7 +61,6 @@
     padding: 20px 0;
 }
 
-/* Styling for navigation buttons */
 .bottom-nav button {
     background-color: #007bff;
     color: #fff;

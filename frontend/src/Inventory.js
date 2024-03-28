@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import './Inventory.css'; // Import CSS file for styling
-import { useTextSize } from './TextSizeContext'; // Import the useTextSize hook
+import './Inventory.css'; 
+import { useTextSize } from './TextSizeContext'; 
 
 const Inventory = ({ onPageChange }) => {
-    const [inventory, setInventory] = useState([]); // State to store inventory items
-    const [selectedItem, setSelectedItem] = useState(null); // State to store the selected inventory item
-    const { textSize, toggleTextSize } = useTextSize(); // Get textSize and toggleTextSize from context
+    const [inventory, setInventory] = useState([]); 
+    const [selectedItem, setSelectedItem] = useState(null); 
+    const { textSize, toggleTextSize } = useTextSize(); 
 
-    // Function to format the inventory data for display
     const formatInventory = () => {
-        // Simulate retrieving inventory information
         const myInventory = [
             { id: 1, name: 'Item 1', pricePerUnit: 10.99, count: 50, minAmount: 10 },
             { id: 2, name: 'Item 2', pricePerUnit: 5.99, count: 100, minAmount: 20 },
@@ -17,20 +15,16 @@ const Inventory = ({ onPageChange }) => {
         setInventory(myInventory);
     };
 
-    // Function to handle the event when an inventory item is selected
     const handleItemSelected = (item) => {
         setSelectedItem(item);
     };
 
-    // Function to handle the event when the user updates an inventory item
     const handleItemUpdate = (itemId, updatedData) => {
-        // Update the inventory item with the new data using functional update
         setInventory(prevInventory => prevInventory.map(item =>
             item.id === itemId ? { ...item, ...updatedData } : item
         ));
     };
 
-    // Function to render the inventory items
     const renderInventoryItems = () => {
         return inventory.map(item => (
             <div key={item.id} className="inventory-item" onClick={() => handleItemSelected(item)}>
@@ -42,7 +36,6 @@ const Inventory = ({ onPageChange }) => {
         ));
     };
 
-    // Function to speak text using text-to-speech API
     const speakText = (text) => {
         const utterance = new SpeechSynthesisUtterance();
         utterance.text = text;
@@ -50,16 +43,13 @@ const Inventory = ({ onPageChange }) => {
     };
 
     useEffect(() => {
-        // Call the formatInventory function to initialize inventory data
         formatInventory();
-    }, []); // Empty dependency array ensures this effect runs only once on mount
+    }, []);
 
     return (
         <div className={`inventory ${textSize === 'large' ? 'large-text' : ''}`}>
             <div className="toggle-button-container">
-                {/* Button to speak out "Inventory" */}
                 <button onClick={() => speakText("Inventory Items... Selected Item Details... Trends... Inventory... Menu Items... Order History... ")}>Speak</button>
-                {/* Button to toggle text size */}
                 <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             </div>
             <div className="inventory-list">
@@ -98,7 +88,6 @@ const Inventory = ({ onPageChange }) => {
                     </div>
                 )}
             </div>
-            {/* Bottom navigation */}
             <div className="bottom-nav">
                 <button onClick={() => onPageChange('trends')}>Trends</button>
                 <button onClick={() => onPageChange('inventory')}>Inventory</button>

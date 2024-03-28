@@ -7,7 +7,7 @@
   }
 
   .large-text .restock-report, .large-text .report-cell, .large-text .report-item, .large-text .report-list, .large-text .header-item {
-    font-size: 30px; /* Adjust the size as needed */
+    font-size: 30px;
 }
   
   .restock-report h2 {

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import './ExcessReport.css'; // Import CSS file for styling
-import { useTextSize } from './TextSizeContext'; // Import the useTextSize hook
+import './ExcessReport.css';
+import { useTextSize } from './TextSizeContext';
 
 const ExcessReport = ({ startDate, onPageChange }) => {
     const [reportData, setReportData] = useState([]);
-    const { textSize, toggleTextSize } = useTextSize(); // Get textSize and toggleTextSize from context
+    const { textSize, toggleTextSize } = useTextSize();
 
     useEffect(() => {
         fetchData(startDate);
@@ -21,13 +21,12 @@ const ExcessReport = ({ startDate, onPageChange }) => {
             setReportData(data);
         } catch (error) {
             console.error('Error fetching excess report data:', error);
-            // Handle error (e.g., show error message)
+            // Handle error 
         }
     };
 
     return (
         <div className={`excess-report ${textSize === 'large' ? 'large-text' : ''}`}>
-            {/* Button to toggle text size */}
             <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             <h2>Excess Report</h2>
             <div className="report-table">

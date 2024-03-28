@@ -3,7 +3,7 @@
 }
 
 .large-text .excess-report, .large-text .report-table, .large-text .report-cell {
-    font-size: 20px; /* Adjust the size as needed */
+    font-size: 20px;
 }
 
 .excess-report h2 {
@@ -30,10 +30,10 @@
     flex: 1;
     padding: 10px;
     border-right: 1px solid #ccc;
-    overflow-wrap: break-word; /* Wrap long content */
+    overflow-wrap: break-word;
 }
 
 .report-cell:last-child {
-    border-right: none; /* Remove right border for last cell in each row */
+    border-right: none;
 }
 
