@@ -92,7 +92,7 @@ class UpdateOrder(Resource):
 @api.route('/api/manager/deleteorder')
 class DeleteOrder(Resource):
     @api.expect(DeleteOrder_model, validate=True)
-    def post(self): 
+    def delete(self): 
         orderid = -1
         orderid = request.get_json().get("orderid") #TODO: PARAMETERIZE??? What integers are valid?
         if (orderid >= 0):
@@ -108,9 +108,10 @@ class DeleteOrder(Resource):
                 orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
             conn.connection.cursor().execute(delete_order_query)
             conn.commit()
-
-
-            orderlist.append({"status":"successfully deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
+            if (len(orderlist) != 1):
+                orderlist.append({"status":"failed to delete order with orderid = {inputorderid}".format(inputorderid = orderid)})
+            else:
+                orderlist.append({"status":"successfully deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
 
         return jsonify(orderlist)
 
