@@ -49,7 +49,7 @@ class GetOrderHistory(Resource):
 
 
 
-'''Get, Add, and Delete Ingredients to a Menu Item'''
+'''Get, Add, and Delete Ingredients from a Menu Item'''
 @api.route('/api/manager/getingredientsfrommenuitem')
 class GetIngredientsFromMenuItem(Resource):
     @api.expect(GetIngredientsFromMenuItem_model, validate=True)
