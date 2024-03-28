@@ -4,14 +4,21 @@ from sqlalchemy import text
 # import os, decimal, datetime
 from .api_master import api, db
 
-GenerateExcessReport_model = api.model('GenerateExcessReport',{"startdate": fields.DateTime(required=True)})
-GenerateProductUsage_model = api.model('GenerateProductUsage',{"startdate": fields.DateTime(required=True), "enddate": fields.DateTime(required=True)})
-GenerateSalesReport_model = api.model('GenerateSalesReport',{"startdate": fields.DateTime(required=True), "enddate": fields.DateTime(required=True)})
-GenerateOrderTrend_model = api.model('GenerateOrderTrend',{"startdate": fields.DateTime(required=True), "enddate": fields.DateTime(required=True)})
+GetIngredientsFromMenuItem_model = api.model('GetIngredientsFromMenuItem', {"menuitemid":fields.Integer(required=True)})
+AddIngredientToMenuItem_model = api.model('AddIngredientToMenuItem', {"menuitemid":fields.Integer(required=True), "ingredientid":fields.Integer(required=True)})
+DeleteIngredientFromMenuItem_model = api.model('DeleteIngredientFromMenuItem', {"menuitemid":fields.Integer(required=True), "ingredientid":fields.Integer(required=True)})
+
+UpdateOrder_model = api.model('UpdateOrder', {"orderid":fields.Integer(required=True), "customername":fields.String(min_length=3, max_length=25), "baseprice":fields.Float, "employeeid":fields.Integer})
+DeleteOrder_model = api.model('DeleteOrder', {"orderid":fields.Integer(required=True)})
+
+GenerateExcessReport_model = api.model('GenerateExcessReport',{"startdate": fields.Date(required=True)})
+GenerateProductUsage_model = api.model('GenerateProductUsage',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
+GenerateSalesReport_model = api.model('GenerateSalesReport',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
+GenerateOrderTrend_model = api.model('GenerateOrderTrend',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
 
 @api.route('/api/manager/getmenuitems')
 class GetMenuItems(Resource):
-    def get(self):
+    def post(self):
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(text("select * from menuitems"))
             menuitemlist = []
@@ -42,7 +49,145 @@ class GetOrderHistory(Resource):
 
 
 
+'''Get, Add, and Delete Ingredients from a Menu Item'''
+@api.route('/api/manager/getingredientsfrommenuitem')
+class GetIngredientsFromMenuItem(Resource):
+    @api.expect(GetIngredientsFromMenuItem_model, validate=True)
+    def post(self):
+        with db.engine.connect() as conn:
+            menuitemid = request.get_json().get("menuitemid") #TODO: PARAMETERIZE??? What integers are valid?
+            result = conn.execution_options(stream_results=True).execute(text("select * from menuitemingredients where menuid = {inputmenuitemid}".format(inputmenuitemid = menuitemid)))
+            menuitemingredientslist = []
+            for row in result:
+                menuitemingredientslist.append({"menuid":row.menuid, "ingredientid":row.ingredientid})
+        return jsonify(menuitemingredientslist)
 
+@api.route('/api/manager/addingredienttomenuitem')
+class AddIngredientToMenuItem(Resource):
+    @api.expect(AddIngredientToMenuItem_model, validate=True)
+    def post(self): 
+        menuitemid = request.get_json().get("menuitemid") #TODO: PARAMETERIZE??? What integers are valid?
+        ingredientid = request.get_json().get("ingredientid") #TODO: PARAMETERIZE??? What integers are valid?
+
+        add_ingredient_query = "INSERT INTO menuitemIngredients (MenuID, IngredientID) values ({inputmenuitemid},{inputingredientid})".format(inputmenuitemid = menuitemid, inputingredientid = ingredientid)
+                   
+        with db.engine.connect() as conn:
+            result = conn.execute(text(add_ingredient_query)) #execution_options(stream_results=True).
+            conn.commit()
+
+            select_add_ingredient_query = "SELECT * FROM menuitemingredients WHERE menuid = {inputmenuitemid}".format(inputmenuitemid = menuitemid)
+            resultselect = conn.execution_options(stream_results=True).execute(text(select_add_ingredient_query))
+            menuitemingredientslist = []
+            for row in resultselect:
+                menuitemingredientslist.append({"menuid":row.menuid,"ingredientid":row.ingredientid})
+        return jsonify(menuitemingredientslist)
+
+@api.route('/api/manager/deleteingredientfrommenuitem')
+class DeleteIngredientFromMenuItem(Resource):
+    @api.expect(DeleteIngredientFromMenuItem_model, validate=True)
+    def delete(self): 
+        menuitemid = request.get_json().get("menuitemid") #TODO: PARAMETERIZE??? What integers are valid?
+        ingredientid = request.get_json().get("ingredientid") #TODO: PARAMETERIZE??? What integers are valid?
+
+        delete_ingredient_query = "DELETE FROM menuitemIngredients WHERE MenuID={inputmenuitemid} AND ingredientID={inputingredientid}".format(inputmenuitemid = menuitemid, inputingredientid = ingredientid)
+
+        with db.engine.connect() as conn:
+            conn.connection.cursor().execute(text(delete_ingredient_query))
+
+            # select menuid, count(menuid) as entries from menuitemingredients where menuid=201 group by menuid; <-- "entries" is the number of ingredients a menu item has
+
+            select_delete_ingredient_query = "SELECT * FROM menuitemingredients WHERE menuid = {inputmenuitemid}".format(inputmenuitemid = menuitemid)
+            resultselect = conn.execution_options(stream_results=True).execute(text(select_delete_ingredient_query))
+            menuitemingredientslist = []
+            for row in resultselect:
+                menuitemingredientslist.append({"menuid":row.menuid,"ingredientid":row.ingredientid})
+            
+            # conn.connection.cursor().execute(select_delete_ingredient_query)
+            # myCursorResult = conn.connection.cursor().fetchall()
+            # num_ingredients = len(myCursorResult)
+            conn.commit()
+
+            # select menuid, count(menuid) as entries from menuitemingredients where menuid=201 group by menuid; <-- "entries" should be 1 less than before
+
+
+            # if (len(menuitemingredientslist) != 1):
+            #     menuitemingredientslist.append({"status":"failed to delete ingredient from menu item with menuid = {inputmenuitemid}".format(inputmenuitemid = menuitemid)})
+            # else:
+            #     menuitemingredientslist.append({"status":"successfully deleted ingredient from menu item with menuid = {inputmenuitemid}".format(inputmenuitemid = menuitemid)})
+
+        return jsonify(menuitemingredientslist)
+
+
+
+'''Update and Delete Orders'''
+@api.route('/api/manager/updateorder')
+class UpdateOrder(Resource):
+    @api.expect(UpdateOrder_model, validate=True)
+    def post(self): 
+        orderid = request.get_json().get("orderid") #TODO: PARAMETERIZE??? What integers are valid?
+        #orderid_str = text(orderid)
+
+        customername = ""
+        customername = request.get_json().get("customername") #TODO: PARAMETERIZE??? NEED TO MAKE SURE THIS ISN'T VULNERABLE TO SQL INJECTION!
+
+        baseprice = request.get_json().get("baseprice") #TODO: PARAMETERIZE??? What floats are valid?
+
+        employeeid = 0
+        employeeid = request.get_json().get("employeeid") #TODO: PARAMETERIZE??? What ints are valid?
+
+        update_order_query = ""
+        if (orderid >= 0 and customername != "string"):
+            update_order_query = "UPDATE orders SET CustomerName = '{inputcustomername}' WHERE orderid = {inputorderid}".format(inputcustomername = customername, inputorderid = orderid)
+        elif (orderid >= 0 and baseprice > 0):
+            update_order_query = "UPDATE orders SET baseprice = {inputbaseprice}, taxprice = {calculatedtax} WHERE orderid = {inputorderid}".format(inputbaseprice = baseprice, calculatedtax = baseprice*0.0825, inputorderid = orderid)
+        elif (orderid >= 0 and employeeid > 0):
+            update_order_query = "UPDATE orders SET employeeID = {inputemployeeid} WHERE orderid = {inputorderid}".format(inputemployeeid = employeeid, inputorderid = orderid)
+        
+           
+        with db.engine.connect() as conn:
+            result = conn.execute(text(update_order_query)) #execution_options(stream_results=True).
+            conn.commit()
+
+            select_updated_order_query = "SELECT * FROM orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
+            resultselect = conn.execution_options(stream_results=True).execute(text(select_updated_order_query))
+            orderlist = []
+            for row in resultselect:
+                orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
+        return jsonify(orderlist)
+
+@api.route('/api/manager/deleteorder')
+class DeleteOrder(Resource):
+    @api.expect(DeleteOrder_model, validate=True)
+    def delete(self): 
+        orderid = -1
+        orderid = request.get_json().get("orderid") #TODO: PARAMETERIZE??? What integers are valid?
+        if (orderid >= 0):
+            delete_order_query = "DELETE FROM Orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
+
+        with db.engine.connect() as conn:
+            select_delete_order_query = "SELECT * FROM orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
+            
+            resultselect = conn.execution_options(stream_results=True).execute(text(select_delete_order_query))
+
+            orderlist = []
+            for row in resultselect:
+                orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
+            
+            conn.connection.cursor().execute(delete_order_query)
+
+            conn.commit()
+
+            if (len(orderlist) != 1): #this is only making sure 1 deletion occurred. it doesn't verify anything else.
+                orderlist.append({"status":"failed to delete order with orderid = {inputorderid}".format(inputorderid = orderid)})
+            else:
+                orderlist.append({"status":"successfully deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
+
+        return jsonify(orderlist)
+
+
+
+
+'''Manager Reports'''
 @api.route('/api/manager/reports/generateproductusage')
 class GenerateProductUsage(Resource):
     @api.expect(GenerateProductUsage_model, validate=True)
