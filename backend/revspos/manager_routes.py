@@ -77,10 +77,11 @@ class UpdateOrder(Resource):
             update_order_query = "UPDATE orders SET baseprice = {inputbaseprice}, taxprice = {calculatedtax} WHERE orderid = {inputorderid}".format(inputbaseprice = baseprice, calculatedtax = baseprice*0.0825, inputorderid = orderid)
         elif (orderid >= 0 and employeeid > 0):
             update_order_query = "UPDATE orders SET employeeID = {inputemployeeid} WHERE orderid = {inputorderid}".format(inputemployeeid = employeeid, inputorderid = orderid)
-
+        
+           
         with db.engine.connect() as conn:
             result = conn.execute(text(update_order_query)) #execution_options(stream_results=True).
-
+            conn.commit()
             select_updated_order_query = "SELECT * FROM orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
             resultselect = conn.execution_options(stream_results=True).execute(text(select_updated_order_query))
             orderlist = []
@@ -99,14 +100,16 @@ class DeleteOrder(Resource):
 
         with db.engine.connect() as conn:
             select_updated_order_query = "SELECT * FROM orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
-            resultselect = conn.execution_options(stream_results=True).execute(text(select_updated_order_query))
             
+            resultselect = conn.execution_options(stream_results=True).execute(text(select_updated_order_query))
+
             orderlist = []
             for row in resultselect:
                 orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
+            conn.connection.cursor().execute(delete_order_query)
+            conn.commit()
 
-            conn.execute(text(delete_order_query))
-            
+
             orderlist.append({"status":"successfully deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
 
         return jsonify(orderlist)
