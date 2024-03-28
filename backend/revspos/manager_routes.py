@@ -47,20 +47,13 @@ class GetOrderHistory(Resource):
         return jsonify(orderlist)
     
 
-'''
-Katelyn TODO:
--get ingredients of a menu item
--add ingredient to a menu item
--delete ingredient to a menu item
--update order
--delete order
-'''
+
 
 '''Get, Add, and Delete Ingredients to a Menu Item'''
 @api.route('/api/manager/getingredientsfrommenuitem')
 class GetIngredientsFromMenuItem(Resource):
     @api.expect(GetIngredientsFromMenuItem_model, validate=True)
-    def get(self):
+    def post(self):
         with db.engine.connect() as conn:
             menuitemid = request.get_json().get("menuitemid") #TODO: PARAMETERIZE??? What integers are valid?
             result = conn.execution_options(stream_results=True).execute(text("select * from menuitemingredients where menuid = {inputmenuitemid}".format(inputmenuitemid = menuitemid)))
