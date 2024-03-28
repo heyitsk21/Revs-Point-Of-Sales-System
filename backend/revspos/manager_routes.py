@@ -117,6 +117,124 @@ class GenerateOrderTrend(Resource):
             for row in result:
                 menuitemlist.append({"menuid1":row.mid1, "menuid2":row.mid2, "count":row.count})
         return jsonify(menuitemlist)
+    
+@api.route('/api/manager/createingredient')
+class CreateIngredient(Resource):
+    def post(self):
+        ingredient_data = request.get_json()
+        ingredient_id = ingredient_data.get("ingredientid")
+        ingredient_name = ingredient_data.get("ingredientname")
+        count = ingredient_data.get("count")
+        ppu = ingredient_data.get("ppu")
+        min_amount = ingredient_data.get("minamount")
+        
+        insert_query = text("INSERT INTO Ingredients (IngredientID, Ingredientname, Count, PPU, minamount) VALUES (:ingredient_id, :ingredient_name, :count, :ppu, :min_amount)")
+        with db.engine.connect() as conn:
+            conn.execute(insert_query, ingredient_id=ingredient_id, ingredient_name=ingredient_name, count=count, ppu=ppu, min_amount=min_amount)
+        
+        return jsonify({"message": "Ingredient created successfully"})
+
+
+@api.route('/api/manager/deleteingredient/<int:ingredient_id>/<int:ingredient_count>')
+class DeleteIngredient(Resource):
+    def delete(self, ingredient_id, ingredient_count):
+        delete_from_join_cmd = text("DELETE FROM MenuItemIngredients WHERE IngredientID = :ingredient_id")
+        with db.engine.connect() as conn:
+            conn.execute(delete_from_join_cmd, ingredient_id=ingredient_id)
+
+        delete_ingredient_cmd = text("DELETE FROM Ingredients WHERE IngredientID = :ingredient_id")
+        with db.engine.connect() as conn:
+            conn.execute(delete_ingredient_cmd, ingredient_id=ingredient_id)
+
+        negate_count = ingredient_count * -1
+        log_message = f"INGREDIENT COUNT SET TO 0: DELETED INGREDIENT WITH ID {ingredient_id}"
+        insert_log_cmd = text("INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES (:ingredient_id, :negate_count, :log_message, NOW())")
+        with db.engine.connect() as conn:
+            conn.execute(insert_log_cmd, ingredient_id=ingredient_id, negate_count=negate_count, log_message=log_message)
+
+        return jsonify({"message": "Ingredient deleted successfully"})
+
+@api.route('/api/manager/editingredient/<int:ingredient_id>')
+class EditIngredient(Resource):
+    def put(self, ingredient_id):
+        data = request.get_json()
+        new_name = data.get("newName")
+        new_count = data.get("newCount")
+        new_ppu = data.get("newPPU")
+        new_min_amount = data.get("newMinAmount")
+        
+        if new_name:
+            update_name_cmd = text("UPDATE Ingredients SET IngredientName = :new_name WHERE IngredientID = :ingredient_id")
+            with db.engine.connect() as conn:
+                conn.execute(update_name_cmd, new_name=new_name, ingredient_id=ingredient_id)
+        
+        if new_count is not None:
+            update_count_cmd = text("UPDATE Ingredients SET Count = :new_count WHERE IngredientID = :ingredient_id")
+            with db.engine.connect() as conn:
+                conn.execute(update_count_cmd, new_count=new_count, ingredient_id=ingredient_id)
+        
+        if new_ppu is not None:
+            update_ppu_cmd = text("UPDATE Ingredients SET PPU = :new_ppu WHERE IngredientID = :ingredient_id")
+            with db.engine.connect() as conn:
+                conn.execute(update_ppu_cmd, new_ppu=new_ppu, ingredient_id=ingredient_id)
+        
+        if new_min_amount is not None:
+            update_min_amount_cmd = text("UPDATE Ingredients SET minamount = :new_min_amount WHERE IngredientID = :ingredient_id")
+            with db.engine.connect() as conn:
+                conn.execute(update_min_amount_cmd, new_min_amount=new_min_amount, ingredient_id=ingredient_id)
+        
+        return jsonify({"message": "Ingredient updated successfully"})
+    
+@api.route('/api/manager/createmenuitem')
+class CreateMenuItem(Resource):
+    def post(self):
+        data = request.get_json()
+        new_id = data.get("newID")
+        menu_item_name = data.get("menuItemName")
+        price = data.get("price")
+        
+        add_menu_item_cmd = text("INSERT INTO MenuItems (MenuID, ItemName, Price) VALUES (:new_id, :menu_item_name, :price)")
+        try:
+            with db.engine.connect() as conn:
+                conn.execute(add_menu_item_cmd, new_id=new_id, menu_item_name=menu_item_name, price=price)
+        except Exception as e:
+            print(e)
+            return jsonify({"message": "Failed to add menu item"})
+        
+        return jsonify({"message": "Menu item added successfully"})
+
+@api.route('/api/manager/deletemenuitem/<int:menu_item_id>')
+class DeleteMenuItem(Resource):
+    def delete(self, menu_item_id):
+        delete_cmd = text("DELETE FROM menuitemIngredients WHERE MenuID = :menu_item_id")
+        with db.engine.connect() as conn:
+            conn.execute(delete_cmd, menu_item_id=menu_item_id)
+        
+        delete_cmd = text("DELETE FROM menuitems WHERE MenuID = :menu_item_id")
+        with db.engine.connect() as conn:
+            conn.execute(delete_cmd, menu_item_id=menu_item_id)
+        
+        return jsonify({"message": "Menu item deleted successfully"})
+
+@api.route('/api/manager/editmenuitem/<int:menu_item_id>')
+class EditMenuItem(Resource):
+    def put(self, menu_item_id):
+        data = request.get_json()
+        new_name = data.get("newName")
+        new_price = data.get("newPrice")
+        
+        if new_name:
+            update_name_cmd = text("UPDATE menuItems SET itemname = :new_name WHERE menuid = :menu_item_id")
+            with db.engine.connect() as conn:
+                conn.execute(update_name_cmd, new_name=new_name, menu_item_id=menu_item_id)
+        
+        if new_price is not None and new_price > 0:
+            update_price_cmd = text("UPDATE menuitems SET price = :new_price WHERE menuid = :menu_item_id")
+            with db.engine.connect() as conn:
+                conn.execute(update_price_cmd, new_price=new_price, menu_item_id=menu_item_id)
+        
+        return jsonify({"message": "Menu item updated successfully"})
+
 
 def init():
     return 
