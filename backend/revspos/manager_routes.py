@@ -121,15 +121,15 @@ class OrderHistory(Resource):
 
         update_order_query = "UPDATE orders SET "
         if (customername != "string"):
-            update_order_query += "CustomerName = '{i1}',".format(i1=customername)
+            update_order_query += "CustomerName = '{inputcustomername}',".format(inputcustomername=customername)
         if (baseprice > 0):
             taxprice = baseprice*0.0825
-            update_order_query += "baseprice = {i2}, taxprice = {i3},".format(i2=baseprice, i3=taxprice)
+            update_order_query += "baseprice = {inputbaseprice}, taxprice = {inputtaxprice},".format(inputbaseprice=baseprice, inputtaxprice=taxprice)
         if (employeeid > 0):
-            update_order_query += "employeeID = {i4},".format(i4=employeeid)
+            update_order_query += "employeeID = {inputemployeeid},".format(inputemployeeid=employeeid)
         
         update_order_query = update_order_query[:-1]
-        update_order_query += " WHERE orderid = {i5}".format(i5=orderid)
+        update_order_query += " WHERE orderid = {inputorderid}".format(inputorderid=orderid)
 
         if (orderid == 0):
             return jsonify({"message": "No orderid entered. No query executed."})
@@ -145,34 +145,38 @@ class OrderHistory(Resource):
                 # orderlist = []
                 # for row in resultselect:
                 #     orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
-            return jsonify({"message": "Order Update Successful."})
+            return jsonify({"success": "Order Update Successful."})
     
     @api.expect(DeleteOrder_model, validate=True)
     def delete(self): #DeleteOrder
-        orderid = -1 
         orderid = request.get_json().get("orderid") #TODO: PARAMETERIZE??? What integers are valid?
         if (orderid >= 0):
             delete_order_query = "DELETE FROM Orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
-
+        else: 
+            #TODO: check for other ways to get failure
+            return jsonify({"failure":"failed to deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
         with db.engine.connect() as conn:
-            select_delete_order_query = "SELECT * FROM orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
+            # select_delete_order_query = "SELECT * FROM orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
             
-            resultselect = conn.execution_options(stream_results=True).execute(text(select_delete_order_query))
+            # resultselect = conn.execution_options(stream_results=True).execute(text(select_delete_order_query))
 
-            orderlist = []
-            for row in resultselect:
-                orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
+            # orderlist = []
+            # for row in resultselect:
+            #     orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
             
-            conn.connection.cursor().execute(delete_order_query)
-
+            result_cursor = conn.connection.cursor().execute(delete_order_query)
+        
             conn.commit()
 
-            if (len(orderlist) != 1): #this is only making sure 1 deletion occurred. it doesn't verify anything else.
-                orderlist.append({"status":"failed to delete order with orderid = {inputorderid}".format(inputorderid = orderid)})
-            else:
-                orderlist.append({"status":"successfully deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
-
-        return jsonify(orderlist)
+            # if (len(orderlist) != 1): #this is only making sure 1 deletion occurred. it doesn't verify anything else.
+            #     orderlist.append({"status":"failed to delete order with orderid = {inputorderid}".format(inputorderid = orderid)})
+            # else:
+            #     orderlist.append({"status":"successfully deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
+            try:
+                if (result_cursor is None):
+                    return jsonify({"success":"deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
+            except:
+                return jsonify({"failure":"failed to deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
 
 
 
