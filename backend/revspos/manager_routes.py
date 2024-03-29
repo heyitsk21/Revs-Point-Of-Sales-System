@@ -5,6 +5,7 @@ from sqlalchemy import text
 from .api_master import api, db
 
 AddIngredient_model = api.model('AddIngredient', {"ingredientid":fields.Integer(required=True), "ingredientname":fields.String(min_length=3,max_length=30,required=True), "count":fields.Integer(required=True), "ppu":fields.Float(required=True), "minamount":fields.Integer(required=True)})
+UpdateIngredient_model = api.model('AddIngredient', {"ingredientid":fields.Integer(required=True), "ingredientname":fields.String(min_length=3,max_length=30), "count":fields.Integer, "ppu":fields.Float, "minamount":fields.Integer})
 
 GetIngredientsFromMenuItem_model = api.model('GetIngredientsFromMenuItem', {"menuitemid":fields.Integer(required=True)})
 AddIngredientToMenuItem_model = api.model('AddIngredientToMenuItem', {"menuitemid":fields.Integer(required=True), "ingredientid":fields.Integer(required=True)})
@@ -31,7 +32,7 @@ class GetMenuItems(Resource):
     
 @api.route('/api/manager/ingredients')
 class Ingredients(Resource):
-    def get(self):
+    def get(self): #GetIngredients
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(text("select * from ingredients"))
             menuitemlist = []
@@ -40,13 +41,13 @@ class Ingredients(Resource):
         return jsonify(menuitemlist)
     
     @api.expect(AddIngredient_model, validate=True)
-    def post(self):
-        ingredient_data = request.get_json()
-        ingredientid = ingredient_data.get("ingredientid")
-        ingredientname = ingredient_data.get("ingredientname")
-        count = ingredient_data.get("count")
-        ppu = ingredient_data.get("ppu")
-        minamount = ingredient_data.get("minamount")
+    def post(self): #AddIngredient
+        data = request.get_json()
+        ingredientid = data.get("ingredientid")
+        ingredientname = data.get("ingredientname")
+        count = data.get("count")
+        ppu = data.get("ppu")
+        minamount = data.get("minamount")
         
         if (ingredientid == 0 or ingredientname == "string" or count == 0 or ppu == 0 or minamount == 0):
             return jsonify({"message":"failed to insert ingredient. Missing fields. All fields are required."})
@@ -57,7 +58,39 @@ class Ingredients(Resource):
             conn.commit()
         return jsonify({"message":"Sucessfully inserted the ingredient with ingredientid = {inputingredientid} and ingredientname = {inputingredientname}".format(inputingredientid=ingredientid,inputingredientname=ingredientname)})
 
+    @api.expect(UpdateIngredient_model, validate=True)
+    def put(self): #UpdateIngredient
+        data = request.get_json()
+        ingredientid = data.get("ingredientid")
+        newname = data.get("newName")
+        newcount = data.get("newCount")
+        newppu = data.get("newPPU")
+        newminamount = data.get("newMinAmount")
+        
+        if (ingredientid == 0):
+            return jsonify({"message": "No orderid entered. No query executed."})
+        elif (newname == "string" and newcount == 0 and newppu == 0 and newminamount == 0):
+            return jsonify({"message": "No inputs entered. No query executed."})
 
+        update_query = "UPDATE ingredients SET "
+        if (newname != "string"):
+            update_query += "ingredientname = {inputnewname},".format(inputnewname=newname)
+        if (newcount > 0):
+            update_query += "count = {inputnewcount},".format(inputnewcount=newcount)
+        if (newppu > 0):
+            update_query += "ppu = {inputnewppu},".format(inputnewppu=newppu)
+        if (newminamount > 0):
+            update_query += "minamount = {inputnewminamount},".format(inputnewminamount=newminamount)
+        
+        update_query = update_query[:-1]
+        update_query += " WHERE IngredientID = {inputingredientid}}".format(inputingredientid=ingredientid)
+        
+        with db.engine.connect() as conn:
+            conn.execute(update_query)
+            conn.commit()
+        
+        return jsonify({"message": "successful update of ingredient with ingredientid = {inputingredientid}".format(inputingredientid=ingredientid)})
+    
 
 
 @api.route('/api/manager/menuitemingredients')
@@ -155,6 +188,11 @@ class OrderHistory(Resource):
         baseprice = request.get_json().get("baseprice") #TODO: PARAMETERIZE??? What floats are valid?
         employeeid = request.get_json().get("employeeid") #TODO: PARAMETERIZE??? What ints are valid?
 
+        if (orderid == 0):
+            return jsonify({"message": "No orderid entered. No query executed."})
+        elif (customername == "string" and baseprice == 0 and employeeid == 0): 
+            return jsonify({"message": "No inputs entered. No query executed."})
+        
         update_order_query = "UPDATE orders SET "
         if (customername != "string"):
             update_order_query += "CustomerName = '{inputcustomername}',".format(inputcustomername=customername)
@@ -167,21 +205,16 @@ class OrderHistory(Resource):
         update_order_query = update_order_query[:-1]
         update_order_query += " WHERE orderid = {inputorderid}".format(inputorderid=orderid)
 
-        if (orderid == 0):
-            return jsonify({"message": "No orderid entered. No query executed."})
-        elif (customername == "string" and baseprice == 0 and employeeid == 0): 
-            return jsonify({"message": "No inputs entered. No query executed."})
-        else:
-            with db.engine.connect() as conn:
-                result = conn.execute(text(update_order_query)) #execution_options(stream_results=True).
-                conn.commit()
+        with db.engine.connect() as conn:
+            result = conn.execute(text(update_order_query)) #execution_options(stream_results=True).
+            conn.commit()
 
-                # select_updated_order_query = "SELECT * FROM orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
-                # resultselect = conn.execution_options(stream_results=True).execute(text(select_updated_order_query))
-                # orderlist = []
-                # for row in resultselect:
-                #     orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
-            return jsonify({"message": "Order Update Successful."})
+            # select_updated_order_query = "SELECT * FROM orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
+            # resultselect = conn.execution_options(stream_results=True).execute(text(select_updated_order_query))
+            # orderlist = []
+            # for row in resultselect:
+            #     orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
+        return jsonify({"message": "Order Update Successful."})
     
     @api.expect(DeleteOrder_model, validate=True)
     def delete(self): #DeleteOrder TODO: NOT WORKING RIGHT
@@ -295,41 +328,13 @@ class GenerateOrderTrend(Resource):
 
 
 
-'''
-@api.route('/api/manager/createingredient')
+'''@api.route('/api/manager/createingredient')
 class CreateIngredient(Resource):
-'''
+
 @api.route('/api/manager/editingredient/<int:ingredient_id>')
 class EditIngredient(Resource):
-    def put(self, ingredient_id):
-        data = request.get_json()
-        new_name = data.get("newName")
-        new_count = data.get("newCount")
-        new_ppu = data.get("newPPU")
-        new_min_amount = data.get("newMinAmount")
-        
-        if new_name:
-            update_name_cmd = text("UPDATE Ingredients SET IngredientName = :new_name WHERE IngredientID = :ingredient_id")
-            with db.engine.connect() as conn:
-                conn.execute(update_name_cmd, new_name=new_name, ingredient_id=ingredient_id)
-        
-        if new_count is not None:
-            update_count_cmd = text("UPDATE Ingredients SET Count = :new_count WHERE IngredientID = :ingredient_id")
-            with db.engine.connect() as conn:
-                conn.execute(update_count_cmd, new_count=new_count, ingredient_id=ingredient_id)
-        
-        if new_ppu is not None:
-            update_ppu_cmd = text("UPDATE Ingredients SET PPU = :new_ppu WHERE IngredientID = :ingredient_id")
-            with db.engine.connect() as conn:
-                conn.execute(update_ppu_cmd, new_ppu=new_ppu, ingredient_id=ingredient_id)
-        
-        if new_min_amount is not None:
-            update_min_amount_cmd = text("UPDATE Ingredients SET minamount = :new_min_amount WHERE IngredientID = :ingredient_id")
-            with db.engine.connect() as conn:
-                conn.execute(update_min_amount_cmd, new_min_amount=new_min_amount, ingredient_id=ingredient_id)
-        
-        return jsonify({"message": "Ingredient updated successfully"})
-    
+'''    
+
 @api.route('/api/manager/deleteingredient/<int:ingredient_id>/<int:ingredient_count>')
 class DeleteIngredient(Resource):
     def delete(self, ingredient_id, ingredient_count):
