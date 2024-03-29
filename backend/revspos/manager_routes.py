@@ -1,11 +1,17 @@
 from flask import request, jsonify
 from flask_restx import  Resource, fields
 from sqlalchemy import text
+from sqlalchemy.exc import ObjectNotExecutableError
 # import os, decimal, datetime
 from .api_master import api, db
 
+AddMenuItem_model = api.model('AddMenuItem', {"menuid":fields.Integer(required=True), "itemname":fields.String(required=True, min_length=3, max_length=30), "price":fields.Float(required=True)})
+UpdateMenuItem_model = api.model('UpdateMenuItem', {"menuid":fields.Integer(required=True), "itemname":fields.String(min_length=3, max_length=30), "price":fields.Float})
+DeleteMenuItem_model = api.model('DeleteMenuItem', {"menuid":fields.Integer(required=True)})
+
 AddIngredient_model = api.model('AddIngredient', {"ingredientid":fields.Integer(required=True), "ingredientname":fields.String(min_length=3,max_length=30,required=True), "count":fields.Integer(required=True), "ppu":fields.Float(required=True), "minamount":fields.Integer(required=True)})
-UpdateIngredient_model = api.model('AddIngredient', {"ingredientid":fields.Integer(required=True), "ingredientname":fields.String(min_length=3,max_length=30), "count":fields.Integer, "ppu":fields.Float, "minamount":fields.Integer})
+UpdateIngredient_model = api.model('UpdateIngredient', {"ingredientid":fields.Integer(required=True), "ingredientname":fields.String(min_length=3,max_length=30), "count":fields.Integer, "ppu":fields.Float, "minamount":fields.Integer})
+DeleteIngredient_model = api.model('DeleteIngredient', {"ingredientid":fields.Integer(required=True), "count":fields.Integer(required=True)})
 
 GetIngredientsFromMenuItem_model = api.model('GetIngredientsFromMenuItem', {"menuitemid":fields.Integer(required=True)})
 AddIngredientToMenuItem_model = api.model('AddIngredientToMenuItem', {"menuitemid":fields.Integer(required=True), "ingredientid":fields.Integer(required=True)})
@@ -20,9 +26,9 @@ GenerateProductUsage_model = api.model('GenerateProductUsage',{"startdate": fiel
 GenerateSalesReport_model = api.model('GenerateSalesReport',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
 GenerateOrderTrend_model = api.model('GenerateOrderTrend',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
 
-@api.route('/api/manager/getmenuitems')
-class GetMenuItems(Resource):
-    def post(self):
+@api.route('/api/manager/menuitems')
+class MenuItems(Resource):
+    def get(self): #GetMenuItem
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(text("select * from menuitems"))
             menuitemlist = []
@@ -30,6 +36,69 @@ class GetMenuItems(Resource):
                 menuitemlist.append({"menuid":row.menuid, "itemname":row.itemname, "price":row.price})
         return jsonify(menuitemlist)
     
+    @api.expect(AddMenuItem_model, validate=True)
+    def post(self): #AddMenuItem
+        data = request.get_json()
+        menuid = data.get("menuid")
+        itemname = data.get("itemname")
+        price = data.get("price")
+        
+        if (menuid == 0 or itemname == "string" or price == 0):
+            return jsonify({"message":"failed to insert menuitem. Missing fields. All fields are required."})
+        
+        add_menu_item_query = text("INSERT INTO MenuItems (MenuID, ItemName, Price) VALUES ({inputmenuid}, '{inputitemname}', {inputprice})".format(inputmenuid=menuid, inputitemname=itemname, inputprice=price))
+        try:
+            with db.engine.connect() as conn:
+                conn.execute(text(add_menu_item_query))
+                conn.commit()
+        except Exception as e:
+            print(e)
+            return jsonify({"message": "Failed to add menu item"})
+        
+        return jsonify({"message": "Sucessfully added Menu item with menuid = {inputmenuid}".format(inputmenuid=menuid)})
+    
+    @api.expect(UpdateMenuItem_model, validate=True)
+    def put(self): #UpdateMenuItem
+        data = request.get_json()
+        menuid = data.get("menuid")
+        itemname = data.get("itemname")
+        price = data.get("price")
+
+        if (menuid == 0):
+            return jsonify({"message": "No Menu Item ID entered. No query executed."})
+        elif (itemname == "string" and price == 0):
+            return jsonify({"message": "No inputs entered. No query executed."})
+        
+        update_query = "UPDATE menuitems SET "
+        if (itemname != "string"):
+            update_query += "itemname = '{inputnewname}',".format(inputnewname=itemname)
+        if (price > 0):
+            update_query += "price = {inputnewprice},".format(inputnewprice=price)
+
+        update_query = update_query[:-1]
+        update_query += " WHERE menuid = {inputmenuidid}".format(inputmenuidid=menuid)
+
+        with db.engine.connect() as conn:
+            result = conn.execute(text(update_query))
+            conn.commit()
+        return jsonify({"message": "successful update of menu item with menuid = {inputmenuid}".format(inputmenuid=menuid)})
+
+    @api.expect(DeleteMenuItem_model, validate=True)
+    def delete(self): #DeleteMenuItem #TODO: need to do a check where the menuid actually exists first before doing queries. Success msg is wrongfully shown when deleting menuid that doesnt exist in the db
+        menuid = request.get_json().get("menuid")
+
+        delete_menuitemingredients_query = "DELETE FROM menuitemIngredients WHERE MenuID = {inputmenuid}".format(inputmenuid=menuid)
+        with db.engine.connect() as conn:
+            conn.execute(text(delete_menuitemingredients_query))
+            conn.commit()
+        
+        delete_menuitem_query = "DELETE FROM menuitems WHERE MenuID = {inputmenuid}".format(inputmenuid=menuid)
+        with db.engine.connect() as conn:
+            conn.execute(text(delete_menuitem_query))
+            conn.commit()
+        
+        return jsonify({"message": "Sucessfully deleted Menu item with menuid = {inputmenuid}".format(inputmenuid=menuid)})
+
 @api.route('/api/manager/ingredients')
 class Ingredients(Resource):
     def get(self): #GetIngredients
@@ -54,7 +123,7 @@ class Ingredients(Resource):
         
         insert_query = text("INSERT INTO Ingredients (IngredientID, Ingredientname, Count, PPU, minamount) VALUES ({inputingredientid}, '{inputingredientname}', {inputcount}, {inputppu}, {inputminamount})".format(inputingredientid=ingredientid,inputingredientname=ingredientname,inputcount=count,inputppu=ppu, inputminamount=minamount))
         with db.engine.connect() as conn:
-            result = conn.execute(insert_query)
+            result = conn.execute(text(insert_query))
             conn.commit()
         return jsonify({"message":"Sucessfully inserted the ingredient with ingredientid = {inputingredientid} and ingredientname = {inputingredientname}".format(inputingredientid=ingredientid,inputingredientname=ingredientname)})
 
@@ -62,10 +131,10 @@ class Ingredients(Resource):
     def put(self): #UpdateIngredient
         data = request.get_json()
         ingredientid = data.get("ingredientid")
-        newname = data.get("newName")
-        newcount = data.get("newCount")
-        newppu = data.get("newPPU")
-        newminamount = data.get("newMinAmount")
+        newname = data.get("ingredientname")
+        newcount = data.get("count")
+        newppu = data.get("ppu")
+        newminamount = data.get("minamount")
         
         if (ingredientid == 0):
             return jsonify({"message": "No orderid entered. No query executed."})
@@ -74,7 +143,7 @@ class Ingredients(Resource):
 
         update_query = "UPDATE ingredients SET "
         if (newname != "string"):
-            update_query += "ingredientname = {inputnewname},".format(inputnewname=newname)
+            update_query += "ingredientname = '{inputnewname}',".format(inputnewname=newname)
         if (newcount > 0):
             update_query += "count = {inputnewcount},".format(inputnewcount=newcount)
         if (newppu > 0):
@@ -83,15 +152,46 @@ class Ingredients(Resource):
             update_query += "minamount = {inputnewminamount},".format(inputnewminamount=newminamount)
         
         update_query = update_query[:-1]
-        update_query += " WHERE IngredientID = {inputingredientid}}".format(inputingredientid=ingredientid)
-        
-        with db.engine.connect() as conn:
-            conn.execute(update_query)
-            conn.commit()
-        
-        return jsonify({"message": "successful update of ingredient with ingredientid = {inputingredientid}".format(inputingredientid=ingredientid)})
+        update_query += " WHERE IngredientID = {inputingredientid}".format(inputingredientid=ingredientid)
+        try:
+            with db.engine.connect() as conn:
+                conn.execute(text(update_query))
+                conn.commit()
+                return jsonify({"message": "successful update of ingredient with ingredientid = {inputingredientid}".format(inputingredientid=ingredientid)})
+        except ObjectNotExecutableError:
+            return jsonify({"message":"failed to find ingredient with ingredientid = {inputingredientid}".format(inputingredientid=ingredientid)})
     
+    @api.expect(DeleteIngredient_model, validate=True)
+    def delete(self): #DeleteIngredient #TODO: FIX THIS ONE. THERE'S A TON OF EXECUTES AND NO ERROR CHECKING, 
+        data = request.get_json()
+        ingredientid = data.get("ingredientid")
+        count = data.get("count")
 
+        delete_from_join_cmd = text("DELETE FROM MenuItemIngredients WHERE IngredientID = {inputingredientid}".format(inputingredientid=ingredientid))
+        with db.engine.connect() as conn:
+            conn.execute(text(delete_from_join_cmd))
+            conn.commit()
+
+        delete_ingredient_cmd = text("DELETE FROM Ingredients WHERE IngredientID = {inputingredientid}".format(inputingredientid=ingredientid))
+        with db.engine.connect() as conn:
+            conn.execute(text(delete_ingredient_cmd))
+            conn.commit()
+
+        negate_count = count * -1
+        log_message = "INGREDIENT COUNT SET TO 0: DELETED INGREDIENT WITH INGREDIENTID = {inputingredientid}".format(inputingredientid=ingredientid)
+        insert_log_cmd = text("INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ({inputingredientid}, {inputnegate_count}, {inputlog_message}, NOW())".format(inputingredientid=ingredientid, inputnegate_count=negate_count, inputlog_message=log_message))
+        # with db.engine.connect() as conn:
+        #     conn.execute()
+        #     conn.commit()
+
+        # return jsonify({"message": "Ingredient deleted successfully"})
+        try:         
+            with db.engine.connect() as conn:
+                conn.execute(text(insert_log_cmd))
+                conn.commit()
+            return jsonify({"message": "successful deletion of ingredient with ingredientid = {inputingredientid}".format(inputingredientid=ingredientid)})
+        except ObjectNotExecutableError as e:
+            return jsonify({"message":"failed to delete ingredient with ingredientid = {inputingredientid}".format(inputingredientid=ingredientid)})
 
 @api.route('/api/manager/menuitemingredients')
 class MenuItemIngredients(Resource):
@@ -124,7 +224,7 @@ class MenuItemIngredients(Resource):
         return jsonify(menuitemingredientslist)
     
     @api.expect(DeleteIngredientFromMenuItem_model, validate=True)
-    def delete(self): #DeleteIngredientFromMenuItem
+    def delete(self): #DeleteIngredientFromMenuItem #TODO: fix this. its not correct behavior
         menuitemid = request.get_json().get("menuitemid") #TODO: PARAMETERIZE??? What integers are valid?
         ingredientid = request.get_json().get("ingredientid") #TODO: PARAMETERIZE??? What integers are valid?
 
@@ -145,7 +245,7 @@ class MenuItemIngredients(Resource):
         
 
         
-            # conn.connection.cursor().execute(select_delete_ingredient_query)
+            # conn.connection.cursor().execute(text(select_delete_ingredient_query))
             # myCursorResult = conn.connection.cursor().fetchall()
             # num_ingredients = len(myCursorResult)
             conn.commit()
@@ -164,7 +264,7 @@ class MenuItemIngredients(Resource):
 @api.route('/api/manager/orderhistory')
 class OrderHistory(Resource):
     # @api.expect(GetOrder_model, validate=True)
-    def get(self): #GetOrderHistory
+    def get(self): #GetOrderHistory #TODO: want to make this more customizable but testing failed so i commented it out. i left the original code.
         with db.engine.connect() as conn:
             # orderid = request.get_json().get("orderid")
             # numberOfOutputs = request.get_json().get("numberOfOutputs")
@@ -182,7 +282,7 @@ class OrderHistory(Resource):
         return jsonify(orderlist)
     
     @api.expect(UpdateOrder_model, validate=True)
-    def post(self): #UpdateOrder
+    def put(self): #UpdateOrder
         orderid = request.get_json().get("orderid") #TODO: PARAMETERIZE??? What integers are valid?
         customername = request.get_json().get("customername") #TODO: PARAMETERIZE??? NEED TO MAKE SURE THIS ISN'T VULNERABLE TO SQL INJECTION!
         baseprice = request.get_json().get("baseprice") #TODO: PARAMETERIZE??? What floats are valid?
@@ -214,7 +314,7 @@ class OrderHistory(Resource):
             # orderlist = []
             # for row in resultselect:
             #     orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
-        return jsonify({"message": "Order Update Successful."})
+        return jsonify({"message": "Successfully updated order history with orderid = {inputorderid}.".format(inputorderid=orderid)})
     
     @api.expect(DeleteOrder_model, validate=True)
     def delete(self): #DeleteOrder TODO: NOT WORKING RIGHT
@@ -233,7 +333,7 @@ class OrderHistory(Resource):
             # for row in resultselect:
             #     orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
             
-            result_cursor = conn.connection.cursor().execute(delete_order_query)
+            result_cursor = conn.connection.cursor().execute(text(delete_order_query))
         
             conn.commit()
 
@@ -246,6 +346,9 @@ class OrderHistory(Resource):
                     return jsonify({"message":"successfully deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
             except:
                 return jsonify({"message":"failed to deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
+
+
+
 
 
 
@@ -327,86 +430,6 @@ class GenerateOrderTrend(Resource):
     
 
 
-
-'''@api.route('/api/manager/createingredient')
-class CreateIngredient(Resource):
-
-@api.route('/api/manager/editingredient/<int:ingredient_id>')
-class EditIngredient(Resource):
-'''    
-
-@api.route('/api/manager/deleteingredient/<int:ingredient_id>/<int:ingredient_count>')
-class DeleteIngredient(Resource):
-    def delete(self, ingredient_id, ingredient_count):
-        delete_from_join_cmd = text("DELETE FROM MenuItemIngredients WHERE IngredientID = :ingredient_id")
-        with db.engine.connect() as conn:
-            conn.execute(delete_from_join_cmd, ingredient_id=ingredient_id)
-
-        delete_ingredient_cmd = text("DELETE FROM Ingredients WHERE IngredientID = :ingredient_id")
-        with db.engine.connect() as conn:
-            conn.execute(delete_ingredient_cmd, ingredient_id=ingredient_id)
-
-        negate_count = ingredient_count * -1
-        log_message = f"INGREDIENT COUNT SET TO 0: DELETED INGREDIENT WITH ID {ingredient_id}"
-        insert_log_cmd = text("INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES (:ingredient_id, :negate_count, :log_message, NOW())")
-        with db.engine.connect() as conn:
-            conn.execute(insert_log_cmd, ingredient_id=ingredient_id, negate_count=negate_count, log_message=log_message)
-
-        return jsonify({"message": "Ingredient deleted successfully"})
-
-
-
-
-
-@api.route('/api/manager/createmenuitem')
-class CreateMenuItem(Resource):
-    def post(self):
-        data = request.get_json()
-        new_id = data.get("newID")
-        menu_item_name = data.get("menuItemName")
-        price = data.get("price")
-        
-        add_menu_item_cmd = text("INSERT INTO MenuItems (MenuID, ItemName, Price) VALUES (:new_id, :menu_item_name, :price)")
-        try:
-            with db.engine.connect() as conn:
-                conn.execute(add_menu_item_cmd, new_id=new_id, menu_item_name=menu_item_name, price=price)
-        except Exception as e:
-            print(e)
-            return jsonify({"message": "Failed to add menu item"})
-        
-        return jsonify({"message": "Menu item added successfully"})
-
-@api.route('/api/manager/deletemenuitem/<int:menu_item_id>')
-class DeleteMenuItem(Resource):
-    def delete(self, menu_item_id):
-        delete_cmd = text("DELETE FROM menuitemIngredients WHERE MenuID = :menu_item_id")
-        with db.engine.connect() as conn:
-            conn.execute(delete_cmd, menu_item_id=menu_item_id)
-        
-        delete_cmd = text("DELETE FROM menuitems WHERE MenuID = :menu_item_id")
-        with db.engine.connect() as conn:
-            conn.execute(delete_cmd, menu_item_id=menu_item_id)
-        
-        return jsonify({"message": "Menu item deleted successfully"})
-
-@api.route('/api/manager/editmenuitem/<int:menu_item_id>')
-class EditMenuItem(Resource):
-    def put(self, menu_item_id):
-        data = request.get_json()
-        new_name = data.get("newName")
-        new_price = data.get("newPrice")
-        
-        if new_name:
-            update_name_cmd = text("UPDATE menuItems SET itemname = :new_name WHERE menuid = :menu_item_id")
-            with db.engine.connect() as conn:
-                conn.execute(update_name_cmd, new_name=new_name, menu_item_id=menu_item_id)
-        
-        if new_price is not None and new_price > 0:
-            update_price_cmd = text("UPDATE menuitems SET price = :new_price WHERE menuid = :menu_item_id")
-            with db.engine.connect() as conn:
-                conn.execute(update_price_cmd, new_price=new_price, menu_item_id=menu_item_id)
-        
-        return jsonify({"message": "Menu item updated successfully"})
 
 
 def init():
