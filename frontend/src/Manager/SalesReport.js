@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './SalesReport.css';
-import { useTextSize } from './TextSizeContext';
+import { useTextSize } from '../TextSizeContext';
 
 const SalesReport = ({ startDate, endDate, onPageChange }) => {
     const [reportData, setReportData] = useState([

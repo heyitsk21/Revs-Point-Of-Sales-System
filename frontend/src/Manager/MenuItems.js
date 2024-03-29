@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './MenuItems.css';
-import { useTextSize } from './TextSizeContext';
+import { useTextSize } from '../TextSizeContext';
 
 const MenuItems = ({ onPageChange }) => {
     const exampleMenuItem = {

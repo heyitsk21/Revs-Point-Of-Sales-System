@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './OrderTrend.css';
-import { useTextSize } from './TextSizeContext';
+import { useTextSize } from '../TextSizeContext';
 
 const OrderTrend = ({ startDate, endDate, onPageChange }) => {
     const [menuID1, setMenuID1] = useState([]);

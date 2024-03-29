@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ProdUsage.css';
-import { useTextSize } from './TextSizeContext';
+import { useTextSize } from '../TextSizeContext';
 
 const ProdUsage = ({ startDate, endDate, onPageChange }) => {
     const [ingredientNames, setIngredientNames] = useState([]);

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import './ManagerTab.css';
-import { useTextSize } from './TextSizeContext';
+import './Employee.css';
+import { useTextSize } from '../TextSizeContext';
 
-const ManagerTab = ({ onPageChange }) => {
+const Employee = ({ onPageChange }) => {
     const { textSize, toggleTextSize } = useTextSize();
     const [loggedIn, setLoggedIn] = useState(false);
     const [username, setUsername] = useState('');
@@ -37,31 +37,31 @@ const ManagerTab = ({ onPageChange }) => {
     };
 
     return (
-        <div className={`manager-tab ${textSize === 'large' ? 'large-text' : ''}`}>
+        <div className={`employee ${textSize === 'large' ? 'large-text' : ''}`}>
             <div className="top-bar">
                 <div className="user-info">
                     <span>{loggedIn ? `Welcome, ${username}` : 'Please log in'}</span>
                     <span>{currentTime}</span>
                 </div>
                 <button onClick={handleLoginLogout}>{loggedIn ? 'Logout' : 'Login'}</button>
-                <button onClick={() => speakText("Manager... Trends... Inventory... Menu Items... Order History")}>Speak</button>
+                <button onClick={() => speakText("Menu Categories")}>Speak</button>
                 <button onClick={toggleTextSize}>Toggle Text Size</button>
             </div>
 
             <div id="google_translate_element"></div>
 
             <div className="middle-content">
-                <h1>MANAGER</h1>
+                <h1>EMPLOYEE</h1>
             </div>
 
             <div className="bottom-nav">
-                <button onClick={() => onPageChange('trends')}>Trends</button>
-                <button onClick={() => onPageChange('inventory')}>Inventory</button>
-                <button onClick={() => onPageChange('menuItems')}>Menu Items</button>
-                <button onClick={() => onPageChange('orderHistory')}>Order History</button>
+                <button>Sandwiches</button>
+                <button>Sides</button>
+                <button>Drinks</button>
+                <button>Limited Time</button>
             </div>
         </div>
     );
 };
 
-export default ManagerTab;
+export default Employee;

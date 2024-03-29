@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './ExcessReport.css';
-import { useTextSize } from './TextSizeContext';
+import { useTextSize } from '../TextSizeContext';
 
 const ExcessReport = ({ startDate, onPageChange }) => {
     const [reportData, setReportData] = useState([]);

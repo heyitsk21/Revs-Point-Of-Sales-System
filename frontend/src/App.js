@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 import './App.css';
-import ManagerTab from './ManagerTab';
-import Inventory from './Inventory';
-import Trends from './Trends';
-import MenuItems from './MenuItems';
-import OrderHistory from './OrderHistory';
-import ProdUsage from './ProdUsage';
-import SalesReport from './SalesReport';
-import ExcessReport from './ExcessReport';
-import RestockReport from './RestockReport';
-import OrderTrend from './OrderTrend';
+
+import ManagerTab from './Manager/ManagerTab';
+import Inventory from './Manager/Inventory';
+import Trends from './Manager/Trends';
+import MenuItems from './Manager/MenuItems';
+import OrderHistory from './Manager/OrderHistory';
+import ProdUsage from './Manager/ProdUsage';
+import SalesReport from './Manager/SalesReport';
+import ExcessReport from './Manager/ExcessReport';
+import RestockReport from './Manager/RestockReport';
+import OrderTrend from './Manager/OrderTrend';
+
+import Employee from './Employee/Employee';
 import { TextSizeProvider } from './TextSizeContext';
 
 function App() {
-    const [page, setPage] = useState('manager');
+    //const [page, setPage] = useState('manager');
+    const [page, setPage] = useState('employee');
 
     const handleNavigation = (pageName) => {
         setPage(pageName);
@@ -21,6 +25,9 @@ function App() {
 
     let currentPage;
     switch (page) {
+        case 'employee':
+            currentPage = <Employee onPageChange={handleNavigation} />;
+            break;
         case 'manager':
             currentPage = <ManagerTab onPageChange={handleNavigation} />;
             break;

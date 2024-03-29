@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './RestockReport.css';
-import { useTextSize } from './TextSizeContext';
+import { useTextSize } from '../TextSizeContext';
 
 const RestockReport = ({ database, onPageChange }) => {
     const [reportData, setReportData] = useState([]);

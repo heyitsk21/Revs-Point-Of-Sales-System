@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Trends.css';
-import { useTextSize } from './TextSizeContext';
+import { useTextSize } from '../TextSizeContext';
 
 const Trends = ({ onPageChange }) => {
     const [startDate, setStartDate] = useState('');

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './OrderHistory.css'; 
-import { useTextSize } from './TextSizeContext';
+import { useTextSize } from '../TextSizeContext';
 
 const OrderHistory = ({ onPageChange }) => {
     const exampleOrders = [
