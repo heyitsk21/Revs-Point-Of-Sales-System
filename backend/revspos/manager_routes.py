@@ -121,15 +121,15 @@ class OrderHistory(Resource):
 
         update_order_query = "UPDATE orders SET "
         if (customername != "string"):
-            update_order_query += "CustomerName = '{customername}',"
+            update_order_query += "CustomerName = '{i1}',".format(i1=customername)
         if (baseprice > 0):
             taxprice = baseprice*0.0825
-            update_order_query += "baseprice = {baseprice}, taxprice = {taxprice},"
+            update_order_query += "baseprice = {i2}, taxprice = {i3},".format(i2=baseprice, i3=taxprice)
         if (employeeid > 0):
-            update_order_query += "employeeID = {employeeid},"
+            update_order_query += "employeeID = {i4},".format(i4=employeeid)
         
         update_order_query = update_order_query[:-1]
-        update_order_query += " WHERE orderid = {orderid}"
+        update_order_query += " WHERE orderid = {i5}".format(i5=orderid)
 
         if (orderid == 0):
             return jsonify({"message": "No orderid entered. No query executed."})
