@@ -4,6 +4,8 @@ from sqlalchemy import text
 # import os, decimal, datetime
 from .api_master import api, db
 
+AddIngredient_model = api.model('AddIngredient', {"ingredientid":fields.Integer(required=True), "ingredientname":fields.String(min_length=3,max_length=30,required=True), "count":fields.Integer(required=True), "ppu":fields.Float(required=True), "minamount":fields.Integer(required=True)})
+
 GetIngredientsFromMenuItem_model = api.model('GetIngredientsFromMenuItem', {"menuitemid":fields.Integer(required=True)})
 AddIngredientToMenuItem_model = api.model('AddIngredientToMenuItem', {"menuitemid":fields.Integer(required=True), "ingredientid":fields.Integer(required=True)})
 DeleteIngredientFromMenuItem_model = api.model('DeleteIngredientFromMenuItem', {"menuitemid":fields.Integer(required=True), "ingredientid":fields.Integer(required=True)})
@@ -27,8 +29,8 @@ class GetMenuItems(Resource):
                 menuitemlist.append({"menuid":row.menuid, "itemname":row.itemname, "price":row.price})
         return jsonify(menuitemlist)
     
-@api.route('/api/manager/getingredients')
-class GetIngredients(Resource):
+@api.route('/api/manager/ingredients')
+class Ingredients(Resource):
     def get(self):
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(text("select * from ingredients"))
@@ -37,6 +39,24 @@ class GetIngredients(Resource):
                 menuitemlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount})
         return jsonify(menuitemlist)
     
+    @api.expect(AddIngredient_model, validate=True)
+    def post(self):
+        ingredient_data = request.get_json()
+        ingredientid = ingredient_data.get("ingredientid")
+        ingredientname = ingredient_data.get("ingredientname")
+        count = ingredient_data.get("count")
+        ppu = ingredient_data.get("ppu")
+        minamount = ingredient_data.get("minamount")
+        
+        if (ingredientid == 0 or ingredientname == "string" or count == 0 or ppu == 0 or minamount == 0):
+            return jsonify({"message":"failed to insert ingredient. Missing fields. All fields are required."})
+        
+        insert_query = text("INSERT INTO Ingredients (IngredientID, Ingredientname, Count, PPU, minamount) VALUES ({inputingredientid}, '{inputingredientname}', {inputcount}, {inputppu}, {inputminamount})".format(inputingredientid=ingredientid,inputingredientname=ingredientname,inputcount=count,inputppu=ppu, inputminamount=minamount))
+        with db.engine.connect() as conn:
+            result = conn.execute(insert_query)
+            conn.commit()
+        return jsonify({"message":"Sucessfully inserted the ingredient with ingredientid = {inputingredientid} and ingredientname = {inputingredientname}".format(inputingredientid=ingredientid,inputingredientname=ingredientname)})
+
 
 
 
@@ -106,7 +126,7 @@ class MenuItemIngredients(Resource):
             #     menuitemingredientslist.append({"status":"successfully deleted ingredient from menu item with menuid = {inputmenuitemid}".format(inputmenuitemid = menuitemid)})
 
         # return jsonify(menuitemingredientslist)
-            return jsonify({"success":"deleted order with menuid = {inputmenuitemid} and ingredient = {inputingredientid}".format(inputmenuitemid = menuitemid, inputingredientid = ingredientid)})
+            return jsonify({"message":"successfully deleted order with menuid = {inputmenuitemid} and ingredient = {inputingredientid}".format(inputmenuitemid = menuitemid, inputingredientid = ingredientid)})
 
 @api.route('/api/manager/orderhistory')
 class OrderHistory(Resource):
@@ -120,7 +140,7 @@ class OrderHistory(Resource):
             # elif (orderid != 0):
             #     limit_query = "WHERE orderid = {inputorderid}".format(inputorderid=orderid)
             # else:
-            #     jsonify({"failure":"failed to get order(s)"})
+            #     jsonify({"message":"failed to get order(s)"})
             get_order_query = "SELECT * FROM orders {inputquery}".format(inputquery=limit_query)
             result = conn.execution_options(stream_results=True).execute(text(get_order_query))
             orderlist = []
@@ -161,7 +181,7 @@ class OrderHistory(Resource):
                 # orderlist = []
                 # for row in resultselect:
                 #     orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
-            return jsonify({"success": "Order Update Successful."})
+            return jsonify({"message": "Order Update Successful."})
     
     @api.expect(DeleteOrder_model, validate=True)
     def delete(self): #DeleteOrder TODO: NOT WORKING RIGHT
@@ -170,7 +190,7 @@ class OrderHistory(Resource):
             delete_order_query = "DELETE FROM Orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
         else: 
             #TODO: check for other ways to get failure
-            return jsonify({"failure":"failed to deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
+            return jsonify({"message":"failed to deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
         with db.engine.connect() as conn:
             # select_delete_order_query = "SELECT * FROM orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
             
@@ -190,9 +210,9 @@ class OrderHistory(Resource):
             #     orderlist.append({"status":"successfully deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
             try:
                 if (result_cursor is None):
-                    return jsonify({"success":"deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
+                    return jsonify({"message":"successfully deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
             except:
-                return jsonify({"failure":"failed to deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
+                return jsonify({"message":"failed to deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
 
 
 
@@ -272,42 +292,13 @@ class GenerateOrderTrend(Resource):
                 menuitemlist.append({"menuid1":row.mid1, "menuid2":row.mid2, "count":row.count})
         return jsonify(menuitemlist)
     
+
+
+
+'''
 @api.route('/api/manager/createingredient')
 class CreateIngredient(Resource):
-    def post(self):
-        ingredient_data = request.get_json()
-        ingredient_id = ingredient_data.get("ingredientid")
-        ingredient_name = ingredient_data.get("ingredientname")
-        count = ingredient_data.get("count")
-        ppu = ingredient_data.get("ppu")
-        min_amount = ingredient_data.get("minamount")
-        
-        insert_query = text("INSERT INTO Ingredients (IngredientID, Ingredientname, Count, PPU, minamount) VALUES (:ingredient_id, :ingredient_name, :count, :ppu, :min_amount)")
-        with db.engine.connect() as conn:
-            conn.execute(insert_query, ingredient_id=ingredient_id, ingredient_name=ingredient_name, count=count, ppu=ppu, min_amount=min_amount)
-        
-        return jsonify({"message": "Ingredient created successfully"})
-
-
-@api.route('/api/manager/deleteingredient/<int:ingredient_id>/<int:ingredient_count>')
-class DeleteIngredient(Resource):
-    def delete(self, ingredient_id, ingredient_count):
-        delete_from_join_cmd = text("DELETE FROM MenuItemIngredients WHERE IngredientID = :ingredient_id")
-        with db.engine.connect() as conn:
-            conn.execute(delete_from_join_cmd, ingredient_id=ingredient_id)
-
-        delete_ingredient_cmd = text("DELETE FROM Ingredients WHERE IngredientID = :ingredient_id")
-        with db.engine.connect() as conn:
-            conn.execute(delete_ingredient_cmd, ingredient_id=ingredient_id)
-
-        negate_count = ingredient_count * -1
-        log_message = f"INGREDIENT COUNT SET TO 0: DELETED INGREDIENT WITH ID {ingredient_id}"
-        insert_log_cmd = text("INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES (:ingredient_id, :negate_count, :log_message, NOW())")
-        with db.engine.connect() as conn:
-            conn.execute(insert_log_cmd, ingredient_id=ingredient_id, negate_count=negate_count, log_message=log_message)
-
-        return jsonify({"message": "Ingredient deleted successfully"})
-
+'''
 @api.route('/api/manager/editingredient/<int:ingredient_id>')
 class EditIngredient(Resource):
     def put(self, ingredient_id):
@@ -339,6 +330,29 @@ class EditIngredient(Resource):
         
         return jsonify({"message": "Ingredient updated successfully"})
     
+@api.route('/api/manager/deleteingredient/<int:ingredient_id>/<int:ingredient_count>')
+class DeleteIngredient(Resource):
+    def delete(self, ingredient_id, ingredient_count):
+        delete_from_join_cmd = text("DELETE FROM MenuItemIngredients WHERE IngredientID = :ingredient_id")
+        with db.engine.connect() as conn:
+            conn.execute(delete_from_join_cmd, ingredient_id=ingredient_id)
+
+        delete_ingredient_cmd = text("DELETE FROM Ingredients WHERE IngredientID = :ingredient_id")
+        with db.engine.connect() as conn:
+            conn.execute(delete_ingredient_cmd, ingredient_id=ingredient_id)
+
+        negate_count = ingredient_count * -1
+        log_message = f"INGREDIENT COUNT SET TO 0: DELETED INGREDIENT WITH ID {ingredient_id}"
+        insert_log_cmd = text("INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES (:ingredient_id, :negate_count, :log_message, NOW())")
+        with db.engine.connect() as conn:
+            conn.execute(insert_log_cmd, ingredient_id=ingredient_id, negate_count=negate_count, log_message=log_message)
+
+        return jsonify({"message": "Ingredient deleted successfully"})
+
+
+
+
+
 @api.route('/api/manager/createmenuitem')
 class CreateMenuItem(Resource):
     def post(self):
