@@ -82,12 +82,16 @@ class MenuItemIngredients(Resource):
 
             # select menuid, count(menuid) as entries from menuitemingredients where menuid=201 group by menuid; <-- "entries" is the number of ingredients a menu item has
 
-            select_delete_ingredient_query = "SELECT * FROM menuitemingredients WHERE menuid = {inputmenuitemid}".format(inputmenuitemid = menuitemid)
-            resultselect = conn.execution_options(stream_results=True).execute(text(select_delete_ingredient_query))
-            menuitemingredientslist = []
-            for row in resultselect:
-                menuitemingredientslist.append({"menuid":row.menuid,"ingredientid":row.ingredientid})
-            
+
+
+            # select_delete_ingredient_query = "SELECT * FROM menuitemingredients WHERE menuid = {inputmenuitemid}".format(inputmenuitemid = menuitemid)
+            # resultselect = conn.execution_options(stream_results=True).execute(text(select_delete_ingredient_query))
+            # menuitemingredientslist = []
+            # for row in resultselect:
+            #     menuitemingredientslist.append({"menuid":row.menuid,"ingredientid":row.ingredientid})
+        
+
+        
             # conn.connection.cursor().execute(select_delete_ingredient_query)
             # myCursorResult = conn.connection.cursor().fetchall()
             # num_ingredients = len(myCursorResult)
@@ -101,7 +105,8 @@ class MenuItemIngredients(Resource):
             # else:
             #     menuitemingredientslist.append({"status":"successfully deleted ingredient from menu item with menuid = {inputmenuitemid}".format(inputmenuitemid = menuitemid)})
 
-        return jsonify(menuitemingredientslist)
+        # return jsonify(menuitemingredientslist)
+            return jsonify({"success":"deleted order with menuid = {inputmenuitemid} and ingredient = {inputingredientid}".format(inputmenuitemid = menuitemid, inputingredientid = ingredientid)})
 
 @api.route('/api/manager/orderhistory')
 class OrderHistory(Resource):
