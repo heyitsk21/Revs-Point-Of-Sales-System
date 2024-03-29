@@ -89,12 +89,12 @@ class MenuItems(Resource):
 
         delete_menuitemingredients_query = "DELETE FROM menuitemIngredients WHERE MenuID = {inputmenuid}".format(inputmenuid=menuid)
         with db.engine.connect() as conn:
-            conn.execute(text(delete_menuitemingredients_query))
+            conn.connection.cursor().execute(delete_menuitemingredients_query)
             conn.commit()
         
         delete_menuitem_query = "DELETE FROM menuitems WHERE MenuID = {inputmenuid}".format(inputmenuid=menuid)
         with db.engine.connect() as conn:
-            conn.execute(text(delete_menuitem_query))
+            conn.connection.cursor().execute(delete_menuitem_query)
             conn.commit()
         
         return jsonify({"message": "Sucessfully deleted Menu item with menuid = {inputmenuid}".format(inputmenuid=menuid)})
@@ -169,12 +169,12 @@ class Ingredients(Resource):
 
         delete_from_join_cmd = text("DELETE FROM MenuItemIngredients WHERE IngredientID = {inputingredientid}".format(inputingredientid=ingredientid))
         with db.engine.connect() as conn:
-            conn.execute(text(delete_from_join_cmd))
+            conn.connection.cursor().execute(delete_from_join_cmd)
             conn.commit()
 
         delete_ingredient_cmd = text("DELETE FROM Ingredients WHERE IngredientID = {inputingredientid}".format(inputingredientid=ingredientid))
         with db.engine.connect() as conn:
-            conn.execute(text(delete_ingredient_cmd))
+            conn.connection.cursor().execute(delete_ingredient_cmd)
             conn.commit()
 
         negate_count = count * -1
@@ -231,8 +231,7 @@ class MenuItemIngredients(Resource):
         delete_ingredient_query = "DELETE FROM menuitemIngredients WHERE MenuID={inputmenuitemid} AND ingredientID={inputingredientid}".format(inputmenuitemid = menuitemid, inputingredientid = ingredientid)
 
         with db.engine.connect() as conn:
-            conn.connection.cursor().execute(text(delete_ingredient_query))
-
+            conn.connection.cursor().execute(delete_ingredient_query)
             # select menuid, count(menuid) as entries from menuitemingredients where menuid=201 group by menuid; <-- "entries" is the number of ingredients a menu item has
 
 
@@ -333,7 +332,7 @@ class OrderHistory(Resource):
             # for row in resultselect:
             #     orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
             
-            result_cursor = conn.connection.cursor().execute(text(delete_order_query))
+            result_cursor = conn.connection.cursor().execute(delete_order_query)
         
             conn.commit()
 
