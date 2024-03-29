@@ -36,24 +36,13 @@ class GetIngredients(Resource):
                 menuitemlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount})
         return jsonify(menuitemlist)
     
-@api.route('/api/manager/getorderhistory')
-class GetOrderHistory(Resource):
-    def get(self):
-        with db.engine.connect() as conn:
-            result = conn.execution_options(stream_results=True).execute(text("select * from orders LIMIT 100"))
-            orderlist = []
-            for row in result:
-                orderlist.append({"orderid":row.orderid, "customername":row.customername, "taxprice":row.taxprice,"baseprice":row.baseprice,"orderdatetime":row.orderdatetime,"employeeid":row.employeeid})
-        return jsonify(orderlist)
-    
 
 
 
-'''Get, Add, and Delete Ingredients from a Menu Item'''
-@api.route('/api/manager/getingredientsfrommenuitem')
-class GetIngredientsFromMenuItem(Resource):
+@api.route('/api/manager/menuitemingredients')
+class MenuItemIngredients(Resource):
     @api.expect(GetIngredientsFromMenuItem_model, validate=True)
-    def post(self):
+    def post(self): #GetIngredientFromMenuItem
         with db.engine.connect() as conn:
             menuitemid = request.get_json().get("menuitemid") #TODO: PARAMETERIZE??? What integers are valid?
             result = conn.execution_options(stream_results=True).execute(text("select * from menuitemingredients where menuid = {inputmenuitemid}".format(inputmenuitemid = menuitemid)))
@@ -61,11 +50,9 @@ class GetIngredientsFromMenuItem(Resource):
             for row in result:
                 menuitemingredientslist.append({"menuid":row.menuid, "ingredientid":row.ingredientid})
         return jsonify(menuitemingredientslist)
-
-@api.route('/api/manager/addingredienttomenuitem')
-class AddIngredientToMenuItem(Resource):
+    
     @api.expect(AddIngredientToMenuItem_model, validate=True)
-    def post(self): 
+    def post(self): #AddIngredientToMenuItem
         menuitemid = request.get_json().get("menuitemid") #TODO: PARAMETERIZE??? What integers are valid?
         ingredientid = request.get_json().get("ingredientid") #TODO: PARAMETERIZE??? What integers are valid?
 
@@ -81,11 +68,9 @@ class AddIngredientToMenuItem(Resource):
             for row in resultselect:
                 menuitemingredientslist.append({"menuid":row.menuid,"ingredientid":row.ingredientid})
         return jsonify(menuitemingredientslist)
-
-@api.route('/api/manager/deleteingredientfrommenuitem')
-class DeleteIngredientFromMenuItem(Resource):
+    
     @api.expect(DeleteIngredientFromMenuItem_model, validate=True)
-    def delete(self): 
+    def delete(self): #DeleteIngredientFromMenuItem
         menuitemid = request.get_json().get("menuitemid") #TODO: PARAMETERIZE??? What integers are valid?
         ingredientid = request.get_json().get("ingredientid") #TODO: PARAMETERIZE??? What integers are valid?
 
@@ -117,13 +102,18 @@ class DeleteIngredientFromMenuItem(Resource):
 
         return jsonify(menuitemingredientslist)
 
-
-
-'''Update and Delete Orders'''
-@api.route('/api/manager/updateorder')
-class UpdateOrder(Resource):
+@api.route('/api/manager/orderhistory')
+class OrderHistory(Resource):
+    def get(self): #GetOrderHistory
+        with db.engine.connect() as conn:
+            result = conn.execution_options(stream_results=True).execute(text("select * from orders LIMIT 100"))
+            orderlist = []
+            for row in result:
+                orderlist.append({"orderid":row.orderid, "customername":row.customername, "taxprice":row.taxprice,"baseprice":row.baseprice,"orderdatetime":row.orderdatetime,"employeeid":row.employeeid})
+        return jsonify(orderlist)
+    
     @api.expect(UpdateOrder_model, validate=True)
-    def post(self): 
+    def post(self): #UpdateOrder
         orderid = request.get_json().get("orderid") #TODO: PARAMETERIZE??? What integers are valid?
         #orderid_str = text(orderid)
 
@@ -154,12 +144,10 @@ class UpdateOrder(Resource):
             for row in resultselect:
                 orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
         return jsonify(orderlist)
-
-@api.route('/api/manager/deleteorder')
-class DeleteOrder(Resource):
+    
     @api.expect(DeleteOrder_model, validate=True)
-    def delete(self): 
-        orderid = -1
+    def delete(self): #DeleteOrder
+        orderid = -1 
         orderid = request.get_json().get("orderid") #TODO: PARAMETERIZE??? What integers are valid?
         if (orderid >= 0):
             delete_order_query = "DELETE FROM Orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
@@ -183,7 +171,6 @@ class DeleteOrder(Resource):
                 orderlist.append({"status":"successfully deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
 
         return jsonify(orderlist)
-
 
 
 
