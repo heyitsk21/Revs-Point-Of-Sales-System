@@ -44,14 +44,19 @@ const Employee = ({ onPageChange }) => {
                     <span>{currentTime}</span>
                 </div>
                 <button onClick={handleLoginLogout}>{loggedIn ? 'Logout' : 'Login'}</button>
-                <button onClick={() => speakText("Menu Categories")}>Speak</button>
+                <button onClick={() => speakText("Employee... Sandwiches... Sides... Drinks... Limited Time")}>Speak</button>
                 <button onClick={toggleTextSize}>Toggle Text Size</button>
             </div>
 
             <div id="google_translate_element"></div>
 
             <div className="middle-content">
-                <h1>EMPLOYEE</h1>
+                <section class="layout">
+                    <div class="leftSide">Menu Items</div>
+                    <div class="rightSide">
+                        Current Order
+                    </div>                    
+                </section>
             </div>
 
             <div className="bottom-nav">
