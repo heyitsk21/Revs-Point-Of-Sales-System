@@ -49,7 +49,7 @@ class MenuItems(Resource):
         add_menu_item_query = text("INSERT INTO MenuItems (MenuID, ItemName, Price) VALUES ({inputmenuid}, '{inputitemname}', {inputprice})".format(inputmenuid=menuid, inputitemname=itemname, inputprice=price))
         try:
             with db.engine.connect() as conn:
-                conn.execute(text(add_menu_item_query))
+                conn.execute(add_menu_item_query)
                 conn.commit()
         except Exception as e:
             print(e)
@@ -90,12 +90,12 @@ class MenuItems(Resource):
         delete_menuitemingredients_query = "DELETE FROM menuitemIngredients WHERE MenuID = {inputmenuid}".format(inputmenuid=menuid)
         with db.engine.connect() as conn:
             conn.connection.cursor().execute(delete_menuitemingredients_query)
-            conn.commit()
+            conn.connection.commit()
         
         delete_menuitem_query = "DELETE FROM menuitems WHERE MenuID = {inputmenuid}".format(inputmenuid=menuid)
         with db.engine.connect() as conn:
             conn.connection.cursor().execute(delete_menuitem_query)
-            conn.commit()
+            conn.connection.commit()
         
         return jsonify({"message": "Sucessfully deleted Menu item with menuid = {inputmenuid}".format(inputmenuid=menuid)})
 
@@ -170,12 +170,12 @@ class Ingredients(Resource):
         delete_from_join_cmd = text("DELETE FROM MenuItemIngredients WHERE IngredientID = {inputingredientid}".format(inputingredientid=ingredientid))
         with db.engine.connect() as conn:
             conn.connection.cursor().execute(delete_from_join_cmd)
-            conn.commit()
+            conn.conneciton.commit()
 
         delete_ingredient_cmd = text("DELETE FROM Ingredients WHERE IngredientID = {inputingredientid}".format(inputingredientid=ingredientid))
         with db.engine.connect() as conn:
             conn.connection.cursor().execute(delete_ingredient_cmd)
-            conn.commit()
+            conn.connection.commit()
 
         negate_count = count * -1
         log_message = "INGREDIENT COUNT SET TO 0: DELETED INGREDIENT WITH INGREDIENTID = {inputingredientid}".format(inputingredientid=ingredientid)
@@ -247,7 +247,7 @@ class MenuItemIngredients(Resource):
             # conn.connection.cursor().execute(text(select_delete_ingredient_query))
             # myCursorResult = conn.connection.cursor().fetchall()
             # num_ingredients = len(myCursorResult)
-            conn.commit()
+            conn.connection.commit()
 
             # select menuid, count(menuid) as entries from menuitemingredients where menuid=201 group by menuid; <-- "entries" should be 1 less than before
 
@@ -334,7 +334,7 @@ class OrderHistory(Resource):
             
             result_cursor = conn.connection.cursor().execute(delete_order_query)
         
-            conn.commit()
+            conn.connection.commit()
 
             # if (len(orderlist) != 1): #this is only making sure 1 deletion occurred. it doesn't verify anything else.
             #     orderlist.append({"status":"failed to delete order with orderid = {inputorderid}".format(inputorderid = orderid)})
