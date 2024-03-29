@@ -44,8 +44,19 @@ class PlaceOrder(Resource):
             for row in result:
                 totalprice = row.sum
             result = conn.execution_options(stream_results=True).execute(text("SELECT Ingredients.IngredientID, Ingredients.MinAmount, Ingredients.Count, COUNT(menuitems.MenuID) AS SelectionCount FROM menuitems JOIN menuitemingredients ON menuitems.MenuID = menuitemingredients.MenuID JOIN Ingredients ON menuitemingredients.IngredientID = Ingredients.IngredientID WHERE menuitems.MenuID IN "+ menuItemsInString + " GROUP BY Ingredients.IngredientID, Ingredients.MinAmount"))
+            upIng = ''
+            logIng = ''
+            logMessage = "Order placed by: " + str(employeeid)
             for row in result:
-                print(row.selectioncount)
+                if row.count - row.selectioncount < row.minamount:
+                    return None
+                upIng += "UPDATE Ingredients SET Count = Count - "+ str(row.selectioncount) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
+                logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(-row.selectioncount)+", '"+logMessage+"', NOW()); "
+            conn.connection.cursor().execute(upIng)
+            conn.connection.cursor().execute(logIng)
+            conn.connection.cursor().execute("INSERT INTO Orders (CustomerName, TaxPrice, BasePrice, OrderDateTime, EmployeeID) VALUES ( '"+name+"', "+str(float(totalprice) * 0.0825)+", "+str(totalprice)+", NOW(), "+str(employeeid)+")")
+            conn.connection.commit()
+                
 
 
         print(totalprice)
