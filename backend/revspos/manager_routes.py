@@ -111,7 +111,7 @@ class OrderHistory(Resource):
             # orderid = request.get_json().get("orderid")
             # numberOfOutputs = request.get_json().get("numberOfOutputs")
             # if (numberOfOutputs == 0):
-            #     limit_query = "LIMIT 100"
+            limit_query = "LIMIT 100"
             # elif (orderid != 0):
             #     limit_query = "WHERE orderid = {inputorderid}".format(inputorderid=orderid)
             # else:
