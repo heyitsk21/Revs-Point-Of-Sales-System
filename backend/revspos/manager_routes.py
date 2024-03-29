@@ -8,6 +8,7 @@ GetIngredientsFromMenuItem_model = api.model('GetIngredientsFromMenuItem', {"men
 AddIngredientToMenuItem_model = api.model('AddIngredientToMenuItem', {"menuitemid":fields.Integer(required=True), "ingredientid":fields.Integer(required=True)})
 DeleteIngredientFromMenuItem_model = api.model('DeleteIngredientFromMenuItem', {"menuitemid":fields.Integer(required=True), "ingredientid":fields.Integer(required=True)})
 
+# GetOrder_model = api.model('GetOrder', {"orderid":fields.Integer, "numberOfOutputs":fields.Integer})
 UpdateOrder_model = api.model('UpdateOrder', {"orderid":fields.Integer(required=True), "customername":fields.String(min_length=3, max_length=25), "baseprice":fields.Float, "employeeid":fields.Integer})
 DeleteOrder_model = api.model('DeleteOrder', {"orderid":fields.Integer(required=True)})
 
@@ -104,9 +105,19 @@ class MenuItemIngredients(Resource):
 
 @api.route('/api/manager/orderhistory')
 class OrderHistory(Resource):
+    # @api.expect(GetOrder_model, validate=True)
     def get(self): #GetOrderHistory
         with db.engine.connect() as conn:
-            result = conn.execution_options(stream_results=True).execute(text("select * from orders LIMIT 100"))
+            # orderid = request.get_json().get("orderid")
+            # numberOfOutputs = request.get_json().get("numberOfOutputs")
+            # if (numberOfOutputs == 0):
+            #     limit_query = "LIMIT 100"
+            # elif (orderid != 0):
+            #     limit_query = "WHERE orderid = {inputorderid}".format(inputorderid=orderid)
+            # else:
+            #     jsonify({"failure":"failed to get order(s)"})
+            get_order_query = "SELECT * FROM orders {inputquery}".format(inputquery=limit_query)
+            result = conn.execution_options(stream_results=True).execute(text(get_order_query))
             orderlist = []
             for row in result:
                 orderlist.append({"orderid":row.orderid, "customername":row.customername, "taxprice":row.taxprice,"baseprice":row.baseprice,"orderdatetime":row.orderdatetime,"employeeid":row.employeeid})
@@ -148,7 +159,7 @@ class OrderHistory(Resource):
             return jsonify({"success": "Order Update Successful."})
     
     @api.expect(DeleteOrder_model, validate=True)
-    def delete(self): #DeleteOrder
+    def delete(self): #DeleteOrder TODO: NOT WORKING RIGHT
         orderid = request.get_json().get("orderid") #TODO: PARAMETERIZE??? What integers are valid?
         if (orderid >= 0):
             delete_order_query = "DELETE FROM Orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
