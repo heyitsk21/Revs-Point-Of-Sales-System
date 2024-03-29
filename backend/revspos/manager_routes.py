@@ -42,7 +42,7 @@ class GetIngredients(Resource):
 @api.route('/api/manager/menuitemingredients')
 class MenuItemIngredients(Resource):
     @api.expect(GetIngredientsFromMenuItem_model, validate=True)
-    def post(self): #GetIngredientFromMenuItem
+    def get(self): #GetIngredientFromMenuItem
         with db.engine.connect() as conn:
             menuitemid = request.get_json().get("menuitemid") #TODO: PARAMETERIZE??? What integers are valid?
             result = conn.execution_options(stream_results=True).execute(text("select * from menuitemingredients where menuid = {inputmenuitemid}".format(inputmenuitemid = menuitemid)))
@@ -115,35 +115,37 @@ class OrderHistory(Resource):
     @api.expect(UpdateOrder_model, validate=True)
     def post(self): #UpdateOrder
         orderid = request.get_json().get("orderid") #TODO: PARAMETERIZE??? What integers are valid?
-        #orderid_str = text(orderid)
-
-        customername = ""
         customername = request.get_json().get("customername") #TODO: PARAMETERIZE??? NEED TO MAKE SURE THIS ISN'T VULNERABLE TO SQL INJECTION!
-
         baseprice = request.get_json().get("baseprice") #TODO: PARAMETERIZE??? What floats are valid?
-
-        employeeid = 0
         employeeid = request.get_json().get("employeeid") #TODO: PARAMETERIZE??? What ints are valid?
 
-        update_order_query = ""
-        if (orderid >= 0 and customername != "string"):
-            update_order_query = "UPDATE orders SET CustomerName = '{inputcustomername}' WHERE orderid = {inputorderid}".format(inputcustomername = customername, inputorderid = orderid)
-        elif (orderid >= 0 and baseprice > 0):
-            update_order_query = "UPDATE orders SET baseprice = {inputbaseprice}, taxprice = {calculatedtax} WHERE orderid = {inputorderid}".format(inputbaseprice = baseprice, calculatedtax = baseprice*0.0825, inputorderid = orderid)
-        elif (orderid >= 0 and employeeid > 0):
-            update_order_query = "UPDATE orders SET employeeID = {inputemployeeid} WHERE orderid = {inputorderid}".format(inputemployeeid = employeeid, inputorderid = orderid)
+        update_order_query = "UPDATE orders SET "
+        if (customername != "string"):
+            update_order_query += "CustomerName = '{customername}',"
+        if (baseprice > 0):
+            taxprice = baseprice*0.0825
+            update_order_query += "baseprice = {baseprice}, taxprice = {taxprice},"
+        if (employeeid > 0):
+            update_order_query += "employeeID = {employeeid},"
         
-           
-        with db.engine.connect() as conn:
-            result = conn.execute(text(update_order_query)) #execution_options(stream_results=True).
-            conn.commit()
+        update_order_query = update_order_query[:-1]
+        update_order_query += " WHERE orderid = {orderid}"
 
-            select_updated_order_query = "SELECT * FROM orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
-            resultselect = conn.execution_options(stream_results=True).execute(text(select_updated_order_query))
-            orderlist = []
-            for row in resultselect:
-                orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
-        return jsonify(orderlist)
+        if (orderid == 0):
+            return jsonify({"message": "No orderid entered. No query executed."})
+        elif (customername == "string" and baseprice == 0 and employeeid == 0): 
+            return jsonify({"message": "No inputs entered. No query executed."})
+        else:
+            with db.engine.connect() as conn:
+                result = conn.execute(text(update_order_query)) #execution_options(stream_results=True).
+                conn.commit()
+
+                # select_updated_order_query = "SELECT * FROM orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
+                # resultselect = conn.execution_options(stream_results=True).execute(text(select_updated_order_query))
+                # orderlist = []
+                # for row in resultselect:
+                #     orderlist.append({"orderid":row.orderid,"customername":row.customername, "taxprice":row.taxprice, "baseprice":row.baseprice, "orderdatetime":row.orderdatetime, "employeeid":row.employeeid})
+            return jsonify({"message": "Order Update Successful."})
     
     @api.expect(DeleteOrder_model, validate=True)
     def delete(self): #DeleteOrder
