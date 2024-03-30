@@ -1,16 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import './OrderHistory.css'; 
 import { useTextSize } from './TextSizeContext';
+import axios from 'axios'; // Import Axios for making API requests
 
 const OrderHistory = ({ onPageChange }) => {
-    const exampleOrders = [
-        { id: 1, customerName: 'John Doe', taxPrice: 2.5, basePrice: 20.0, totalPrice: 22.5, dateTime: '2024-03-25 15:30:00', employeeID: 101 },
-        { id: 2, customerName: 'Jane Smith', taxPrice: 1.75, basePrice: 15.0, totalPrice: 16.75, dateTime: '2024-03-26 12:45:00', employeeID: 102 }
-    ];
-
-    const [orders, setOrders] = useState(exampleOrders);
+    const [orders, setOrders] = useState([]); // Initialize state for orders
     const [selectedOrder, setSelectedOrder] = useState(null); 
     const { textSize, toggleTextSize } = useTextSize(); 
+
+    // Function to fetch order history from the backend API
+    const fetchOrderHistory = async () => {
+        try {
+            const response = await axios.get('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/orderhistory');
+            setOrders(response.data); // Update orders state with response data
+        } catch (error) {
+            console.error('Error fetching order history:', error);
+        }
+    };
+
+    // Call fetchOrderHistory function when component mounts
+    useEffect(() => {
+        fetchOrderHistory();
+    }, []);
 
     const handleOrderClick = (order) => {
         setSelectedOrder(order);
@@ -18,11 +29,11 @@ const OrderHistory = ({ onPageChange }) => {
 
     const renderOrderItems = () => {
         return orders.map(order => (
-            <div key={order.id} className={`order-item ${selectedOrder && selectedOrder.id === order.id ? 'selected' : ''}`} onClick={() => handleOrderClick(order)}>
-                <span>ID: {order.id}</span>
-                <span>Customer: {order.customerName}</span>
-                <span>Price: ${order.totalPrice.toFixed(2)}</span>
-                <span>Date/Time: {order.dateTime}</span>
+            <div key={order.orderid} className={`order-item ${selectedOrder && selectedOrder.orderid === order.orderid ? 'selected' : ''}`} onClick={() => handleOrderClick(order)}>
+                <div>ID: {order.orderid}</div>
+                <div>Customer: {order.customername}</div>
+                <div>Price: ${parseFloat(order.baseprice) + parseFloat(order.taxprice)}</div>
+                <div>Date/Time: {order.orderdatetime}</div>
             </div>
         ));
     };
@@ -49,16 +60,16 @@ const OrderHistory = ({ onPageChange }) => {
                 {renderOrderItems()}
             </div>
             <div className="order-details">
-                <h2>{selectedOrder ? `Order Details: ${selectedOrder.id}` : 'Select an Order to View Details'}</h2>
+                <h2>{selectedOrder ? `Order Details: ${selectedOrder.orderid}` : 'Select an Order to View Details'}</h2>
                 {selectedOrder && (
                     <div className="selected-order">
-                        <span>ID: {selectedOrder.id}</span>
-                        <span>Customer: {selectedOrder.customerName}</span>
-                        <span>Base Price: ${selectedOrder.basePrice.toFixed(2)}</span>
-                        <span>Tax Price: ${selectedOrder.taxPrice.toFixed(2)}</span>
-                        <span>Total Price: ${selectedOrder.totalPrice.toFixed(2)}</span>
-                        <span>Date/Time: {formatDate(selectedOrder.dateTime)}</span>
-                        <span>Employee ID: {selectedOrder.employeeID}</span>
+                        <div>ID: {selectedOrder.orderid}</div>
+                        <div>Customer: {selectedOrder.customername}</div>
+                        <div>Base Price: ${parseFloat(selectedOrder.baseprice)}</div>
+                        <div>Tax Price: ${parseFloat(selectedOrder.taxprice)}</div>
+                        <div>Total Price: ${(parseFloat(selectedOrder.baseprice) + parseFloat(selectedOrder.taxprice))}</div>
+                        <div>Date/Time: {formatDate(selectedOrder.orderdatetime)}</div>
+                        <div>Employee ID: {selectedOrder.employeeid}</div>
                     </div>
                 )}
             </div>

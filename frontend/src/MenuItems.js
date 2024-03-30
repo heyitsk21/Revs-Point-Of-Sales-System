@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import './MenuItems.css';
 import { useTextSize } from './TextSizeContext';
+import axios from 'axios'; // Import Axios for making API requests
 
 const MenuItems = ({ onPageChange }) => {
-    const exampleMenuItem = {
-        id: 1,
-        name: 'Cheeseburger',
-        price: 9.99,
-        ingredients: ['Beef patty', 'Cheese', 'Lettuce', 'Tomato', 'Onion', 'Pickles', 'Bun']
-    };
-
-    const [menu, setMenu] = useState([exampleMenuItem]);
+    const [menu, setMenu] = useState([]); // Initialize state for menu items
     const [selectedItem, setSelectedItem] = useState(null);
     const [checkedItems, setCheckedItems] = useState([]);
     const [newMenuItem, setNewMenuItem] = useState({ id: null, name: '', price: '', ingredients: [] });
     const { textSize, toggleTextSize } = useTextSize();
+
+    // Function to fetch menu items from the backend API
+    const fetchMenuItems = async () => {
+        try {
+            const response = await axios.get('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitems');
+            setMenu(response.data); // Update menu state with response data
+        } catch (error) {
+            console.error('Error fetching menu items:', error);
+        }
+    };
+
+    // Call fetchMenuItems function when component mounts
+    useEffect(() => {
+        fetchMenuItems();
+    }, []);
 
     const setButtonState = (enabled) => {
         // Implementation of enabling or disabling buttons
@@ -46,10 +55,10 @@ const MenuItems = ({ onPageChange }) => {
 
     const renderMenuItems = () => {
         return menu.map(item => (
-            <tr key={item.id} onClick={(event) => rowClicked(event, item)} className={selectedItem && selectedItem.id === item.id ? 'selected' : ''}>
-                <td>{item.id}</td>
-                <td>{item.name}</td>
-                <td>${item.price.toFixed(2)}</td>
+            <tr key={item.menuid} onClick={(event) => rowClicked(event, item)} className={selectedItem && selectedItem.menuid === item.menuid ? 'selected' : ''}>
+                <td>{item.menuid}</td>
+                <td>{item.itemname}</td>
+                <td>${item.price}</td>
             </tr>
         ));
     };
@@ -106,11 +115,11 @@ const MenuItems = ({ onPageChange }) => {
                 </div>
             </div>
             <div className="right-panel">
-                <h2>{selectedItem ? `Edit Menu Item ${selectedItem.id}` : 'Select a Menu Item to Edit'}</h2>
+                <h2>{selectedItem ? `Edit Menu Item ${selectedItem.menuid}` : 'Select a Menu Item to Edit'}</h2>
                 {selectedItem && (
                     <>
                         <label htmlFor="editName">Name:</label>
-                        <input type="text" id="editName" name="name" value={selectedItem.name} onChange={handleInputChange} />
+                        <input type="text" id="editName" name="name" value={selectedItem.itemname} onChange={handleInputChange} />
                         <label htmlFor="editPrice">Price:</label>
                         <input type="text" id="editPrice" name="price" value={selectedItem.price} onChange={handleInputChange} />
                         <h3>Ingredients:</h3>
