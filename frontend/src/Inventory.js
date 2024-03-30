@@ -24,7 +24,7 @@ const Inventory = ({ onPageChange }) => {
 
     const handleItemUpdate = async (itemId, updatedData) => {
         try {
-            const response = await axios.put(`/api/manager/editingredient/${itemId}`, updatedData);
+            const response = await axios.put(`https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/editingredient/${itemId}`, updatedData);
             console.log('Item updated successfully:', response.data);
             // Update inventory after successful update
             fetchInventory();
@@ -102,8 +102,6 @@ const Inventory = ({ onPageChange }) => {
                 <button onClick={() => onPageChange('menuItems')}>Menu Items</button>
                 <button onClick={() => onPageChange('orderHistory')}>Order History</button>
             </div>
-            {/* Output inventory data to text */}
-            <pre>{JSON.stringify(inventory, null, 2)}</pre>
         </div>
     );
 };
