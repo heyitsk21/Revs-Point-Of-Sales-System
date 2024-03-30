@@ -1,37 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import './Inventory.css'; 
 import { useTextSize } from './TextSizeContext'; 
+import axios from 'axios'; // Import Axios for making API requests
 
 const Inventory = ({ onPageChange }) => {
     const [inventory, setInventory] = useState([]); 
     const [selectedItem, setSelectedItem] = useState(null); 
     const { textSize, toggleTextSize } = useTextSize(); 
 
-    const formatInventory = () => {
-        const myInventory = [
-            { id: 1, name: 'Item 1', pricePerUnit: 10.99, count: 50, minAmount: 10 },
-            { id: 2, name: 'Item 2', pricePerUnit: 5.99, count: 100, minAmount: 20 },
-        ];
-        setInventory(myInventory);
+    // Function to fetch inventory data from the backend API
+    const fetchInventory = async () => {
+        try {
+            const response = await axios.get('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/ingredients');
+            setInventory(response.data); // Update inventory state with response data
+        } catch (error) {
+            console.error('Error fetching inventory:', error);
+        }
     };
 
     const handleItemSelected = (item) => {
         setSelectedItem(item);
     };
 
-    const handleItemUpdate = (itemId, updatedData) => {
-        setInventory(prevInventory => prevInventory.map(item =>
-            item.id === itemId ? { ...item, ...updatedData } : item
-        ));
+    const handleItemUpdate = async (itemId, updatedData) => {
+        try {
+            const response = await axios.put(`/api/manager/editingredient/${itemId}`, updatedData);
+            console.log('Item updated successfully:', response.data);
+            // Update inventory after successful update
+            fetchInventory();
+        } catch (error) {
+            console.error('Error updating item:', error);
+        }
     };
 
     const renderInventoryItems = () => {
         return inventory.map(item => (
-            <div key={item.id} className="inventory-item" onClick={() => handleItemSelected(item)}>
-                <span>{item.name}</span>
-                <span>Price Per Unit: ${item.pricePerUnit}</span>
+            <div key={item.ingredientid} className="inventory-item" onClick={() => handleItemSelected(item)}>
+                <span>{item.ingredientname}</span>
+                <span>Price Per Unit: ${item.ppu}</span>
                 <span>Count: {item.count}</span>
-                <span>Min Amount: {item.minAmount}</span>
+                <span>Min Amount: {item.minamount}</span>
             </div>
         ));
     };
@@ -43,8 +51,8 @@ const Inventory = ({ onPageChange }) => {
     };
 
     useEffect(() => {
-        formatInventory();
-    }, []);
+        fetchInventory();
+    }, []); // Empty dependency array ensures useEffect runs only once on component mount
 
     return (
         <div className={`inventory ${textSize === 'large' ? 'large-text' : ''}`}>
@@ -60,13 +68,13 @@ const Inventory = ({ onPageChange }) => {
                 <h2>Selected Item Details</h2>
                 {selectedItem && (
                     <div className="selected-item">
-                        <h3>{selectedItem.name}</h3>
+                        <h3>{selectedItem.ingredientname}</h3>
                         <div>
                             <label>Price Per Unit:</label>
                             <input
                                 type="number"
-                                value={selectedItem.pricePerUnit}
-                                onChange={(e) => handleItemUpdate(selectedItem.id, { pricePerUnit: e.target.value })}
+                                value={selectedItem.ppu}
+                                onChange={(e) => handleItemUpdate(selectedItem.ingredientid, { ppu: e.target.value })}
                             />
                         </div>
                         <div>
@@ -74,15 +82,15 @@ const Inventory = ({ onPageChange }) => {
                             <input
                                 type="number"
                                 value={selectedItem.count}
-                                onChange={(e) => handleItemUpdate(selectedItem.id, { count: e.target.value })}
+                                onChange={(e) => handleItemUpdate(selectedItem.ingredientid, { count: e.target.value })}
                             />
                         </div>
                         <div>
                             <label>Min Amount:</label>
                             <input
                                 type="number"
-                                value={selectedItem.minAmount}
-                                onChange={(e) => handleItemUpdate(selectedItem.id, { minAmount: e.target.value })}
+                                value={selectedItem.minamount}
+                                onChange={(e) => handleItemUpdate(selectedItem.ingredientid, { minamount: e.target.value })}
                             />
                         </div>
                     </div>
@@ -94,6 +102,8 @@ const Inventory = ({ onPageChange }) => {
                 <button onClick={() => onPageChange('menuItems')}>Menu Items</button>
                 <button onClick={() => onPageChange('orderHistory')}>Order History</button>
             </div>
+            {/* Output inventory data to text */}
+            <pre>{JSON.stringify(inventory, null, 2)}</pre>
         </div>
     );
 };
