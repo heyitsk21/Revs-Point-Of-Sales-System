@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Employee.css';
 import { useTextSize } from '../TextSizeContext';
 
-const Employee = ({ onPageChange }) => {
+const Employee = ({ onCatChange }) => {
     const { textSize, toggleTextSize } = useTextSize();
     const [loggedIn, setLoggedIn] = useState(false);
     const [username, setUsername] = useState('');
@@ -36,6 +36,31 @@ const Employee = ({ onPageChange }) => {
         window.speechSynthesis.speak(utterance);
     };
 
+    const [category, setCategory] = useState('Sandwiches');
+
+    const handleCategories = (categoryName) => {
+        setCategory(categoryName);
+    };
+
+    const sandwichList = ['Sandwich 1', 'Sandwich 2', 'Sandwich 3'];
+    const drinkList = ['Drink 1', 'Drink 2', 'Drink 3'];
+
+    let currentCat;
+    let items;
+    switch (category) {
+        case 'Sandwiches':
+            currentCat = 'Sandwiches';
+            items = sandwichList;
+            break;
+        case 'Drinks':
+            currentCat = 'Drinks';
+            items = drinkList;
+            break;
+        default:
+            currentCat = 'Sandwiches';
+            items = sandwichList;
+    }
+
     return (
         <div className={`employee ${textSize === 'large' ? 'large-text' : ''}`}>
             <div className="top-bar">
@@ -52,7 +77,14 @@ const Employee = ({ onPageChange }) => {
 
             <div className="middle-content">
                 <section class="layout">
-                    <div class="leftSide">Menu Items</div>
+                    <div class="leftSide">
+                        {currentCat}
+                        <div class = 'items'>
+                            <button>Sandwich 1</button>
+                            <button>Sandwich 2</button>
+                            <button>Sandwich 3</button>
+                        </div>
+                    </div>
                     <div class="rightSide">
                         Current Order
                     </div>                    
@@ -60,9 +92,9 @@ const Employee = ({ onPageChange }) => {
             </div>
 
             <div className="bottom-nav">
-                <button>Sandwiches</button>
+                <button onClick={() => handleCategories('Sandwiches')}>Sandwiches</button>
                 <button>Sides</button>
-                <button>Drinks</button>
+                <button onClick={() => handleCategories('Drinks')}>Drinks</button>
                 <button>Limited Time</button>
             </div>
         </div>

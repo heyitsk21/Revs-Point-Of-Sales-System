@@ -10,10 +10,11 @@ import SalesReport from './SalesReport';
 import ExcessReport from './ExcessReport';
 import RestockReport from './RestockReport';
 import OrderTrend from './OrderTrend';
+import Employee from './Employee/Employee';
 import { TextSizeProvider } from './TextSizeContext';
 
 function App() {
-    const [page, setPage] = useState('manager');
+    const [page, setPage] = useState('employee');
 
     const handleNavigation = (pageName) => {
         setPage(pageName);
@@ -21,8 +22,8 @@ function App() {
 
     let currentPage;
     switch (page) {
-        case 'manager':
-            currentPage = <ManagerTab onPageChange={handleNavigation} />;
+        case 'employee':
+            currentPage = <Employee onPageChange={handleNavigation} />;
             break;
         case 'inventory':
             currentPage = <Inventory onPageChange={handleNavigation} />;

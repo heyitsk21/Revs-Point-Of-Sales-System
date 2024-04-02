@@ -19,7 +19,7 @@
     margin-right: 10px;
 }
 
-.top-bar button {
+button {
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -28,7 +28,7 @@
     cursor: pointer;
 }
 
-.top-bar button:hover {
+button:hover {
     background-color: #0056b3;
 }
 
@@ -96,4 +96,13 @@
     background-color: rgb(227, 227, 227);
     margin: 0px 25px;
     padding: 20px;
+}
+
+.items button {
+    padding: 10px;
+    margin: 10px;
+}
+
+.large-text .items button{
+    font-size: 24px;
 }
