@@ -75,12 +75,37 @@ const Inventory = ({ onPageChange }) => {
         window.speechSynthesis.speak(utterance);
     };
 
-    const handleMouseOver = (event) => {
-        const hoveredElementText = event.target.innerText;
+    const debounce = (func, wait) => {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                timeout = null;
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    };
+
+    const handleMouseOver = debounce((event) => {
+        let hoveredElementText = '';
         if (speakEnabled) {
+            if (event.target.innerText) {
+                hoveredElementText = event.target.innerText;
+            } else if (event.target.value) {
+                hoveredElementText = event.target.value;
+            } else if (event.target.getAttribute('aria-label')) {
+                hoveredElementText = event.target.getAttribute('aria-label');
+            } else if (event.target.getAttribute('aria-labelledby')) {
+                const id = event.target.getAttribute('aria-labelledby');
+                const labelElement = document.getElementById(id);
+                if (labelElement) {
+                    hoveredElementText = labelElement.innerText;
+                }
+            }
             speakText(hoveredElementText);
         }
-    };
+    }, 1000); 
 
     const toggleSpeak = () => {
         if (speakEnabled) {
@@ -112,11 +137,11 @@ const Inventory = ({ onPageChange }) => {
                 <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             </div>
             <div className="inventory-list">
-                <h2>Inventory Items</h2>
+                <h2 onMouseOver={handleMouseOver}>Inventory Items</h2>
                 {renderInventoryItems()}
             </div>
             <div className="inventory-details">
-                <h2>Selected Item Details</h2>
+                <h2 onMouseOver={handleMouseOver}>Selected Item Details</h2>
                 {selectedItem && (
                     <div className="selected-item">
                         <h3>{selectedItem.ingredientname}</h3>
@@ -148,7 +173,7 @@ const Inventory = ({ onPageChange }) => {
                 )}
             </div>
             <div className="new-ingredient">
-                <h2>Add New Ingredient</h2>
+                <h2 onMouseOver={handleMouseOver}>Add New Ingredient</h2>
                 <div>
                     <label>Ingredient Name:</label>
                     <input
@@ -181,14 +206,14 @@ const Inventory = ({ onPageChange }) => {
                         onChange={(e) => setNewIngredient({ ...newIngredient, minamount: e.target.value })}
                     />
                 </div>
-                <button onClick={handleIngredientSubmit}>Submit</button>
+                <button onClick={handleIngredientSubmit} onMouseOver={handleMouseOver}>Submit</button>
                 <div></div>
             </div>
             <div className="bottom-nav">
-                <button onClick={() => onPageChange('trends')}>Trends</button>
-                <button onClick={() => onPageChange('inventory')}>Inventory</button>
-                <button onClick={() => onPageChange('menuItems')}>Menu Items</button>
-                <button onClick={() => onPageChange('orderHistory')}>Order History</button>
+                <button onClick={() => onPageChange('trends')} onMouseOver={handleMouseOver}>Trends</button>
+                <button onClick={() => onPageChange('inventory')} onMouseOver={handleMouseOver}>Inventory</button>
+                <button onClick={() => onPageChange('menuItems')} onMouseOver={handleMouseOver}>Menu Items</button>
+                <button onClick={() => onPageChange('orderHistory')} onMouseOver={handleMouseOver}>Order History</button>
             </div>
         </div>
     );

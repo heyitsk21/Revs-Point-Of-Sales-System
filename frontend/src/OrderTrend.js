@@ -7,10 +7,13 @@ const OrderTrend = ({ onPageChange }) => {
     const [menuData, setMenuData] = useState([]);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [speakEnabled, setSpeakEnabled] = useState(false); // State to track whether speak feature is enabled
     const { textSize, toggleTextSize } = useTextSize();
 
     useEffect(() => {
-        fetchData(startDate, endDate);
+        if (startDate && endDate) {
+            fetchData(startDate, endDate);
+        }
     }, [startDate, endDate]);
 
     const fetchData = async (startDate, endDate) => {
@@ -26,10 +29,59 @@ const OrderTrend = ({ onPageChange }) => {
         }
     };
 
+    const speakText = (text) => {
+        const utterance = new SpeechSynthesisUtterance();
+        utterance.text = text;
+        window.speechSynthesis.speak(utterance);
+    };
+
+    const debounce = (func, wait) => {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                timeout = null;
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    };
+
+    const handleMouseOver = debounce((event) => {
+        let hoveredElementText = '';
+        if (speakEnabled) {
+            if (event.target.innerText) {
+                hoveredElementText = event.target.innerText;
+            } else if (event.target.value) {
+                hoveredElementText = event.target.value;
+            } else if (event.target.getAttribute('aria-label')) {
+                hoveredElementText = event.target.getAttribute('aria-label');
+            } else if (event.target.getAttribute('aria-labelledby')) {
+                const id = event.target.getAttribute('aria-labelledby');
+                const labelElement = document.getElementById(id);
+                if (labelElement) {
+                    hoveredElementText = labelElement.innerText;
+                }
+            }
+            speakText(hoveredElementText);
+        }
+    }, 1000);
+
+    const toggleSpeak = () => {
+        if (speakEnabled) {
+            window.speechSynthesis.cancel();
+        }
+        setSpeakEnabled(!speakEnabled);
+    };
+
     return (
         <div className={`order-trend ${textSize === 'large' ? 'large-text' : ''}`}>
-            <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
-            <h2>Order Trend Report</h2>
+            <div className="toggle-button-container">
+                <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
+                <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
+            </div>
+            <button onClick={() => onPageChange('trends')} onMouseOver={handleMouseOver}>Back to Trends</button>
+            <h2 onMouseOver={handleMouseOver}>Order Trend Report</h2>
             <div className="date-fields">
                 <label>Start Date:</label>
                 <input
@@ -37,6 +89,7 @@ const OrderTrend = ({ onPageChange }) => {
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                     placeholder="YYYY-MM-DD"
+                    onMouseOver={handleMouseOver}
                 />
                 <label>End Date:</label>
                 <input
@@ -44,10 +97,11 @@ const OrderTrend = ({ onPageChange }) => {
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                     placeholder="YYYY-MM-DD"
+                    onMouseOver={handleMouseOver}
                 />
             </div>
-            <button onClick={() => fetchData(startDate, endDate)}>Generate Trend Report</button>
-            <div className="report-list">
+            <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Trend Report</button>
+            <div className="report-list" onMouseOver={handleMouseOver}>
                 <div className="report-header">
                     <span className="header-item">Menu Item 1</span>
                     <span className="header-item">Menu Item 2</span>
@@ -61,7 +115,6 @@ const OrderTrend = ({ onPageChange }) => {
                     </div>
                 ))}
             </div>
-            <button onClick={() => onPageChange('trends')}>Back to Trends</button>
         </div>
     );
 };
