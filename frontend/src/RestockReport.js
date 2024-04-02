@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import './RestockReport.css';
 import { useTextSize } from './TextSizeContext';
+import axios from 'axios';
 
-const RestockReport = ({ database, onPageChange }) => {
+const RestockReport = ({ onPageChange }) => {
     const [reportData, setReportData] = useState([]);
     const { textSize, toggleTextSize } = useTextSize();
 
@@ -10,15 +11,11 @@ const RestockReport = ({ database, onPageChange }) => {
         fetchData();
     }, []);
 
-    const fetchData = () => {
-        const query = "SELECT * FROM ingredients WHERE count < minamount";
+    const fetchData = async () => {
         try {
-            const simulatedData = [
-                { ingredientName: "Ingredient 1", count: 5, minAmount: 10 },
-                { ingredientName: "Ingredient 2", count: 7, minAmount: 15 },
-                { ingredientName: "Ingredient 3", count: 3, minAmount: 8 }
-            ];
-            setReportData(simulatedData);
+            const response = await axios.get('http://127.0.0.1:5000/api/manager/reports/generaterestockreport');
+            console.log('Response from API:', response.data);
+            setReportData(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -36,9 +33,9 @@ const RestockReport = ({ database, onPageChange }) => {
                 </div>
                 {reportData.map((item, index) => (
                     <div key={index} className="report-item">
-                        <span className="report-item">{item.ingredientName}</span>
+                        <span className="report-item">{item.ingredientname}</span>
                         <span className="report-item">{item.count}</span>
-                        <span className="report-item">{item.minAmount}</span>
+                        <span className="report-item">{item.minamount}</span>
                     </div>
                 ))}
             </div>

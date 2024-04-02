@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './OrderTrend.css';
 import { useTextSize } from './TextSizeContext';
+import axios from 'axios';
 
-const OrderTrend = ({ startDate, endDate, onPageChange }) => {
-    const [menuID1, setMenuID1] = useState([]);
-    const [menuID2, setMenuID2] = useState([]);
-    const [count, setCount] = useState([]);
+const OrderTrend = ({ onPageChange }) => {
+    const [menuData, setMenuData] = useState([]);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const { textSize, toggleTextSize } = useTextSize();
 
     useEffect(() => {
@@ -14,13 +15,12 @@ const OrderTrend = ({ startDate, endDate, onPageChange }) => {
 
     const fetchData = async (startDate, endDate) => {
         try {
-            const mockMenuID1 = ["MenuID1_A", "MenuID1_B", "MenuID1_C"];
-            const mockMenuID2 = ["MenuID2_A", "MenuID2_B", "MenuID2_C"];
-            const mockCount = [10, 20, 15];
-
-            setMenuID1(mockMenuID1);
-            setMenuID2(mockMenuID2);
-            setCount(mockCount);
+            const response = await axios.post('http://127.0.0.1:5000/api/manager/reports/generateordertrend', {
+                startdate: startDate,
+                enddate: endDate
+            });
+            console.log('Response from API:', response.data);
+            setMenuData(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -30,17 +30,34 @@ const OrderTrend = ({ startDate, endDate, onPageChange }) => {
         <div className={`order-trend ${textSize === 'large' ? 'large-text' : ''}`}>
             <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             <h2>Order Trend Report</h2>
+            <div className="date-fields">
+                <label>Start Date:</label>
+                <input
+                    type="text"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    placeholder="YYYY-MM-DD"
+                />
+                <label>End Date:</label>
+                <input
+                    type="text"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    placeholder="YYYY-MM-DD"
+                />
+            </div>
+            <button onClick={() => fetchData(startDate, endDate)}>Generate Trend Report</button>
             <div className="report-list">
                 <div className="report-header">
                     <span className="header-item">Menu Item 1</span>
                     <span className="header-item">Menu Item 2</span>
                     <span className="header-item">Pair Count</span>
                 </div>
-                {menuID1.map((menuItem1, index) => (
+                {menuData.map((item, index) => (
                     <div key={index} className="report-item">
-                        <span className="report-item">{menuItem1}</span>
-                        <span className="report-item">{menuID2[index]}</span>
-                        <span className="report-item">{count[index]}</span>
+                        <span className="report-item">{item.menuid1}</span>
+                        <span className="report-item">{item.menuid2}</span>
+                        <span className="report-item">{item.count}</span>
                     </div>
                 ))}
             </div>

@@ -1,52 +1,72 @@
 import React, { useState, useEffect } from 'react';
 import './SalesReport.css';
 import { useTextSize } from './TextSizeContext';
+import axios from 'axios';
 
-const SalesReport = ({ startDate, endDate, onPageChange }) => {
-    const [reportData, setReportData] = useState([
-        { menuID: 1, itemName: 'Cheeseburger', totalSales: 8.99, count: 5 }
-    ]);
+const SalesReport = ({ onPageChange }) => {
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [reportData, setReportData] = useState([]);
     const { textSize, toggleTextSize } = useTextSize();
 
-    const fetchData = async () => {
-        try {
-            // Simulate fetching data from the backend API
-            // const response = await fetch(`/api/salesReport?startDate=${startDate}&endDate=${endDate}`);
-            // const data = await response.json();
-            // setReportData(data);
+    useEffect(() => {
+        if (isValidDate(startDate) && isValidDate(endDate)) {
+            fetchData(startDate, endDate);
+        }
+    }, [startDate, endDate]);
 
-            const data = [
-                { menuID: 1, itemName: 'Cheeseburger', totalSales: 8.99, count: 5 },
-                { menuID: 2, itemName: 'Pizza', totalSales: 10.99, count: 3 },
-                { menuID: 3, itemName: 'Salad', totalSales: 6.99, count: 7 }
-            ];
-            setReportData(data);
+    const fetchData = async (startDate, endDate) => {
+        try {
+            const response = await axios.post('http://127.0.0.1:5000/api/manager/reports/generatesalesreport', {
+                startdate: startDate,
+                enddate: endDate
+            });
+            console.log('Response from API:', response.data);
+
+            setReportData(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
 
-    const formatReport = () => {
-        return reportData.map((item, index) => (
-            <div key={index} className="report-item">
-                <span>Menu ID: {item.menuID}</span>
-                <span>Item Name: {item.itemName}</span>
-                <span>Sales: ${item.totalSales.toFixed(2)}</span>
-                <span>Amount Sold: {item.count}</span>
-            </div>
-        ));
+    const isValidDate = (date) => {
+        return date.match(/\d{4}-\d{2}-\d{2}/);
     };
-
-    useEffect(() => {
-        fetchData();
-    }, [startDate, endDate]);
 
     return (
         <div className={`sales-report ${textSize === 'large' ? 'large-text' : ''}`}>
             <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             <h2>Sales Report</h2>
+            <div className="date-fields">
+                <label>Start Date:</label>
+                <input
+                    type="text"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    placeholder="YYYY-MM-DD"
+                />
+                <label>End Date:</label>
+                <input
+                    type="text"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    placeholder="YYYY-MM-DD"
+                />
+            </div>
+            <button onClick={() => fetchData(startDate, endDate)}>Generate Sales Report</button>
             <div className="report-list">
-                {formatReport()}
+                {reportData.length > 0 ? (
+                    reportData.map((item, index) => (
+                        <div key={index} className="report-item">
+                            <span>Menu ID: {item.menuid}</span>
+                            <span>Item Name: {item.itemname}</span>
+                            <span>Sales: ${parseFloat(item.totalsales).toFixed(2)}</span>
+                            <span>Amount Sold: {item.ordercount}</span>
+                        </div>
+                    ))
+                ) : (
+                    <p>No data to display</p>
+                )}
             </div>
             <button onClick={() => onPageChange('trends')}>Go to Trends</button>
         </div>

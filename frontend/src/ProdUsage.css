@@ -1,28 +1,38 @@
 .chart {
     display: flex;
-    align-items: flex-end;
-    height: 300px;
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto;
     margin-top: 20px;
 }
 
-.large-text .prod-usage, .large-text .bar-container, .large-text .label, .large-text .chart, .large-text .h1, .large-text .prod-usage, .large-text .bar, .large-text .h1 {
+.large-text .prod-usage, .large-text .line-container, .large-text .label, .large-text .chart, .large-text .h1 {
     font-size: 30px;
 }
 
-.bar-container {
+.line-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    margin-right: 20px;
+    margin-bottom: 10px;
 }
 
-.bar {
-    width: 50px;
+.line {
+    height: 10px;
     background-color: blue;
+    position: relative;
+}
+
+.line-label {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
 }
 
 .label {
-    margin-top: 5px;
+    margin-left: 10px;
     font-size: 14px;
-    text-align: center;
+    text-align: left;
 }
