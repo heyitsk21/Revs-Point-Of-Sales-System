@@ -55,16 +55,20 @@ const Employee = ({ onCatChange }) => {
             currentCat = 'Sandwiches';
             currentIdStart = 200;
             break;
+        case 'Salads':
+            currentCat = 'Salads';
+            currentIdStart = 300;
+            break;
         case 'Desserts':
             currentCat = 'Desserts';
             currentIdStart = 400;
             break;
-        case 'Drinks':
-            currentCat = 'Drinks';
+        case 'Drinks & Fries':
+            currentCat = 'Drinks & Fries';
             currentIdStart = 500;
             break;
-        case 'Value Meal':
-                currentCat = 'Value Meal';
+        case 'Value Meals':
+                currentCat = 'Value Meals';
                 currentIdStart = 600;
                 break;
         case 'Limited Time':
@@ -134,6 +138,10 @@ const Employee = ({ onCatChange }) => {
         ));
     };
 
+    const renderEmpty = () => {
+        return;
+    };
+
     return (
         <div className={`employee ${textSize === 'large' ? 'large-text' : ''}`}>
             <div className="top-bar">
@@ -153,6 +161,7 @@ const Employee = ({ onCatChange }) => {
                     <div class="leftSide">
                         {currentCat}
                         <div class = 'items'>
+                            {renderEmpty()}
                             {
                             //items
                             // renderAllMenuItems()
@@ -169,12 +178,12 @@ const Employee = ({ onCatChange }) => {
             </div>
 
             <div className="bottom-nav">
+                <button onClick={() => handleCategories('Value Meals')}>Value Meals</button>
                 <button onClick={() => handleCategories('Burgers')}>Burgers</button>
                 <button onClick={() => handleCategories('Sandwiches')}>Sandwiches</button>
                 <button onClick={() => handleCategories('Salads')}>Salads</button>
                 <button onClick={() => handleCategories('Desserts')}>Desserts</button>
-                <button onClick={() => handleCategories('Drinks')}>Drinks</button>
-                <button onClick={() => handleCategories('Value Meals')}>Value Meals</button>
+                <button onClick={() => handleCategories('Drinks & Fries')}>Drinks & Fries</button>
                 <button onClick={() => handleCategories('Limited Time')}>Limited Time</button>
             </div>
         </div>
