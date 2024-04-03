@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Employee.css';
 import { useTextSize } from '../TextSizeContext';
+import axios from 'axios'; // Import Axios for making API requests
 
 const Employee = ({ onCatChange }) => {
     const { textSize, toggleTextSize } = useTextSize();
@@ -37,39 +38,60 @@ const Employee = ({ onCatChange }) => {
     };
 
     const [category, setCategory] = useState('Sandwiches');
+    const [selectedMenuSection, setSelectedMenuSection] = useState(null); 
 
     const handleCategories = (categoryName) => {
         setCategory(categoryName);
     };
 
-    const sandwichList = ['Sandwich 1', 'Sandwich 2', 'Sandwich 3'];
-    const sidesList = ['Side 1', 'Side 2', 'Side 3'];
-    const drinkList = ['Drink 1', 'Drink 2', 'Drink 3'];
-    const limitedList = ['Limited Item 1', 'Limited Item 2', 'Limited Item 3'];
-
     let currentCat;
-    let items;
     switch (category) {
         case 'Sandwiches':
             currentCat = 'Sandwiches';
-            items = sandwichList;
             break;
         case 'Sides':
             currentCat = 'Sides';
-            items = sidesList;
             break;
         case 'Drinks':
             currentCat = 'Drinks';
-            items = drinkList;
             break;
         case 'Limited Time':
             currentCat = 'Limited Time';
-            items = limitedList;
             break;
         default:
             currentCat = 'Sandwiches';
-            items = sandwichList;
     }
+
+    const [allmenuitems, setMenuSections] = useState([]); // Initialize state for menu section
+
+    // Function to fetch order history from the backend API
+    const fetchMenuSection = async () => {
+        try {
+            const response = await axios.get('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitems');
+            setMenuSections(response.data); // Update menu section state with response data
+        } catch (error) {
+            console.error('Error fetching order history:', error);
+        }
+    };
+
+    // Call fetchMenuSection function when component mounts
+    useEffect(() => {
+        fetchMenuSection();
+    }, []);
+
+    const handleOrderClick = (menusection) => {
+        setSelectedMenuSection(menusection);
+    };
+
+    const renderMenuItems = () => {
+        return allmenuitems.map(menuitem => (
+            <div key={menuitem.itemname} className={`itemname ${selectedMenuSection && selectedMenuSection.menuid === menuitem.menuid ? 'selected' : ''}`} onClick={() => handleOrderClick(menuitem)}>
+                <div>Item Name: {menuitem.itemname}</div>
+                <div>Menu ID: {menuitem.menuid}</div>
+                <div>Price: {menuitem.price}</div>
+            </div>
+        ));
+    };
 
     return (
         <div className={`employee ${textSize === 'large' ? 'large-text' : ''}`}>
@@ -91,7 +113,8 @@ const Employee = ({ onCatChange }) => {
                         {currentCat}
                         <div class = 'items'>
                             {
-                            items
+                            //items
+                            renderMenuItems()
                             /* <button>Sandwich 1</button>
                             <button>Sandwich 2</button>
                             <button>Sandwich 3</button> */}
