@@ -7,6 +7,7 @@ const ManagerTab = ({ onPageChange }) => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [username, setUsername] = useState('');
     const [currentTime, setCurrentTime] = useState('');
+    const [speakEnabled, setSpeakEnabled] = useState(false);
 
     const handleLoginLogout = () => {
         if (loggedIn) {
@@ -36,6 +37,21 @@ const ManagerTab = ({ onPageChange }) => {
         window.speechSynthesis.speak(utterance);
     };
 
+    const handleMouseOver = (text) => {
+        if (speakEnabled) {
+            setTimeout(() => {
+                speakText(text);
+            }, 1000); // 1-second delay
+        }
+    };
+
+    const toggleSpeak = () => {
+        if (speakEnabled) {
+            window.speechSynthesis.cancel();
+        }
+        setSpeakEnabled(!speakEnabled);
+    };
+
     return (
         <div className={`manager-tab ${textSize === 'large' ? 'large-text' : ''}`}>
             <div className="top-bar">
@@ -43,22 +59,22 @@ const ManagerTab = ({ onPageChange }) => {
                     <span>{loggedIn ? `Welcome, ${username}` : 'Please log in'}</span>
                     <span>{currentTime}</span>
                 </div>
-                <button onClick={handleLoginLogout}>{loggedIn ? 'Logout' : 'Login'}</button>
-                <button onClick={() => speakText("Manager... Trends... Inventory... Menu Items... Order History")}>Speak</button>
-                <button onClick={toggleTextSize}>Toggle Text Size</button>
+                <button onClick={handleLoginLogout} onMouseOver={() => handleMouseOver('Login button')}>{loggedIn ? 'Logout' : 'Login'}</button>
+                <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak} onMouseOver={() => handleMouseOver('Speak button')}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
+                <button onClick={toggleTextSize} onMouseOver={() => handleMouseOver('Toggle Text Size button')}>Toggle Text Size</button>
             </div>
 
             <div id="google_translate_element"></div>
 
             <div className="middle-content">
-                <h1>MANAGER</h1>
+                <h1 onMouseOver={() => handleMouseOver('Manager header')}>MANAGER</h1>
             </div>
 
             <div className="bottom-nav">
-                <button onClick={() => onPageChange('trends')}>Trends</button>
-                <button onClick={() => onPageChange('inventory')}>Inventory</button>
-                <button onClick={() => onPageChange('menuItems')}>Menu Items</button>
-                <button onClick={() => onPageChange('orderHistory')}>Order History</button>
+                <button onClick={() => onPageChange('trends')} onMouseOver={() => handleMouseOver('Trends button')}>Trends</button>
+                <button onClick={() => onPageChange('inventory')} onMouseOver={() => handleMouseOver('Inventory button')}>Inventory</button>
+                <button onClick={() => onPageChange('menuItems')} onMouseOver={() => handleMouseOver('Menu Items button')}>Menu Items</button>
+                <button onClick={() => onPageChange('orderHistory')} onMouseOver={() => handleMouseOver('Order History button')}>Order History</button>
             </div>
         </div>
     );

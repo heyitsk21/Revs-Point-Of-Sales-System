@@ -1,54 +1,123 @@
 import React, { useState, useEffect } from 'react';
 import './SalesReport.css';
 import { useTextSize } from './TextSizeContext';
+import axios from 'axios';
 
-const SalesReport = ({ startDate, endDate, onPageChange }) => {
-    const [reportData, setReportData] = useState([
-        { menuID: 1, itemName: 'Cheeseburger', totalSales: 8.99, count: 5 }
-    ]);
+const SalesReport = ({ onPageChange }) => {
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [reportData, setReportData] = useState([]);
+    const [speakEnabled, setSpeakEnabled] = useState(false); // State to track whether speak feature is enabled
     const { textSize, toggleTextSize } = useTextSize();
 
-    const fetchData = async () => {
-        try {
-            // Simulate fetching data from the backend API
-            // const response = await fetch(`/api/salesReport?startDate=${startDate}&endDate=${endDate}`);
-            // const data = await response.json();
-            // setReportData(data);
+    useEffect(() => {
+        if (isValidDate(startDate) && isValidDate(endDate)) {
+            fetchData(startDate, endDate);
+        }
+    }, [startDate, endDate]);
 
-            const data = [
-                { menuID: 1, itemName: 'Cheeseburger', totalSales: 8.99, count: 5 },
-                { menuID: 2, itemName: 'Pizza', totalSales: 10.99, count: 3 },
-                { menuID: 3, itemName: 'Salad', totalSales: 6.99, count: 7 }
-            ];
-            setReportData(data);
+    const fetchData = async (startDate, endDate) => {
+        try {
+            const response = await axios.post('http://127.0.0.1:5000/api/manager/reports/generatesalesreport', {
+                startdate: startDate,
+                enddate: endDate
+            });
+            console.log('Response from API:', response.data);
+
+            setReportData(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
 
-    const formatReport = () => {
-        return reportData.map((item, index) => (
-            <div key={index} className="report-item">
-                <span>Menu ID: {item.menuID}</span>
-                <span>Item Name: {item.itemName}</span>
-                <span>Sales: ${item.totalSales.toFixed(2)}</span>
-                <span>Amount Sold: {item.count}</span>
-            </div>
-        ));
+    const isValidDate = (date) => {
+        return date.match(/\d{4}-\d{2}-\d{2}/);
     };
 
-    useEffect(() => {
-        fetchData();
-    }, [startDate, endDate]);
+    const speakText = (text) => {
+        const utterance = new SpeechSynthesisUtterance();
+        utterance.text = text;
+        window.speechSynthesis.speak(utterance);
+    };
+
+    const debounce = (func, wait) => {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                timeout = null;
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    };
+
+    const handleMouseOver = debounce((event) => {
+        let hoveredElementText = '';
+        if (speakEnabled) {
+            if (event.target.innerText) {
+                hoveredElementText = event.target.innerText;
+            } else if (event.target.value) {
+                hoveredElementText = event.target.value;
+            } else if (event.target.getAttribute('aria-label')) {
+                hoveredElementText = event.target.getAttribute('aria-label');
+            } else if (event.target.getAttribute('aria-labelledby')) {
+                const id = event.target.getAttribute('aria-labelledby');
+                const labelElement = document.getElementById(id);
+                if (labelElement) {
+                    hoveredElementText = labelElement.innerText;
+                }
+            }
+            speakText(hoveredElementText);
+        }
+    }, 1000);
+
+    const toggleSpeak = () => {
+        if (speakEnabled) {
+            window.speechSynthesis.cancel();
+        }
+        setSpeakEnabled(!speakEnabled);
+    };
 
     return (
-        <div className={`sales-report ${textSize === 'large' ? 'large-text' : ''}`}>
-            <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
-            <h2>Sales Report</h2>
-            <div className="report-list">
-                {formatReport()}
+        <div className={`sales-report ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
+            <div className="toggle-button-container">
+                <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
+                <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             </div>
-            <button onClick={() => onPageChange('trends')}>Go to Trends</button>
+            <button onClick={() => onPageChange('trends')} onMouseOver={handleMouseOver}>Go to Trends</button>
+            <h2 onMouseOver={handleMouseOver}>Sales Report</h2>
+            <div className="date-fields">
+                <label onMouseOver={handleMouseOver}>Start Date:</label>
+                <input
+                    type="text"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    placeholder="YYYY-MM-DD"
+                />
+                <label onMouseOver={handleMouseOver}>End Date:</label>
+                <input
+                    type="text"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    placeholder="YYYY-MM-DD"
+                />
+            </div>
+            <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Sales Report</button>
+            <div className="report-list">
+                {reportData.length > 0 ? (
+                    reportData.map((item, index) => (
+                        <div key={index} className="report-item">
+                            <span onMouseOver={handleMouseOver}>Menu ID: {item.menuid}</span>
+                            <span onMouseOver={handleMouseOver}>Item Name: {item.itemname}</span>
+                            <span onMouseOver={handleMouseOver}>Sales: ${parseFloat(item.totalsales).toFixed(2)}</span>
+                            <span onMouseOver={handleMouseOver}>Amount Sold: {item.ordercount}</span>
+                        </div>
+                    ))
+                ) : (
+                    <p onMouseOver={handleMouseOver}>No data to display</p>
+                )}
+            </div>
         </div>
     );
 };

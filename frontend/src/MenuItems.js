@@ -1,45 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import './MenuItems.css';
 import { useTextSize } from './TextSizeContext';
-import axios from 'axios'; // Import Axios for making API requests
+import axios from 'axios';
 
 const MenuItems = ({ onPageChange }) => {
-    const [menu, setMenu] = useState([]); // Initialize state for menu items
+    const [menu, setMenu] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [checkedItems, setCheckedItems] = useState([]);
     const [newMenuItem, setNewMenuItem] = useState({ id: null, name: '', price: '', ingredients: [] });
+    const [speakEnabled, setSpeakEnabled] = useState(false);
     const { textSize, toggleTextSize } = useTextSize();
 
-    // Function to fetch menu items from the backend API
     const fetchMenuItems = async () => {
         try {
             const response = await axios.get('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitems');
-            setMenu(response.data); // Update menu state with response data
+            setMenu(response.data);
         } catch (error) {
             console.error('Error fetching menu items:', error);
         }
     };
 
-    // Call fetchMenuItems function when component mounts
     useEffect(() => {
         fetchMenuItems();
     }, []);
 
-    const setButtonState = (enabled) => {
-        // Implementation of enabling or disabling buttons
-    };
-
     const rowClicked = (event, item) => {
         setSelectedItem(item);
         setCheckedItems(item ? item.ingredients : []);
-        setButtonState(true);
     };
 
     const handleDeleteButtonClick = () => {
         setMenu(prevMenu => prevMenu.filter(item => item.id !== selectedItem.id));
         setSelectedItem(null);
         setCheckedItems([]);
-        setButtonState(false);
     };
 
     const handleInputChange = (event) => {
@@ -56,25 +49,12 @@ const MenuItems = ({ onPageChange }) => {
     const renderMenuItems = () => {
         return menu.map(item => (
             <tr key={item.menuid} onClick={(event) => rowClicked(event, item)} className={selectedItem && selectedItem.menuid === item.menuid ? 'selected' : ''}>
-                <td>{item.menuid}</td>
-                <td>{item.itemname}</td>
-                <td>${item.price}</td>
+                <td onMouseOver={handleMouseOver}>{item.menuid}</td>
+                <td onMouseOver={handleMouseOver}>{item.itemname}</td>
+                <td onMouseOver={handleMouseOver}>${item.price}</td>
             </tr>
         ));
     };
-
-    useEffect(() => {
-        if (!window.google || !window.google.translate || !window.google.translate.TranslateElement) {
-            const script = document.createElement('script');
-            script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-            script.async = true;
-            document.body.appendChild(script);
-
-            window.googleTranslateElementInit = () => {
-                new window.google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
-            };
-        }
-    }, []);
 
     const speakText = (text) => {
         const utterance = new SpeechSynthesisUtterance();
@@ -82,20 +62,59 @@ const MenuItems = ({ onPageChange }) => {
         window.speechSynthesis.speak(utterance);
     };
 
+    const debounce = (func, wait) => {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                timeout = null;
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    };
+
+    const handleMouseOver = debounce((event) => {
+        let hoveredElementText = '';
+        if (speakEnabled) {
+            if (event.target.innerText) {
+                hoveredElementText = event.target.innerText;
+            } else if (event.target.value) {
+                hoveredElementText = event.target.value;
+            } else if (event.target.getAttribute('aria-label')) {
+                hoveredElementText = event.target.getAttribute('aria-label');
+            } else if (event.target.getAttribute('aria-labelledby')) {
+                const id = event.target.getAttribute('aria-labelledby');
+                const labelElement = document.getElementById(id);
+                if (labelElement) {
+                    hoveredElementText = labelElement.innerText;
+                }
+            }
+            speakText(hoveredElementText);
+        }
+    }, 1000);
+
+    const toggleSpeak = () => {
+        if (speakEnabled) {
+            window.speechSynthesis.cancel();
+        }
+        setSpeakEnabled(!speakEnabled);
+    };
+
     return (
-        <div className={`manager-menu-items ${textSize === 'large' ? 'large-text' : ''}`}>
+        <div className={`manager-menu-items ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
             <div className="toggle-button-container">
-                <button onClick={() => speakText("Menu Items... ID...	Name...	Price... Delete... Add New Menu Item... Name:... Price:... Add... Select a Menu Item to Edit... Trends... Inventory... Menu Items... Order History")}>Speak</button>
-                <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
+                <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak} onMouseOver={handleMouseOver}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
+                <button className="toggle-button" onClick={toggleTextSize} onMouseOver={handleMouseOver}>Toggle Text Size</button>
             </div>
             <div className="left-panel">
-                <h2>Menu Items</h2>
+                <h2 onMouseOver={handleMouseOver}>Menu Items</h2>
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Price</th>
+                            <th onMouseOver={handleMouseOver}>ID</th>
+                            <th onMouseOver={handleMouseOver}>Name</th>
+                            <th onMouseOver={handleMouseOver}>Price</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -103,29 +122,29 @@ const MenuItems = ({ onPageChange }) => {
                     </tbody>
                 </table>
                 <div className="button-panel">
-                    <button onClick={handleDeleteButtonClick} disabled={!selectedItem}>Delete</button>
+                    <button onClick={handleDeleteButtonClick} disabled={!selectedItem} onMouseOver={handleMouseOver}>Delete</button>
                 </div>
                 <div className="add-item-section">
-                    <h2>Add New Menu Item</h2>
-                    <label htmlFor="newName">Name:</label>
-                    <input type="text" id="newName" name="name" value={newMenuItem.name} onChange={handleInputChange} />
-                    <label htmlFor="newPrice">Price:</label>
-                    <input type="text" id="newPrice" name="price" value={newMenuItem.price} onChange={handleInputChange} />
-                    <button onClick={handleAddMenuItem}>Add</button>
+                    <h2 onMouseOver={handleMouseOver}>Add New Menu Item</h2>
+                    <label htmlFor="newName" onMouseOver={handleMouseOver}>Name:</label>
+                    <input type="text" id="newName" name="name" value={newMenuItem.name} onChange={handleInputChange} onMouseOver={handleMouseOver} />
+                    <label htmlFor="newPrice" onMouseOver={handleMouseOver}>Price:</label>
+                    <input type="text" id="newPrice" name="price" value={newMenuItem.price} onChange={handleInputChange} onMouseOver={handleMouseOver} />
+                    <button onClick={handleAddMenuItem} onMouseOver={handleMouseOver}>Add</button>
                 </div>
             </div>
             <div className="right-panel">
-                <h2>{selectedItem ? `Edit Menu Item ${selectedItem.menuid}` : 'Select a Menu Item to Edit'}</h2>
+                <h2 onMouseOver={handleMouseOver}>{selectedItem ? `Edit Menu Item ${selectedItem.menuid}` : 'Select a Menu Item to Edit'}</h2>
                 {selectedItem && (
                     <>
-                        <label htmlFor="editName">Name:</label>
-                        <input type="text" id="editName" name="name" value={selectedItem.itemname} onChange={handleInputChange} />
-                        <label htmlFor="editPrice">Price:</label>
-                        <input type="text" id="editPrice" name="price" value={selectedItem.price} onChange={handleInputChange} />
-                        <h3>Ingredients:</h3>
+                        <label htmlFor="editName" onMouseOver={handleMouseOver}>Name:</label>
+                        <input type="text" id="editName" name="name" value={selectedItem.itemname} onChange={handleInputChange} onMouseOver={handleMouseOver} />
+                        <label htmlFor="editPrice" onMouseOver={handleMouseOver}>Price:</label>
+                        <input type="text" id="editPrice" name="price" value={selectedItem.price} onChange={handleInputChange} onMouseOver={handleMouseOver} />
+                        <h3 onMouseOver={handleMouseOver}>Ingredients:</h3>
                         <ul>
                             {checkedItems.map((ingredient, index) => (
-                                <li key={index}>{ingredient}</li>
+                                <li key={index} onMouseOver={handleMouseOver}>{ingredient}</li>
                             ))}
                         </ul>
                     </>
@@ -133,10 +152,10 @@ const MenuItems = ({ onPageChange }) => {
             </div>
             <div id="google_translate_element"></div>
             <div className="bottom-nav">
-                <button onClick={() => onPageChange('trends')}>Trends</button>
-                <button onClick={() => onPageChange('inventory')}>Inventory</button>
-                <button onClick={() => onPageChange('menuItems')}>Menu Items</button>
-                <button onClick={() => onPageChange('orderHistory')}>Order History</button>
+                <button onClick={() => onPageChange('trends')} onMouseOver={handleMouseOver}>Trends</button>
+                <button onClick={() => onPageChange('inventory')} onMouseOver={handleMouseOver}>Inventory</button>
+                <button onClick={() => onPageChange('menuItems')} onMouseOver={handleMouseOver}>Menu Items</button>
+                <button onClick={() => onPageChange('orderHistory')} onMouseOver={handleMouseOver}>Order History</button>
             </div>
         </div>
     );

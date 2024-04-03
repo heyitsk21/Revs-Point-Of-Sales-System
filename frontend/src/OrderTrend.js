@@ -1,50 +1,120 @@
 import React, { useEffect, useState } from 'react';
 import './OrderTrend.css';
 import { useTextSize } from './TextSizeContext';
+import axios from 'axios';
 
-const OrderTrend = ({ startDate, endDate, onPageChange }) => {
-    const [menuID1, setMenuID1] = useState([]);
-    const [menuID2, setMenuID2] = useState([]);
-    const [count, setCount] = useState([]);
+const OrderTrend = ({ onPageChange }) => {
+    const [menuData, setMenuData] = useState([]);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [speakEnabled, setSpeakEnabled] = useState(false); // State to track whether speak feature is enabled
     const { textSize, toggleTextSize } = useTextSize();
 
     useEffect(() => {
-        fetchData(startDate, endDate);
+        if (startDate && endDate) {
+            fetchData(startDate, endDate);
+        }
     }, [startDate, endDate]);
 
     const fetchData = async (startDate, endDate) => {
         try {
-            const mockMenuID1 = ["MenuID1_A", "MenuID1_B", "MenuID1_C"];
-            const mockMenuID2 = ["MenuID2_A", "MenuID2_B", "MenuID2_C"];
-            const mockCount = [10, 20, 15];
-
-            setMenuID1(mockMenuID1);
-            setMenuID2(mockMenuID2);
-            setCount(mockCount);
+            const response = await axios.post('http://127.0.0.1:5000/api/manager/reports/generateordertrend', {
+                startdate: startDate,
+                enddate: endDate
+            });
+            console.log('Response from API:', response.data);
+            setMenuData(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
 
+    const speakText = (text) => {
+        const utterance = new SpeechSynthesisUtterance();
+        utterance.text = text;
+        window.speechSynthesis.speak(utterance);
+    };
+
+    const debounce = (func, wait) => {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                timeout = null;
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    };
+
+    const handleMouseOver = debounce((event) => {
+        let hoveredElementText = '';
+        if (speakEnabled) {
+            if (event.target.innerText) {
+                hoveredElementText = event.target.innerText;
+            } else if (event.target.value) {
+                hoveredElementText = event.target.value;
+            } else if (event.target.getAttribute('aria-label')) {
+                hoveredElementText = event.target.getAttribute('aria-label');
+            } else if (event.target.getAttribute('aria-labelledby')) {
+                const id = event.target.getAttribute('aria-labelledby');
+                const labelElement = document.getElementById(id);
+                if (labelElement) {
+                    hoveredElementText = labelElement.innerText;
+                }
+            }
+            speakText(hoveredElementText);
+        }
+    }, 1000);
+
+    const toggleSpeak = () => {
+        if (speakEnabled) {
+            window.speechSynthesis.cancel();
+        }
+        setSpeakEnabled(!speakEnabled);
+    };
+
     return (
         <div className={`order-trend ${textSize === 'large' ? 'large-text' : ''}`}>
-            <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
-            <h2>Order Trend Report</h2>
-            <div className="report-list">
+            <div className="toggle-button-container">
+                <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
+                <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
+            </div>
+            <button onClick={() => onPageChange('trends')} onMouseOver={handleMouseOver}>Back to Trends</button>
+            <h2 onMouseOver={handleMouseOver}>Order Trend Report</h2>
+            <div className="date-fields">
+                <label>Start Date:</label>
+                <input
+                    type="text"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    placeholder="YYYY-MM-DD"
+                    onMouseOver={handleMouseOver}
+                />
+                <label>End Date:</label>
+                <input
+                    type="text"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    placeholder="YYYY-MM-DD"
+                    onMouseOver={handleMouseOver}
+                />
+            </div>
+            <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Trend Report</button>
+            <div className="report-list" onMouseOver={handleMouseOver}>
                 <div className="report-header">
                     <span className="header-item">Menu Item 1</span>
                     <span className="header-item">Menu Item 2</span>
                     <span className="header-item">Pair Count</span>
                 </div>
-                {menuID1.map((menuItem1, index) => (
+                {menuData.map((item, index) => (
                     <div key={index} className="report-item">
-                        <span className="report-item">{menuItem1}</span>
-                        <span className="report-item">{menuID2[index]}</span>
-                        <span className="report-item">{count[index]}</span>
+                        <span className="report-item">{item.menuid1}</span>
+                        <span className="report-item">{item.menuid2}</span>
+                        <span className="report-item">{item.count}</span>
                     </div>
                 ))}
             </div>
-            <button onClick={() => onPageChange('trends')}>Back to Trends</button>
         </div>
     );
 };
