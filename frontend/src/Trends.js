@@ -3,13 +3,8 @@ import './Trends.css';
 import { useTextSize } from './TextSizeContext';
 
 const Trends = ({ onPageChange }) => {
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
     const { textSize, toggleTextSize } = useTextSize();
-
-    const isValidDate = (date) => {
-        return date.match(/\d{4}-\d{2}-\d{2}/);
-    };
+    const [speakEnabled, setSpeakEnabled] = useState(false);
 
     useEffect(() => {
         if (!window.google || !window.google.translate || !window.google.translate.TranslateElement) {
@@ -25,27 +20,15 @@ const Trends = ({ onPageChange }) => {
     }, []);
 
     const handleGenerateProdUsage = () => {
-        if (isValidDate(startDate) && isValidDate(endDate)) {
-            onPageChange('prodUsage');
-        } else {
-            alert('Please enter valid dates (YYYY-MM-DD).');
-        }
+        onPageChange('prodUsage');
     };
 
     const handleGenerateSalesReport = () => {
-        if (isValidDate(startDate) && isValidDate(endDate)) {
-            onPageChange('salesReport');
-        } else {
-            alert('Please enter valid dates (YYYY-MM-DD).');
-        }
+        onPageChange('salesReport');
     };
 
     const handleGenerateExcessReport = () => {
-        if (isValidDate(startDate)) {
-            onPageChange('excessReport');
-        } else {
-            alert('Please enter a valid start date (YYYY-MM-DD).');
-        }
+        onPageChange('excessReport');
     };
 
     const handleGenerateRestockReport = () => {
@@ -53,11 +36,7 @@ const Trends = ({ onPageChange }) => {
     };
 
     const handleGenerateOrderTrendReport = () => {
-        if (isValidDate(startDate) && isValidDate(endDate)) {
-            onPageChange('orderTrend');
-        } else {
-            alert('Please enter valid dates (YYYY-MM-DD).');
-        }
+        onPageChange('orderTrend');
     };
 
     const speakText = (text) => {
@@ -66,40 +45,39 @@ const Trends = ({ onPageChange }) => {
         window.speechSynthesis.speak(utterance);
     };
 
+    const handleMouseOver = (text) => {
+        if (speakEnabled) {
+            setTimeout(() => {
+                speakText(text);
+            }, 1000); // 1-second delay
+        }
+    };
+
+    const toggleSpeak = () => {
+        if (speakEnabled) {
+            window.speechSynthesis.cancel();
+        }
+        setSpeakEnabled(!speakEnabled);
+    };
+
     return (
         <div className={`trends ${textSize === 'large' ? 'large-text' : ''}`}>
             <div id="google_translate_element"></div>
-            <button onClick={() => speakText("... Trends... Start Date... End Date... Generate Prodoct Usage... Generate Sales Report... Generate Excess Report... Generate Restock Report... Generate Order Trend Report... Trends... Inventory... Menu Items... Order History... ")}>Speak</button>
-            <button onClick={toggleTextSize}>Toggle Text Size</button>
-            <h2>Trends</h2>
-            <div className="date-fields">
-                <label>Start Date:</label>
-                <input
-                    type="text"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    placeholder="YYYY-MM-DD"
-                />
-                <label>End Date:</label>
-                <input
-                    type="text"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    placeholder="YYYY-MM-DD"
-                />
-            </div>
+            <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak} onMouseOver={handleMouseOver}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
+            <button onMouseOver={() => handleMouseOver("Toggle Text Size")} onClick={toggleTextSize}>Toggle Text Size</button>
+            <h2 onMouseOver={() => handleMouseOver("Trends")}>Trends</h2>
             <div className="trend-buttons">
-                <button onClick={handleGenerateProdUsage}>Generate Product Usage</button>
-                <button onClick={handleGenerateSalesReport}>Generate Sales Report</button>
-                <button onClick={handleGenerateExcessReport}>Generate Excess Report</button>
-                <button onClick={handleGenerateRestockReport}>Generate Restock Report</button>
-                <button onClick={handleGenerateOrderTrendReport}>Generate Order Trend Report</button>
+                <button onMouseOver={() => handleMouseOver("Generate Product Usage")} onClick={handleGenerateProdUsage}>Generate Product Usage</button>
+                <button onMouseOver={() => handleMouseOver("Generate Sales Report")} onClick={handleGenerateSalesReport}>Generate Sales Report</button>
+                <button onMouseOver={() => handleMouseOver("Generate Excess Report")} onClick={handleGenerateExcessReport}>Generate Excess Report</button>
+                <button onMouseOver={() => handleMouseOver("Generate Restock Report")} onClick={handleGenerateRestockReport}>Generate Restock Report</button>
+                <button onMouseOver={() => handleMouseOver("Generate Order Trend Report")} onClick={handleGenerateOrderTrendReport}>Generate Order Trend Report</button>
             </div>
             <div className="bottom-nav">
-                <button onClick={() => onPageChange('trends')}>Trends</button>
-                <button onClick={() => onPageChange('inventory')}>Inventory</button>
-                <button onClick={() => onPageChange('menuItems')}>Menu Items</button>
-                <button onClick={() => onPageChange('orderHistory')}>Order History</button>
+                <button onMouseOver={() => handleMouseOver("Trends")} onClick={() => onPageChange('trends')}>Trends</button>
+                <button onMouseOver={() => handleMouseOver("Inventory")} onClick={() => onPageChange('inventory')}>Inventory</button>
+                <button onMouseOver={() => handleMouseOver("Menu Items")} onClick={() => onPageChange('menuItems')}>Menu Items</button>
+                <button onMouseOver={() => handleMouseOver("Order History")} onClick={() => onPageChange('orderHistory')}>Order History</button>
             </div>
         </div>
     );

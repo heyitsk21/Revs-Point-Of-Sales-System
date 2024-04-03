@@ -167,22 +167,23 @@ class Ingredients(Resource):
         ingredientid = data.get("ingredientid")
         count = data.get("count")
 
-        delete_from_join_cmd = text("DELETE FROM MenuItemIngredients WHERE IngredientID = {inputingredientid}".format(inputingredientid=ingredientid))
+        delete_from_join_cmd = "DELETE FROM MenuItemIngredients WHERE IngredientID = {inputingredientid}".format(inputingredientid=ingredientid)
         with db.engine.connect() as conn:
             conn.connection.cursor().execute(delete_from_join_cmd)
-            conn.conneciton.commit()
+            conn.connection.commit()
 
-        delete_ingredient_cmd = text("DELETE FROM Ingredients WHERE IngredientID = {inputingredientid}".format(inputingredientid=ingredientid))
+        delete_ingredient_cmd = "DELETE FROM Ingredients WHERE IngredientID = {inputingredientid}".format(inputingredientid=ingredientid)
         with db.engine.connect() as conn:
             conn.connection.cursor().execute(delete_ingredient_cmd)
             conn.connection.commit()
 
         negate_count = count * -1
         log_message = "INGREDIENT COUNT SET TO 0: DELETED INGREDIENT WITH INGREDIENTID = {inputingredientid}".format(inputingredientid=ingredientid)
-        insert_log_cmd = text("INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ({inputingredientid}, {inputnegate_count}, {inputlog_message}, NOW())".format(inputingredientid=ingredientid, inputnegate_count=negate_count, inputlog_message=log_message))
+
+        insert_log_cmd = text("INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ({inputingredientid}, {inputnegate_count}, '{inputlog_message}', NOW())".format(inputingredientid=ingredientid, inputnegate_count=negate_count, inputlog_message=log_message))
         try:         
             with db.engine.connect() as conn:
-                conn.execute(text(insert_log_cmd))
+                conn.execute(insert_log_cmd)
                 conn.commit()
             return jsonify({"message": "successful deletion of ingredient with ingredientid = {inputingredientid}".format(inputingredientid=ingredientid)})
         except ObjectNotExecutableError as e:
