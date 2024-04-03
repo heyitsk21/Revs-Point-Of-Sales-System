@@ -45,47 +45,88 @@ const Employee = ({ onCatChange }) => {
     };
 
     let currentCat;
+    let currentIdStart;
     switch (category) {
+        case 'Burgers':
+            currentCat = 'Burgers';
+            currentIdStart = 100;
+            break;
         case 'Sandwiches':
             currentCat = 'Sandwiches';
+            currentIdStart = 200;
             break;
-        case 'Sides':
-            currentCat = 'Sides';
+        case 'Desserts':
+            currentCat = 'Desserts';
+            currentIdStart = 400;
             break;
         case 'Drinks':
             currentCat = 'Drinks';
+            currentIdStart = 500;
             break;
+        case 'Value Meal':
+                currentCat = 'Value Meal';
+                currentIdStart = 600;
+                break;
         case 'Limited Time':
             currentCat = 'Limited Time';
+            currentIdStart = 700;
             break;
         default:
-            currentCat = 'Sandwiches';
+            currentCat = 'Burgers';
+            currentIdStart = 100;
     }
 
-    const [allmenuitems, setMenuSections] = useState([]); // Initialize state for menu section
+    const [allmenuitems, setAllMenuItems] = useState([]); // Initialize state for all menu items
+    const [menuitemsection, setMenuSection] = useState([]); // Initialize state for one menu section
 
-    // Function to fetch order history from the backend API
-    const fetchMenuSection = async () => {
+    // Function to fetch all menu items from the backend API
+    const fetchAllMenuItems = async () => {
         try {
             const response = await axios.get('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitems');
-            setMenuSections(response.data); // Update menu section state with response data
+            setAllMenuItems(response.data); // Update menu section state with response data
         } catch (error) {
-            console.error('Error fetching order history:', error);
+            console.error('Error fetching menu items:', error);
         }
     };
 
+    // Function to fetch one menu section from the backend API
+    const fetchMenuSection = async (currentIdStart) => {
+        try {
+            console.log(currentIdStart);
+            const response = await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/employee/getmenuitems',  {menugroup:currentIdStart});
+            setMenuSection(response.data); // Update menu section state with response data
+        } catch (error) {
+            console.error('Error fetching menu items:', error);
+        }
+    };
+
+    // Call fetchAllMenuItems function when component mounts
+    useEffect(() => {
+        fetchAllMenuItems();
+    }, []);
+
     // Call fetchMenuSection function when component mounts
     useEffect(() => {
-        fetchMenuSection();
-    }, []);
+        fetchMenuSection(currentIdStart);
+    }, [currentIdStart]);
 
     const handleOrderClick = (menusection) => {
         setSelectedMenuSection(menusection);
     };
 
-    const renderMenuItems = () => {
+    const renderAllMenuItems = () => {
         return allmenuitems.map(menuitem => (
             <div key={menuitem.itemname} className={`itemname ${selectedMenuSection && selectedMenuSection.menuid === menuitem.menuid ? 'selected' : ''}`} onClick={() => handleOrderClick(menuitem)}>
+                <div>Item Name: {menuitem.itemname}</div>
+                <div>Menu ID: {menuitem.menuid}</div>
+                <div>Price: {menuitem.price}</div>
+            </div>
+        ));
+    };
+
+    const renderMenuSection = () => {
+        return menuitemsection.map(menuitem => (
+            <div key={menuitem.menuid} className={`itemname ${selectedMenuSection && selectedMenuSection.menuid === menuitem.menuid ? 'selected' : ''}`} onClick={() => handleOrderClick(menuitem)}>
                 <div>Item Name: {menuitem.itemname}</div>
                 <div>Menu ID: {menuitem.menuid}</div>
                 <div>Price: {menuitem.price}</div>
@@ -114,7 +155,8 @@ const Employee = ({ onCatChange }) => {
                         <div class = 'items'>
                             {
                             //items
-                            renderMenuItems()
+                            // renderAllMenuItems()
+                            renderMenuSection()
                             /* <button>Sandwich 1</button>
                             <button>Sandwich 2</button>
                             <button>Sandwich 3</button> */}
@@ -127,9 +169,12 @@ const Employee = ({ onCatChange }) => {
             </div>
 
             <div className="bottom-nav">
+                <button onClick={() => handleCategories('Burgers')}>Burgers</button>
                 <button onClick={() => handleCategories('Sandwiches')}>Sandwiches</button>
-                <button onClick={() => handleCategories('Sides')}>Sides</button>
+                <button onClick={() => handleCategories('Salads')}>Salads</button>
+                <button onClick={() => handleCategories('Desserts')}>Desserts</button>
                 <button onClick={() => handleCategories('Drinks')}>Drinks</button>
+                <button onClick={() => handleCategories('Value Meals')}>Value Meals</button>
                 <button onClick={() => handleCategories('Limited Time')}>Limited Time</button>
             </div>
         </div>
