@@ -1,0 +1,99 @@
+/* Employee.css */
+
+.employee {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.top-bar {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-info span {
+    margin-right: 10px;
+}
+
+.top-bar button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.top-bar button:hover {
+    background-color: #0056b3;
+}
+
+.middle-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.large-text .middle-content h1 {
+    font-size: 80px;
+}
+
+.large-text .top-bar button,
+.large-text .bottom-nav button {
+    font-size: 24px;
+}
+
+.middle-content h1 {
+    font-size: 36px;
+}
+
+.bottom-nav {
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.bottom-nav button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+.bottom-nav button:hover {
+    background-color: #0056b3;
+}
+
+.layout {
+    width: 1366px;
+    height: 768px;
+  
+    display: grid;
+    grid:
+      "leftSide leftSide rightSide" 1fr
+      / auto 0.5fr auto;
+    gap: 8px;
+}
+.leftSide { 
+    grid-area: leftSide; 
+    background-color: rgb(227, 227, 227);
+    margin: 0px 25px;
+    padding: 20px;
+}
+.rightSide { 
+    grid-area: rightSide; 
+    background-color: rgb(227, 227, 227);
+    margin: 0px 25px;
+    padding: 20px;
+}
