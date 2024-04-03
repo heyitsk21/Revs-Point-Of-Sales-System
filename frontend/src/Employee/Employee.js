@@ -43,7 +43,9 @@ const Employee = ({ onCatChange }) => {
     };
 
     const sandwichList = ['Sandwich 1', 'Sandwich 2', 'Sandwich 3'];
+    const sidesList = ['Side 1', 'Side 2', 'Side 3'];
     const drinkList = ['Drink 1', 'Drink 2', 'Drink 3'];
+    const limitedList = ['Limited Item 1', 'Limited Item 2', 'Limited Item 3'];
 
     let currentCat;
     let items;
@@ -52,9 +54,17 @@ const Employee = ({ onCatChange }) => {
             currentCat = 'Sandwiches';
             items = sandwichList;
             break;
+        case 'Sides':
+            currentCat = 'Sides';
+            items = sidesList;
+            break;
         case 'Drinks':
             currentCat = 'Drinks';
             items = drinkList;
+            break;
+        case 'Limited Time':
+            currentCat = 'Limited Time';
+            items = limitedList;
             break;
         default:
             currentCat = 'Sandwiches';
@@ -80,9 +90,11 @@ const Employee = ({ onCatChange }) => {
                     <div class="leftSide">
                         {currentCat}
                         <div class = 'items'>
-                            <button>Sandwich 1</button>
+                            {
+                            items
+                            /* <button>Sandwich 1</button>
                             <button>Sandwich 2</button>
-                            <button>Sandwich 3</button>
+                            <button>Sandwich 3</button> */}
                         </div>
                     </div>
                     <div class="rightSide">
@@ -93,9 +105,9 @@ const Employee = ({ onCatChange }) => {
 
             <div className="bottom-nav">
                 <button onClick={() => handleCategories('Sandwiches')}>Sandwiches</button>
-                <button>Sides</button>
+                <button onClick={() => handleCategories('Sides')}>Sides</button>
                 <button onClick={() => handleCategories('Drinks')}>Drinks</button>
-                <button>Limited Time</button>
+                <button onClick={() => handleCategories('Limited Time')}>Limited Time</button>
             </div>
         </div>
     );
