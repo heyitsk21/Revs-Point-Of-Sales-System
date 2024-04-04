@@ -192,7 +192,7 @@ class Ingredients(Resource):
 @api.route('/api/manager/menuitemingredients')
 class MenuItemIngredients(Resource):
     @api.expect(GetIngredientsFromMenuItem_model, validate=True)
-    def get(self): #GetIngredientFromMenuItem
+    def put(self): #GetIngredientFromMenuItem
         with db.engine.connect() as conn:
             menuitemid = request.get_json().get("menuitemid") 
             result = conn.execution_options(stream_results=True).execute(text("select * from menuitemingredients where menuid = {inputmenuitemid}".format(inputmenuitemid = menuitemid)))
