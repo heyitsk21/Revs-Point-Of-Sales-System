@@ -10,7 +10,7 @@ import SalesReport from './SalesReport';
 import ExcessReport from './ExcessReport';
 import RestockReport from './RestockReport';
 import OrderTrend from './OrderTrend';
-import { TextSizeProvider } from './TextSizeContext';
+import { TextSizeProvider } from './components/TextSizeContext';
 
 function App() {
     const [page, setPage] = useState('manager');

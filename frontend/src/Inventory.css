@@ -27,10 +27,13 @@
 
 .inventory-list {
     flex: 1;
+    display: grid;
     padding-right: 20px;
 }
 
 .inventory-details {
+    background-color: white;
+    position: fixed;
     flex: 1;
     padding-left: 20px;
 }
@@ -78,14 +81,3 @@
     margin-right: 10px;
 }
 
-.bottom-nav {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: auto;
-    padding: 20px;
-}
-
-.bottom-nav button {
-    margin: 0 10px;
-}

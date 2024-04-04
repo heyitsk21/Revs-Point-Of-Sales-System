@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './OrderTrend.css';
-import { useTextSize } from './TextSizeContext';
+import { useTextSize } from './components/TextSizeContext';
 import axios from 'axios';
 
 const OrderTrend = ({ onPageChange }) => {

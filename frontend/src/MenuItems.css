@@ -93,20 +93,4 @@ button:disabled {
     cursor: not-allowed;
 }
 
-.bottom-nav {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: auto;
-    padding: 20px;
-}
 
-.bottom-nav button {
-    margin: 0 10px;
-}
-
-#google_translate_element {
-    overflow: hidden;
-    border-right: 1px solid #ccc;
-    margin-bottom: 20px;
-}

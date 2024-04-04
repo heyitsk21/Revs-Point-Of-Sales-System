@@ -9,7 +9,7 @@ AddMenuItem_model = api.model('AddMenuItem', {"menuid":fields.Integer(required=T
 UpdateMenuItem_model = api.model('UpdateMenuItem', {"menuid":fields.Integer(required=True), "itemname":fields.String(min_length=3, max_length=30), "price":fields.Float})
 DeleteMenuItem_model = api.model('DeleteMenuItem', {"menuid":fields.Integer(required=True)})
 
-AddIngredient_model = api.model('AddIngredient', {"ingredientid":fields.Integer(required=True), "ingredientname":fields.String(min_length=3,max_length=30,required=True), "count":fields.Integer(required=True), "ppu":fields.Float(required=True), "minamount":fields.Integer(required=True)})
+AddIngredient_model = api.model('AddIngredient', { "ingredientname":fields.String(min_length=3,max_length=30,required=True), "count":fields.Integer(required=True), "ppu":fields.Float(required=True), "minamount":fields.Integer(required=True)})
 UpdateIngredient_model = api.model('UpdateIngredient', {"ingredientid":fields.Integer(required=True), "ingredientname":fields.String(min_length=3,max_length=30), "count":fields.Integer, "ppu":fields.Float, "minamount":fields.Integer})
 DeleteIngredient_model = api.model('DeleteIngredient', {"ingredientid":fields.Integer(required=True), "count":fields.Integer(required=True)})
 
@@ -112,20 +112,20 @@ class Ingredients(Resource):
     @api.expect(AddIngredient_model, validate=True)
     def post(self): #AddIngredient
         data = request.get_json()
-        ingredientid = data.get("ingredientid")
+
         ingredientname = data.get("ingredientname")
         count = data.get("count")
         ppu = data.get("ppu")
         minamount = data.get("minamount")
         
-        if (ingredientid == 0 or ingredientname == "string" or count == 0 or ppu == 0 or minamount == 0):
+        if (ingredientname == "string" or count == 0 or ppu == 0 or minamount == 0):
             return jsonify({"message":"failed to insert ingredient. Missing fields. All fields are required."})
         
-        insert_query = text("INSERT INTO Ingredients (IngredientID, Ingredientname, Count, PPU, minamount) VALUES ({inputingredientid}, '{inputingredientname}', {inputcount}, {inputppu}, {inputminamount})".format(inputingredientid=ingredientid,inputingredientname=ingredientname,inputcount=count,inputppu=ppu, inputminamount=minamount))
+        insert_query = text("INSERT INTO Ingredients (Ingredientname, Count, PPU, minamount) VALUES ('{inputingredientname}', {inputcount}, {inputppu}, {inputminamount})".format(inputingredientname=ingredientname,inputcount=count,inputppu=ppu, inputminamount=minamount))
         with db.engine.connect() as conn:
-            result = conn.execute(text(insert_query))
+            conn.execute(insert_query)
             conn.commit()
-        return jsonify({"message":"Sucessfully inserted the ingredient with ingredientid = {inputingredientid} and ingredientname = {inputingredientname}".format(inputingredientid=ingredientid,inputingredientname=ingredientname)})
+        return jsonify({"message":"Sucessfully inserted the ingredient with ingredientname = {inputingredientname}".format(inputingredientname=ingredientname)})
 
     @api.expect(UpdateIngredient_model, validate=True)
     def put(self): #UpdateIngredient
