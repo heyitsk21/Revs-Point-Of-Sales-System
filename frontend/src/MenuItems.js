@@ -103,6 +103,32 @@ const MenuItems = ({ onPageChange }) => {
         <div><ManagerTopBar/></div>
         <div className='manager-menu-items'>
             <div className="left-panel">
+                <div className="add-item-section">
+                        <h2 onMouseOver={handleMouseOver}>Add New Menu Item</h2>
+                        <label htmlFor="newName" onMouseOver={handleMouseOver}>Name:</label>
+                        <input type="text" id="newName" name="name" value={newMenuItem.name} onChange={handleInputChange} onMouseOver={handleMouseOver} />
+                        <label htmlFor="newPrice" onMouseOver={handleMouseOver}>Price:</label>
+                        <input type="text" id="newPrice" name="price" value={newMenuItem.price} onChange={handleInputChange} onMouseOver={handleMouseOver} />
+                        <button onClick={handleAddMenuItem} onMouseOver={handleMouseOver}>Add</button>
+                    </div>
+                </div>
+                <div className="right-panel">
+                    <h2 onMouseOver={handleMouseOver}>{selectedItem ? `Edit Menu Item ${selectedItem.menuid}` : 'Select a Menu Item to Edit'}</h2>
+                    {selectedItem && (
+                        <>
+                            <label htmlFor="editName" onMouseOver={handleMouseOver}>Name:</label>
+                            <input type="text" id="editName" name="name" value={selectedItem.itemname} onChange={handleInputChange} onMouseOver={handleMouseOver} />
+                            <label htmlFor="editPrice" onMouseOver={handleMouseOver}>Price:</label>
+                            <input type="text" id="editPrice" name="price" value={selectedItem.price} onChange={handleInputChange} onMouseOver={handleMouseOver} />
+                            <h3 onMouseOver={handleMouseOver}>Ingredients:</h3>
+                            <ul>
+                                {checkedItems.map((ingredient, index) => (
+                                    <li key={index} onMouseOver={handleMouseOver}>{ingredient}</li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
+                </div>
                 <h2 onMouseOver={handleMouseOver}>Menu Items</h2>
                 <table>
                     <thead>
@@ -119,32 +145,6 @@ const MenuItems = ({ onPageChange }) => {
                 <div className="button-panel">
                     <button onClick={handleDeleteButtonClick} disabled={!selectedItem} onMouseOver={handleMouseOver}>Delete</button>
                 </div>
-                <div className="add-item-section">
-                    <h2 onMouseOver={handleMouseOver}>Add New Menu Item</h2>
-                    <label htmlFor="newName" onMouseOver={handleMouseOver}>Name:</label>
-                    <input type="text" id="newName" name="name" value={newMenuItem.name} onChange={handleInputChange} onMouseOver={handleMouseOver} />
-                    <label htmlFor="newPrice" onMouseOver={handleMouseOver}>Price:</label>
-                    <input type="text" id="newPrice" name="price" value={newMenuItem.price} onChange={handleInputChange} onMouseOver={handleMouseOver} />
-                    <button onClick={handleAddMenuItem} onMouseOver={handleMouseOver}>Add</button>
-                </div>
-            </div>
-            <div className="right-panel">
-                <h2 onMouseOver={handleMouseOver}>{selectedItem ? `Edit Menu Item ${selectedItem.menuid}` : 'Select a Menu Item to Edit'}</h2>
-                {selectedItem && (
-                    <>
-                        <label htmlFor="editName" onMouseOver={handleMouseOver}>Name:</label>
-                        <input type="text" id="editName" name="name" value={selectedItem.itemname} onChange={handleInputChange} onMouseOver={handleMouseOver} />
-                        <label htmlFor="editPrice" onMouseOver={handleMouseOver}>Price:</label>
-                        <input type="text" id="editPrice" name="price" value={selectedItem.price} onChange={handleInputChange} onMouseOver={handleMouseOver} />
-                        <h3 onMouseOver={handleMouseOver}>Ingredients:</h3>
-                        <ul>
-                            {checkedItems.map((ingredient, index) => (
-                                <li key={index} onMouseOver={handleMouseOver}>{ingredient}</li>
-                            ))}
-                        </ul>
-                    </>
-                )}
-            </div>
             </div>
             <ManagerBottomBar onPageChange={onPageChange} />
         </div>
