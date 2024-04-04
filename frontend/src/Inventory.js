@@ -128,11 +128,6 @@ const Inventory = ({ onPageChange }) => {
     return (
         <div className={`inventory ${textSize === 'large' ? 'large-text' : ''}`}>
             <ManagerTopBar/>
-            <div className="inventory-list">
-        
-                <h2 onMouseOver={handleMouseOver}>Inventory Items</h2>
-                {renderInventoryItems()}
-            </div>
             <div className="inventory-details">
                 <h2 onMouseOver={handleMouseOver}>Selected Item Details</h2>
                 {selectedItem && (
@@ -200,8 +195,15 @@ const Inventory = ({ onPageChange }) => {
                     />
                 </div>
                 <button onClick={handleIngredientSubmit} onMouseOver={handleMouseOver}>Submit</button>
-                <div></div>
             </div>
+            
+            <div className="inventory-list">
+        
+                <h2 onMouseOver={handleMouseOver}>Inventory Items</h2>
+                {renderInventoryItems()}
+            </div>
+
+
             <ManagerBottomBar onPageChange={onPageChange} />
         </div>
     );
