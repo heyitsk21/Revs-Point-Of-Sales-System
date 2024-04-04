@@ -1,6 +1,6 @@
 
 import React, {useState}from 'react';
-
+import './ManagerBottomBar.css';
 
 const ManagerBottomBar = ({onPageChange}) => {
     const [speakEnabled] = useState(false);
