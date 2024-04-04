@@ -28,7 +28,7 @@ const MenuItems = ({ onPageChange }) => {
 
     const rowClicked = (event, item) => {
         setSelectedItem(item);
-        setCheckedItems(item ? item.ingredients : []);
+        setCheckedItems(item ? item.ingredients || [] : []);
     };
 
     const handleDeleteButtonClick = () => {
