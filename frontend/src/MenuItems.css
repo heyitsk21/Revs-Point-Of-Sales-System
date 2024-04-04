@@ -105,8 +105,3 @@ button:disabled {
     margin: 0 10px;
 }
 
-#google_translate_element {
-    overflow: hidden;
-    border-right: 1px solid #ccc;
-    margin-bottom: 20px;
-}

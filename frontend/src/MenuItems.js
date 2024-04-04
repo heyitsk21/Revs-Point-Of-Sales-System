@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import './MenuItems.css';
-import { useTextSize } from './TextSizeContext';
+import { useTextSize } from './components/TextSizeContext';
 import axios from 'axios';
+import ManagerTopBar from './components/ManagerTopBar';
+import ManagerBottomBar from './components/ManagerBottomBar';
 
 const MenuItems = ({ onPageChange }) => {
     const [menu, setMenu] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [checkedItems, setCheckedItems] = useState([]);
     const [newMenuItem, setNewMenuItem] = useState({ id: null, name: '', price: '', ingredients: [] });
-    const [speakEnabled, setSpeakEnabled] = useState(false);
-    const { textSize, toggleTextSize } = useTextSize();
+    const [speakEnabled] = useState(false);
+    const { textSize} = useTextSize();
 
     const fetchMenuItems = async () => {
         try {
@@ -94,19 +96,12 @@ const MenuItems = ({ onPageChange }) => {
         }
     }, 1000);
 
-    const toggleSpeak = () => {
-        if (speakEnabled) {
-            window.speechSynthesis.cancel();
-        }
-        setSpeakEnabled(!speakEnabled);
-    };
 
     return (
-        <div className={`manager-menu-items ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
-            <div className="toggle-button-container">
-                <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak} onMouseOver={handleMouseOver}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
-                <button className="toggle-button" onClick={toggleTextSize} onMouseOver={handleMouseOver}>Toggle Text Size</button>
-            </div>
+
+        <div className={`manager-menu ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
+        <div><ManagerTopBar/></div>
+        <div className='manager-menu-items'>
             <div className="left-panel">
                 <h2 onMouseOver={handleMouseOver}>Menu Items</h2>
                 <table>
@@ -150,13 +145,8 @@ const MenuItems = ({ onPageChange }) => {
                     </>
                 )}
             </div>
-            <div id="google_translate_element"></div>
-            <div className="bottom-nav">
-                <button onClick={() => onPageChange('trends')} onMouseOver={handleMouseOver}>Trends</button>
-                <button onClick={() => onPageChange('inventory')} onMouseOver={handleMouseOver}>Inventory</button>
-                <button onClick={() => onPageChange('menuItems')} onMouseOver={handleMouseOver}>Menu Items</button>
-                <button onClick={() => onPageChange('orderHistory')} onMouseOver={handleMouseOver}>Order History</button>
             </div>
+            <ManagerBottomBar onPageChange={onPageChange} />
         </div>
     );
 };

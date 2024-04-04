@@ -1,23 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './Trends.css';
-import { useTextSize } from './TextSizeContext';
+import { useTextSize } from './components/TextSizeContext';
+import ManagerTopBar from './components/ManagerTopBar';
+import ManagerBottomBar from './components/ManagerBottomBar';
 
 const Trends = ({ onPageChange }) => {
-    const { textSize, toggleTextSize } = useTextSize();
-    const [speakEnabled, setSpeakEnabled] = useState(false);
+    const { textSize} = useTextSize();
+    const [speakEnabled] = useState(false);
 
-    useEffect(() => {
-        if (!window.google || !window.google.translate || !window.google.translate.TranslateElement) {
-            const script = document.createElement('script');
-            script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-            script.async = true;
-            document.body.appendChild(script);
-
-            window.googleTranslateElementInit = () => {
-                new window.google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
-            };
-        }
-    }, []);
 
     const handleGenerateProdUsage = () => {
         onPageChange('prodUsage');
@@ -53,18 +43,11 @@ const Trends = ({ onPageChange }) => {
         }
     };
 
-    const toggleSpeak = () => {
-        if (speakEnabled) {
-            window.speechSynthesis.cancel();
-        }
-        setSpeakEnabled(!speakEnabled);
-    };
-
     return (
         <div className={`trends ${textSize === 'large' ? 'large-text' : ''}`}>
-            <div id="google_translate_element"></div>
-            <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak} onMouseOver={handleMouseOver}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
-            <button onMouseOver={() => handleMouseOver("Toggle Text Size")} onClick={toggleTextSize}>Toggle Text Size</button>
+
+
+            <ManagerTopBar/>
             <h2 onMouseOver={() => handleMouseOver("Trends")}>Trends</h2>
             <div className="trend-buttons">
                 <button onMouseOver={() => handleMouseOver("Generate Product Usage")} onClick={handleGenerateProdUsage}>Generate Product Usage</button>
@@ -73,12 +56,7 @@ const Trends = ({ onPageChange }) => {
                 <button onMouseOver={() => handleMouseOver("Generate Restock Report")} onClick={handleGenerateRestockReport}>Generate Restock Report</button>
                 <button onMouseOver={() => handleMouseOver("Generate Order Trend Report")} onClick={handleGenerateOrderTrendReport}>Generate Order Trend Report</button>
             </div>
-            <div className="bottom-nav">
-                <button onMouseOver={() => handleMouseOver("Trends")} onClick={() => onPageChange('trends')}>Trends</button>
-                <button onMouseOver={() => handleMouseOver("Inventory")} onClick={() => onPageChange('inventory')}>Inventory</button>
-                <button onMouseOver={() => handleMouseOver("Menu Items")} onClick={() => onPageChange('menuItems')}>Menu Items</button>
-                <button onMouseOver={() => handleMouseOver("Order History")} onClick={() => onPageChange('orderHistory')}>Order History</button>
-            </div>
+            <ManagerBottomBar onPageChange={onPageChange} />
         </div>
     );
 };

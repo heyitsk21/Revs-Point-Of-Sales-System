@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './OrderHistory.css';
-import { useTextSize } from './TextSizeContext';
+import { useTextSize } from './components/TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
+import ManagerTopBar from './components/ManagerTopBar';
+import ManagerBottomBar from './components/ManagerBottomBar';
 
 const OrderHistory = ({ onPageChange }) => {
     const [orders, setOrders] = useState([]); // Initialize state for orders
     const [selectedOrder, setSelectedOrder] = useState(null);
-    const [speakEnabled, setSpeakEnabled] = useState(false); // State to track whether speak feature is enabled
-    const { textSize, toggleTextSize } = useTextSize(); // Access textSize state and toggleTextSize function
+    const [speakEnabled] = useState(false); // State to track whether speak feature is enabled
+    const { textSize} = useTextSize(); // Access textSize state and toggleTextSize function
 
     // Function to fetch order history from the backend API
     const fetchOrderHistory = async () => {
@@ -82,19 +84,10 @@ const OrderHistory = ({ onPageChange }) => {
         }
     }, 1000);
 
-    const toggleSpeak = () => {
-        if (speakEnabled) {
-            window.speechSynthesis.cancel();
-        }
-        setSpeakEnabled(!speakEnabled);
-    };
-
     return (
-        <div className={`order-history ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
-            <div className="toggle-button-container">
-                <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
-                <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
-            </div>
+        <div className={`order-manager ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
+            <ManagerTopBar/>
+            <div className='order-history'>
             <div className="order-list">
                 <h2 onMouseOver={handleMouseOver}>Order History</h2>
                 {renderOrderItems()}
@@ -113,12 +106,8 @@ const OrderHistory = ({ onPageChange }) => {
                     </div>
                 )}
             </div>
-            <div className="bottom-nav">
-                <button onClick={() => onPageChange('trends')} onMouseOver={handleMouseOver}>Trends</button>
-                <button onClick={() => onPageChange('inventory')} onMouseOver={handleMouseOver}>Inventory</button>
-                <button onClick={() => onPageChange('menuItems')} onMouseOver={handleMouseOver}>Menu Items</button>
-                <button onClick={() => onPageChange('orderHistory')} onMouseOver={handleMouseOver}>Order History</button>
             </div>
+            <ManagerBottomBar onPageChange={onPageChange} />
         </div>
     );
 };

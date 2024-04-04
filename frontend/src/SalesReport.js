@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './SalesReport.css';
-import { useTextSize } from './TextSizeContext';
+import { useTextSize } from './components/TextSizeContext';
 import axios from 'axios';
 
 const SalesReport = ({ onPageChange }) => {

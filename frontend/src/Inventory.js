@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './Inventory.css';
-import { useTextSize } from './TextSizeContext';
+import { useTextSize } from './components/TextSizeContext';
 import axios from 'axios';
-
+import ManagerTopBar from './components/ManagerTopBar';
+import ManagerBottomBar from './components/ManagerBottomBar';
 const Inventory = ({ onPageChange }) => {
     const [inventory, setInventory] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -13,8 +14,8 @@ const Inventory = ({ onPageChange }) => {
         ppu: 0,
         minamount: 0
     });
-    const [speakEnabled, setSpeakEnabled] = useState(false);
-    const { textSize, toggleTextSize } = useTextSize();
+    const [speakEnabled] = useState(false);
+    const { textSize} = useTextSize();
 
     const fetchInventory = async () => {
         try {
@@ -59,9 +60,9 @@ const Inventory = ({ onPageChange }) => {
     };
 
 
-    const handleIngredientDelete = async (itemId) => {
+    const handleIngredientDelete = async (itemId,deleteCount) => {
         try {
-            const response = await axios.delete('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/ingredients', { data: { ingredientid: itemId } });
+            const response = await axios.delete('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/ingredients', { data: { ingredientid: itemId ,count:deleteCount} });
             console.log('Item deleted successfully:', response.data);
             fetchInventory();
         } catch (error) {
@@ -107,12 +108,6 @@ const Inventory = ({ onPageChange }) => {
         }
     }, 1000); 
 
-    const toggleSpeak = () => {
-        if (speakEnabled) {
-            window.speechSynthesis.cancel();
-        }
-        setSpeakEnabled(!speakEnabled);
-    };
 
     const renderInventoryItems = () => {
         return inventory.map(item => (
@@ -121,7 +116,7 @@ const Inventory = ({ onPageChange }) => {
                 <span>Price Per Unit: ${item.ppu}</span>
                 <span>Count: {item.count}</span>
                 <span>Min Amount: {item.minamount}</span>
-                <button onClick={(e) => { e.stopPropagation(); handleIngredientDelete(item.ingredientid); }}>Delete</button>
+                <button onClick={(e) => { e.stopPropagation(); handleIngredientDelete(item.ingredientid,item.count); }}>Delete</button>
             </div>
         ));
     };
@@ -132,11 +127,9 @@ const Inventory = ({ onPageChange }) => {
 
     return (
         <div className={`inventory ${textSize === 'large' ? 'large-text' : ''}`}>
-            <div className="toggle-button-container">
-                <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
-                <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
-            </div>
+            <ManagerTopBar/>
             <div className="inventory-list">
+        
                 <h2 onMouseOver={handleMouseOver}>Inventory Items</h2>
                 {renderInventoryItems()}
             </div>
@@ -209,12 +202,7 @@ const Inventory = ({ onPageChange }) => {
                 <button onClick={handleIngredientSubmit} onMouseOver={handleMouseOver}>Submit</button>
                 <div></div>
             </div>
-            <div className="bottom-nav">
-                <button onClick={() => onPageChange('trends')} onMouseOver={handleMouseOver}>Trends</button>
-                <button onClick={() => onPageChange('inventory')} onMouseOver={handleMouseOver}>Inventory</button>
-                <button onClick={() => onPageChange('menuItems')} onMouseOver={handleMouseOver}>Menu Items</button>
-                <button onClick={() => onPageChange('orderHistory')} onMouseOver={handleMouseOver}>Order History</button>
-            </div>
+            <ManagerBottomBar onPageChange={onPageChange} />
         </div>
     );
 };
