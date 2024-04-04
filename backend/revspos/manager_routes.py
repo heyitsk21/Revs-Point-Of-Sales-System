@@ -195,10 +195,13 @@ class MenuItemIngredients(Resource):
     def put(self): #GetIngredientFromMenuItem
         with db.engine.connect() as conn:
             menuitemid = request.get_json().get("menuitemid") 
-            result = conn.execution_options(stream_results=True).execute(text("select * from menuitemingredients where menuid = {inputmenuitemid}".format(inputmenuitemid = menuitemid)))
+            result = conn.execution_options(stream_results=True).execute(text("SELECT Ingredients.IngredientID, Ingredients.IngredientName " +
+                "FROM menuitems JOIN menuitemingredients ON menuitems.MenuID = menuitemingredients.MenuID " +
+                "JOIN Ingredients ON menuitemingredients.IngredientID = Ingredients.IngredientID " +
+                "WHERE menuitems.MenuID = {inputmenuitemid}".format(inputmenuitemid = menuitemid)))
             menuitemingredientslist = []
             for row in result:
-                menuitemingredientslist.append({"menuid":row.menuid, "ingredientid":row.ingredientid})
+                menuitemingredientslist.append({"ingredientname":row.ingredientname, "ingredientid":row.ingredientid})
         return jsonify(menuitemingredientslist)
     
     @api.expect(AddIngredientToMenuItem_model, validate=True)
