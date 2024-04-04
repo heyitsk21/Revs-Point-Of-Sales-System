@@ -10,8 +10,15 @@ const MenuItems = ({ onPageChange }) => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [checkedItems, setCheckedItems] = useState([]);
     const [newMenuItem, setNewMenuItem] = useState({ id: null, name: '', price: '', ingredients: [] });
+    const [ingredients, setIngredients] = useState([]);
+    const [selectedIngredient, setSelectedIngredient] = useState('');
     const [speakEnabled] = useState(false);
-    const { textSize} = useTextSize();
+    const { textSize } = useTextSize();
+
+    useEffect(() => {
+        fetchMenuItems();
+        fetchIngredients();
+    }, []);
 
     const fetchMenuItems = async () => {
         try {
@@ -22,13 +29,23 @@ const MenuItems = ({ onPageChange }) => {
         }
     };
 
-    useEffect(() => {
-        fetchMenuItems();
-    }, []);
+    const fetchIngredients = async () => {
+        try {
+            const response = await axios.get('http://127.0.0.1:5000/api/manager/ingredients');
+            setIngredients(response.data);
+        } catch (error) {
+            console.error('Error fetching ingredients:', error);
+        }
+    };
 
-    const rowClicked = (event, item) => {
+    const rowClicked = async (event, item) => {
         setSelectedItem(item);
-        setCheckedItems(item ? item.ingredients || [] : []);
+        try {
+            const response = await axios.put('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: item.menuid });
+            setCheckedItems(response.data);
+        } catch (error) {
+            console.error('Error fetching ingredients:', error);
+        }
     };
 
     const handleDeleteButtonClick = () => {
@@ -48,6 +65,19 @@ const MenuItems = ({ onPageChange }) => {
         setNewMenuItem({ id: null, name: '', price: '', ingredients: [] });
     };
 
+    const handleIngredientChange = (event) => {
+        setSelectedIngredient(event.target.value);
+    };
+
+    const handleAddIngredient = async () => {
+        try {
+            await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid, ingredientid: selectedIngredient });
+            // You may want to update the checked items or re-fetch them after adding a new ingredient
+        } catch (error) {
+            console.error('Error adding ingredient:', error);
+        }
+    };
+
     const renderMenuItems = () => {
         return menu.map(item => (
             <tr key={item.menuid} onClick={(event) => rowClicked(event, item)} className={selectedItem && selectedItem.menuid === item.menuid ? 'selected' : ''}>
@@ -55,6 +85,12 @@ const MenuItems = ({ onPageChange }) => {
                 <td onMouseOver={handleMouseOver}>{item.itemname}</td>
                 <td onMouseOver={handleMouseOver}>${item.price}</td>
             </tr>
+        ));
+    };
+
+    const renderIngredientOptions = () => {
+        return ingredients.map(ingredient => (
+            <option key={ingredient.ingredientid} value={ingredient.ingredientid}>{ingredient.ingredientname}</option>
         ));
     };
 
@@ -96,14 +132,12 @@ const MenuItems = ({ onPageChange }) => {
         }
     }, 1000);
 
-
     return (
-
         <div className={`manager-menu ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
-        <div><ManagerTopBar/></div>
-        <div className='manager-menu-items'>
-            <div className="left-panel">
-                <div className="add-item-section">
+            <div><ManagerTopBar/></div>
+            <div className='manager-menu-items'>
+                <div className="left-panel">
+                    <div className="add-item-section">
                         <h2 onMouseOver={handleMouseOver}>Add New Menu Item</h2>
                         <label htmlFor="newName" onMouseOver={handleMouseOver}>Name:</label>
                         <input type="text" id="newName" name="name" value={newMenuItem.name} onChange={handleInputChange} onMouseOver={handleMouseOver} />
@@ -123,9 +157,17 @@ const MenuItems = ({ onPageChange }) => {
                             <h3 onMouseOver={handleMouseOver}>Ingredients:</h3>
                             <ul>
                                 {checkedItems.map((ingredient, index) => (
-                                    <li key={index} onMouseOver={handleMouseOver}>{ingredient}</li>
+                                    <li key={index} onMouseOver={handleMouseOver}>{ingredient.ingredientname}</li>
                                 ))}
                             </ul>
+                            <div>
+                                <h3 htmlFor="ingredientSelect" onMouseOver={handleMouseOver}>Add New Ingredient:</h3>
+                                <select id="ingredientSelect" value={selectedIngredient} onChange={handleIngredientChange} onMouseOver={handleMouseOver}>
+                                    <option value="">Select Ingredient</option>
+                                    {renderIngredientOptions()}
+                                </select>
+                                <button onClick={handleAddIngredient} onMouseOver={handleMouseOver}>Add</button>
+                            </div>
                         </>
                     )}
                 </div>
