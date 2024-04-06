@@ -84,8 +84,14 @@ const MenuItems = ({ onPageChange }) => {
 
     const handleAddIngredient = async () => {
         try {
-            await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid, ingredientid: selectedIngredient });
-            // You may want to update the checked items or re-fetch them after adding a new ingredient
+            const ingredientId = parseInt(selectedIngredient);
+            console.log('Selected Menu Item ID:', selectedItem.menuid);
+            console.log('Selected Ingredient ID:', ingredientId);
+            await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid, ingredientid: ingredientId });
+            
+            const response = await axios.put('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid });
+            setCheckedItems(response.data);
+    
         } catch (error) {
             console.error('Error adding ingredient:', error);
         }
