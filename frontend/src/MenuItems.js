@@ -31,7 +31,7 @@ const MenuItems = ({ onPageChange }) => {
 
     const fetchIngredients = async () => {
         try {
-            const response = await axios.get('http://127.0.0.1:5000/api/manager/ingredients');
+            const response = await axios.get('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/ingredients');
             setIngredients(response.data);
         } catch (error) {
             console.error('Error fetching ingredients:', error);
@@ -48,10 +48,16 @@ const MenuItems = ({ onPageChange }) => {
         }
     };
 
-    const handleDeleteButtonClick = () => {
-        setMenu(prevMenu => prevMenu.filter(item => item.id !== selectedItem.id));
-        setSelectedItem(null);
-        setCheckedItems([]);
+    const handleDeleteButtonClick = async () => {
+        if (!selectedItem) return;
+        try {
+            await axios.delete('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitems', { data: { menuid: selectedItem.menuid } });
+            setMenu(prevMenu => prevMenu.filter(item => item.menuid !== selectedItem.menuid));
+            setSelectedItem(null);
+            setCheckedItems([]);
+        } catch (error) {
+            console.error('Error deleting menu item:', error);
+        }
     };
 
     const handleInputChange = (event) => {
