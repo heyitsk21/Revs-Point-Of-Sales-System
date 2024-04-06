@@ -90,10 +90,28 @@ const MenuItems = ({ onPageChange }) => {
             await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid, ingredientid: ingredientId });
             
             const response = await axios.put('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid });
-            setCheckedItems(response.data);
+            setCheckedItems(response.data); // Update the checkedItems state with the updated list
     
         } catch (error) {
             console.error('Error adding ingredient:', error);
+        }
+    };
+
+    const handleDeleteIngredient = async (ingredientIdToDelete) => {
+        try {
+            await axios.delete('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { 
+                data: { 
+                    menuitemid: selectedItem.menuid, // Pass the selected menu item ID
+                    ingredientid: ingredientIdToDelete // Pass the ID of the ingredient to delete
+                } 
+            });
+            
+            // Fetch the updated list of checked ingredients for the selected menu item
+            const response = await axios.put('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid });
+            setCheckedItems(response.data); // Update the checkedItems state with the updated list
+    
+        } catch (error) {
+            console.error('Error deleting ingredient:', error);
         }
     };
 
@@ -196,7 +214,10 @@ const MenuItems = ({ onPageChange }) => {
                             <h3 onMouseOver={handleMouseOver}>Ingredients:</h3>
                             <ul>
                                 {checkedItems.map((ingredient, index) => (
-                                    <li key={index} onMouseOver={handleMouseOver}>{ingredient.ingredientname}</li>
+                                    <li key={index} onMouseOver={handleMouseOver}>
+                                        {ingredient.ingredientname}
+                                        <button onClick={() => handleDeleteIngredient(ingredient.ingredientid)}>Delete</button>
+                                    </li>
                                 ))}
                             </ul>
                             <div>
