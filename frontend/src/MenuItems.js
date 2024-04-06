@@ -9,7 +9,7 @@ const MenuItems = ({ onPageChange }) => {
     const [menu, setMenu] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [checkedItems, setCheckedItems] = useState([]);
-    const [newMenuItem, setNewMenuItem] = useState({ id: null, name: '', price: '', ingredients: [] });
+    const [newMenuItem, setNewMenuItem] = useState({ catagory: null, name: '', price: '', ingredients: [] });
     const [ingredients, setIngredients] = useState([]);
     const [selectedIngredient, setSelectedIngredient] = useState('');
     const [speakEnabled] = useState(false);
@@ -59,10 +59,17 @@ const MenuItems = ({ onPageChange }) => {
         setNewMenuItem(prevState => ({ ...prevState, [name]: value }));
     };
 
-    const handleAddMenuItem = () => {
-        const newItem = { ...newMenuItem, id: menu.length + 1 };
-        setMenu(prevMenu => [...prevMenu, newItem]);
-        setNewMenuItem({ id: null, name: '', price: '', ingredients: [] });
+    const handleAddMenuItem = async () => {
+        try{
+            console.log(newMenuItem.name);
+            console.log(newMenuItem.catagory);
+            console.log(newMenuItem.price);
+            await axios.post('http://127.0.0.1:5000/api/manager/menuitems', { catagory: newMenuItem.catagory,itemname: newMenuItem.name,price : newMenuItem.price });
+        }
+        catch{
+            console.log("Error adding menu item");
+        }
+        fetchMenuItems();
     };
 
     const handleIngredientChange = (event) => {
@@ -72,6 +79,7 @@ const MenuItems = ({ onPageChange }) => {
     const handleAddIngredient = async () => {
         try {
             await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid, ingredientid: selectedIngredient });
+            // You may want to update the checked items or re-fetch them after adding a new ingredient
         } catch (error) {
             console.error('Error adding ingredient:', error);
         }
@@ -137,12 +145,32 @@ const MenuItems = ({ onPageChange }) => {
             <div className='manager-menu-items'>
                 <div className="left-panel">
                     <div className="add-item-section">
-                        <h2 onMouseOver={handleMouseOver}>Add New Menu Item</h2>
-                        <label htmlFor="newName" onMouseOver={handleMouseOver}>Name:</label>
-                        <input type="text" id="newName" name="name" value={newMenuItem.name} onChange={handleInputChange} onMouseOver={handleMouseOver} />
-                        <label htmlFor="newPrice" onMouseOver={handleMouseOver}>Price:</label>
-                        <input type="text" id="newPrice" name="price" value={newMenuItem.price} onChange={handleInputChange} onMouseOver={handleMouseOver} />
-                        <button onClick={handleAddMenuItem} onMouseOver={handleMouseOver}>Add</button>
+                                <h2 onMouseOver={handleMouseOver}>Add New MenuItem</h2>
+                            <div>
+                                <label>Item Name:</label>
+                                <input
+                                    type="text"
+                                    value={newMenuItem.name}
+                                    onChange={(e) => setNewMenuItem({ ...newMenuItem, name: e.target.value })}
+                                />
+                            </div>
+                            <div>
+                                <label>Price:</label>
+                                <input
+                                    type="number"
+                                    value={newMenuItem.price}
+                                    onChange={(e) => setNewMenuItem({ ...newMenuItem, price: e.target.value })}
+                                />
+                            </div>
+                            <div>
+                                <label>Catagory:</label>
+                                <input
+                                    type="number"
+                                    value={newMenuItem.count}
+                                    onChange={(e) => setNewMenuItem({ ...newMenuItem, catagory: e.target.value })}
+                                />
+                            </div>
+                            <button onClick={handleAddMenuItem} onMouseOver={handleMouseOver}>Submit</button>    
                     </div>
                 </div>
                 <div className="right-panel">
