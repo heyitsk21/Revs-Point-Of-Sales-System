@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS Orders CASCADE;
 DROP TABLE IF EXISTS InventoryLog CASCADE;
 DROP TABLE IF EXISTS MenuItemIngredients CASCADE;
 DROP TABLE IF EXISTS OrderMenuItems CASCADE;
+DROP TABLE IF EXISTS MenuItemCustomizations CASCADE;
 
 
 --CREATE TABLES AND JUNCTIONTABLE BELOW
@@ -100,7 +101,7 @@ CREATE TABLE OrderMenuItems (
 --COPY CHUNKS BELOW
 -- Copy data from CSV files into their corresponding tables
 
-\COPY Ingredients (IngredientID, IngredientName, PPU, Count, MinAmount) FROM 'database_generation/Ingredients.csv' DELIMITER ',' CSV HEADER;
+\COPY Ingredients (IngredientName, PPU, Count, MinAmount) FROM 'database_generation/Ingredients.csv' DELIMITER ',' CSV HEADER;
 
 \COPY MenuItems (MenuID, ItemName, Price) FROM 'database_generation/MenuItems.csv' DELIMITER ',' CSV HEADER;
 
