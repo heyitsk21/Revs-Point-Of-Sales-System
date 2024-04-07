@@ -10,6 +10,7 @@ import SalesReport from './SalesReport';
 import ExcessReport from './ExcessReport';
 import RestockReport from './RestockReport';
 import OrderTrend from './OrderTrend';
+import MenuBoard from './MenuBoard';
 import { TextSizeProvider } from './components/TextSizeContext';
 
 function App() {
@@ -23,6 +24,9 @@ function App() {
     switch (page) {
         case 'manager':
             currentPage = <ManagerTab onPageChange={handleNavigation} />;
+            break;
+        case 'MenuBoard':
+            currentPage = <MenuBoard onPageChange={handleNavigation} />;
             break;
         case 'inventory':
             currentPage = <Inventory onPageChange={handleNavigation} />;
