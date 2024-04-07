@@ -87,11 +87,6 @@ const OrderHistory = ({ onPageChange }) => {
     return (
         <div className={`order-manager ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
             <ManagerTopBar/>
-            <div className='order-history'>
-            <div className="order-list">
-                <h2 onMouseOver={handleMouseOver}>Order History</h2>
-                {renderOrderItems()}
-            </div>
             <div className="order-details">
                 <h2>{selectedOrder ? `Order Details: ${selectedOrder.orderid}` : 'Select an Order to View Details'}</h2>
                 {selectedOrder && (
@@ -105,6 +100,11 @@ const OrderHistory = ({ onPageChange }) => {
                         <div onMouseOver={handleMouseOver}>Employee ID: {selectedOrder.employeeid}</div>
                     </div>
                 )}
+            </div>
+            <div className='order-history'>
+            <div className="order-list">
+                <h2 onMouseOver={handleMouseOver}>Order History</h2>
+                {renderOrderItems()}
             </div>
             </div>
             <ManagerBottomBar onPageChange={onPageChange} />
