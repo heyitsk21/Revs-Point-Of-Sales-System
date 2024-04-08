@@ -16,14 +16,26 @@ const Cart = () => {
     console.log('Cart Items:', items);
 
     if(isEmpty) return <div>Your Cart is Empty</div>
-    
+
     return (
         <div>
             <div className='cartTitle'>
                 Cart 
             </div>
             <div className='cart'>
-                Unique Items: ({totalUniqueItems}) Total Items: ({totalItems})
+                <table className="table">
+                    <tbody>
+                        {items.map((item, index)=> {
+                            return(
+                                <tr key={index}>
+                                    <td>{item.name}</td>
+                                    <td>{item.price}</td>
+                                    <td>{item.quantity}</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
