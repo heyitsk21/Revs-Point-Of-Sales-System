@@ -42,6 +42,14 @@ const Cart = () => {
                     </tbody>
                 </table>
             </div>
+            <div className = "totalPrice">
+                Total Price: {cartTotal}
+            </div>
+            <div>
+                <button onClick={() => emptyCart()}>Clear Order</button>
+                <button onClick={() => emptyCart()}>Buy Now</button>
+            </div>
+
         </div>
     );
 };
