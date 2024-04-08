@@ -42,14 +42,13 @@ const Cart = () => {
                     </tbody>
                 </table>
             </div>
-            <div className = "totalPrice">
-                Total Price: {cartTotal}
-            </div>
-            <div>
+            <div className = "bottomOrder">
+                <div className = "totalPrice">
+                    Total Price: {cartTotal}
+                </div>
                 <button onClick={() => emptyCart()}>Clear Order</button>
                 <button onClick={() => emptyCart()}>Buy Now</button>
             </div>
-
         </div>
     );
 };
