@@ -15,41 +15,50 @@ const Cart = () => {
 
     console.log('Cart Items:', items);
 
-    if(isEmpty) return <div>Your Cart is Empty</div>
-
     return (
-        <div>
+        <div className='cart'>
             <div className='cartTitle'>
                 Cart 
             </div>
-            <div className='cart'>
-                <table className="table">
-                    <tbody>
-                        {items.map((item, index)=> {
-                            return(
-                                <tr key={index}>
-                                    <td>{item.name}</td>
-                                    <td>{item.price}</td>
-                                    <td>{item.quantity}</td>
-                                    <td>
-                                        <button className="add" onClick={() => updateItemQuantity(item.id, item.quantity + 1)}>+</button>
-                                        <button className="minus" onClick={() => updateItemQuantity(item.id, item.quantity - 1)}>-</button>
-                                        <button className="delete" onClick={() => removeItem(item.id)}>Remove Item</button>
-                                    </td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>
-            </div>
-            <div className = "bottomOrder">
-                <div className = "totalPrice">
-                    Total Price: {cartTotal}
-                </div>
-                <button onClick={() => emptyCart()}>Clear Order</button>
-                <button onClick={() => emptyCart()}>Buy Now</button>
-            </div>
-        </div>
+            {isEmpty ? (<div className ='emptyMessage'>Your Cart is Empty</div>
+            ) : (
+            <table className="table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Adjust</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {items.map((item, index)=> (
+                        <tr key={index}>
+                            <td>{item.name}</td>
+                            <td>${(item.quantity * item.price).toFixed(2)}</td>
+                            <td>{item.quantity}</td>
+                            <td>
+                                <button className="minus" onClick={() => updateItemQuantity(item.id, item.quantity - 1)}>-</button>
+                                <button className="plus" onClick={() => updateItemQuantity(item.id, item.quantity + 1)}>+</button>
+                                <button className="delete" onClick={() => removeItem(item.id)}>Remove Item</button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>Total Price:</td>
+                        <td>${cartTotal.toFixed(2)}</td>
+                        <td>
+                            <button onClick={() => emptyCart()}>Clear Order</button>
+                        </td>
+                        <td>
+                            <button onClick={() => emptyCart()}>Buy Now</button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        )}</div>
     );
 };
 

@@ -196,6 +196,7 @@ const Employee = ({ onCatChange }) => {
                 <button onClick={handleLoginLogout}>{loggedIn ? 'Logout' : 'Login'}</button>
                 <button onClick={() => speakText("Employee... Sandwiches... Sides... Drinks... Limited Time")}>Speak</button>
                 <button onClick={toggleTextSize}>Toggle Text Size</button>
+                <button> Work Hours </button>
             </div>
 
             <div id="google_translate_element"></div>
