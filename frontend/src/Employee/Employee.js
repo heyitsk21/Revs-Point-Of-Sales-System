@@ -8,7 +8,7 @@ const Employee = ({ onCatChange }) => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [username, setUsername] = useState('');
     const [currentTime, setCurrentTime] = useState('');
-    const [category, setCategory] = useState('Sandwiches');
+    const [category, setCategory] = useState('Value Meals');
     const [selectedMenuSection] = useState(null);  //setSelectedMenuSection
     const [initialFetchDone, setInitialFetchDone] = useState(false);
     const [burgerList, setBurgerList] = useState([]);
@@ -132,15 +132,20 @@ const Employee = ({ onCatChange }) => {
                 break;
         }
 
-        return selectedList.map(menuitem => (
-            <div key={menuitem.menuid} className={`itemname ${selectedMenuSection && selectedMenuSection.menuid === menuitem.menuid ? 'selected' : ''}`} onClick={() => handleCategories(menuitem)}>
-                <div>Item Name: {menuitem.itemname}</div>
-                <div>Menu ID: {menuitem.menuid}</div>
-                <div>Price: {menuitem.price}</div>
-            </div>
-        ));
+        if (selectedList) {
+            return selectedList.map(menuitem => (
+                <div key={menuitem.menuid} className={`itemname ${selectedMenuSection && selectedMenuSection.menuid === menuitem.menuid ? 'selected' : ''}`} onClick={() => handleCategories(menuitem)}>
+                    <div>Item Name: {menuitem.itemname}</div>
+                    <div>Menu ID: {menuitem.menuid}</div>
+                    <div>Price: {menuitem.price}</div>
+                </div>
+            ));
+        }
+        else {
+            return null;
+        }
     };
-    
+
     /* FULL MENU CODE
 
     const renderEmpty = () => {
