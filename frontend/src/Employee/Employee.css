@@ -6,19 +6,6 @@
     height: 100%;
 }
 
-.top-bar {
-    background-color: #333;
-    color: #fff;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.user-info span {
-    margin-right: 10px;
-}
-
 button {
     background-color: #007bff;
     color: #fff;
@@ -32,6 +19,24 @@ button:hover {
     background-color: #0056b3;
 }
 
+.large-text .top-bar button,
+.large-text .bottom-nav button {
+    font-size: 24px;
+}
+
+.top-bar {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-info span {
+    margin-right: 10px;
+}
+
 .middle-content {
     flex: 1;
     display: flex;
@@ -40,39 +45,8 @@ button:hover {
     font-weight: bold;
 }
 
-.large-text .middle-content h1 {
-    font-size: 80px;
-}
-
-.large-text .top-bar button,
-.large-text .bottom-nav button {
-    font-size: 24px;
-}
-
 .middle-content h1 {
     font-size: 36px;
-}
-
-.bottom-nav {
-    background-color: #f8f9fa;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px 0;
-}
-
-.bottom-nav button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    margin: 0 10px;
-    cursor: pointer;
-}
-
-.bottom-nav button:hover {
-    background-color: #0056b3;
 }
 
 .layout {
@@ -98,6 +72,11 @@ button:hover {
     padding: 20px;
 }
 
+.items {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .items button {
     padding: 10px;
     margin: 10px;
@@ -105,4 +84,20 @@ button:hover {
 
 .large-text .items button{
     font-size: 24px;
+}
+
+.bottom-nav {
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.bottom-nav button {
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
 }

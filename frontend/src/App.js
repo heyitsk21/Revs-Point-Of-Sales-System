@@ -12,6 +12,7 @@ import RestockReport from './RestockReport';
 import OrderTrend from './OrderTrend';
 import Employee from './Employee/Employee';
 import { TextSizeProvider } from './TextSizeContext';
+import { CartProvider } from 'react-use-cart';
 
 function App() {
     const [page, setPage] = useState('employee');
@@ -57,11 +58,13 @@ function App() {
     }
 
     return (
+        <CartProvider>
         <div className="App">
             <TextSizeProvider>
                 {currentPage}
             </TextSizeProvider>
         </div>
+        </CartProvider>
     );
 }
 

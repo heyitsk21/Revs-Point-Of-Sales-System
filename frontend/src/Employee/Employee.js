@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './Employee.css';
+import { useCart } from "react-use-cart";
+import { CartProvider } from "react-use-cart";
+import Cart from './Cart'
 import { useTextSize } from '../TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
-
 const Employee = ({ onCatChange }) => {
     const { textSize, toggleTextSize } = useTextSize();
     const [loggedIn, setLoggedIn] = useState(false);
@@ -18,6 +20,9 @@ const Employee = ({ onCatChange }) => {
     const [drinksList, setDrinksList] = useState([]);
     const [valueList, setValueList] = useState([]);
     const [limitedList, setLimitedList] = useState([]);
+
+    const {addItem} = useCart();
+    console.log('Cart Hook:', useCart());
 
     const handleLoginLogout = () => {
         if (loggedIn) {
@@ -132,20 +137,20 @@ const Employee = ({ onCatChange }) => {
                 break;
         }
 
-        if (selectedList) {
+        if (selectedList) { 
             return selectedList.map(menuitem => (
-                <div key={menuitem.menuid} className={`itemname ${selectedMenuSection && selectedMenuSection.menuid === menuitem.menuid ? 'selected' : ''}`} onClick={() => handleCategories(menuitem)}>
-                    <div>Item Name: {menuitem.itemname}</div>
-                    <div>Menu ID: {menuitem.menuid}</div>
-                    <div>Price: {menuitem.price}</div>
+                <div key={menuitem.menuid} className={`itemname ${selectedMenuSection && selectedMenuSection.menuid === menuitem.menuid ? 'selected' : ''}`}>
+                    <button onClick={() => { console.log('Adding item:', menuitem); addItem({ id: menuitem.menuid, name: menuitem.itemname, price: menuitem.price });}}>
+                        <div>{menuitem.itemname}</div>
+                        <div>${menuitem.price}</div>
+                    </button>
                 </div>
             ));
         }
         else {
             return null;
         }
-    };
-
+    };	  
     /* FULL MENU CODE
 
     const renderEmpty = () => {
@@ -205,7 +210,7 @@ const Employee = ({ onCatChange }) => {
                         </div>
                     </div>
                     <div className="rightSide">
-                        Current Order
+                        <Cart />
                     </div>                    
                 </section>
             </div>
