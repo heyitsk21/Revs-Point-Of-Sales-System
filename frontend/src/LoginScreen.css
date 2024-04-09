@@ -1,0 +1,35 @@
+.LoginScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #ffffff; /* Updated background color */
+}
+
+.LoginTitle {
+    font-size: 36px; /* Increased font size */
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #ffffff; /* White color for text */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Text shadow for cool effect */
+    font-family: 'Arial Black', sans-serif; /* Updated font family */
+    border: 2px solid #000000; /* Add border */
+    padding: 10px; /* Add padding for spacing between text and border */
+    background-color: #007bff;
+}
+
+.LoginButton button {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.LoginButton button:hover {
+    background-color: #0056b3;
+}

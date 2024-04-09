@@ -42,9 +42,16 @@ function LoginScreen(){
         }
     }else{
         return (
-            <button onClick={() => login()}>
-                Sign in with Google
-            </button>
+            <div class="LoginScreen">
+                <div class="LoginTitle">
+                    Rev's Grill - By Team 21
+                </div>
+                <div class="LoginButton">
+                    <button onClick={() => login()}>
+                        Sign In
+                    </button>
+                </div>
+            </div> 
         );
     }
 }
