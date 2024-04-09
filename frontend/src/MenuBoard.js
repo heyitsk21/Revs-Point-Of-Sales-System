@@ -28,7 +28,7 @@ const MenuBoard = ({ onPageChange }) => {
     };
 
     const handleReturnClick = () => {
-        onPageChange('manager'); // Use 'manager' instead of 'MenuBoard'
+        onPageChange('manager');
     };
 
     return (
