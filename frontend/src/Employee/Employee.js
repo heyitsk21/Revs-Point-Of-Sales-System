@@ -2,9 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './Employee.css';
 import { useCart } from "react-use-cart";
 import { CartProvider } from "react-use-cart";
-import Cart from './Cart'
 import { useTextSize } from '../TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
+import Cart from './Cart'
 const Employee = ({ onCatChange }) => {
     const { textSize, toggleTextSize } = useTextSize();
     const [loggedIn, setLoggedIn] = useState(false);
@@ -151,40 +151,6 @@ const Employee = ({ onCatChange }) => {
             return null;
         }
     };	  
-    /* FULL MENU CODE
-
-    const renderEmpty = () => {
-        return;
-    };
-
-
-
-    // Function to fetch all menu items from the backend API
-    const fetchAllMenuItems = async () => {
-        try {
-            const response = await axios.get('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitems');
-            setAllMenuItems(response.data); // Update menu section state with response data
-        } catch (error) {
-            console.error('Error fetching menu items:', error);
-        }
-    };
-
-    // Call fetchAllMenuItems function when component mounts
-    useEffect(() => {
-        fetchAllMenuItems();
-    }, []);
-
-    const renderAllMenuItems = () => {
-        return allmenuitems.map(menuitem => (
-            <div key={menuitem.itemname} className={`itemname ${selectedMenuSection && selectedMenuSection.menuid === menuitem.menuid ? 'selected' : ''}`} onClick={() => handleOrderClick(menuitem)}>
-                <div>Item Name: {menuitem.itemname}</div>
-                <div>Menu ID: {menuitem.menuid}</div>
-                <div>Price: {menuitem.price}</div>
-            </div>
-        ));
-    };
-    */
-
 
     return (
         <div className={`employee ${textSize === 'large' ? 'large-text' : ''}`}>
@@ -204,9 +170,10 @@ const Employee = ({ onCatChange }) => {
             <div className="middle-content">
                 <section className="layout">
                     <div className="leftSide">
-                        {category}
+                        <div className='categoryName'>
+                            {category}
+                        </div>
                         <div className='items'>
-                            {/* {renderEmpty()} */}
                             {renderMenuSection()}
                         </div>
                     </div>

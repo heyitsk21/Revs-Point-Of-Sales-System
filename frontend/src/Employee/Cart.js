@@ -1,4 +1,5 @@
 import React from 'react';
+import './Cart.css';
 import { useCart } from 'react-use-cart';
 
 const Cart = () => {
@@ -36,23 +37,29 @@ const Cart = () => {
                         <tr key={index}>
                             <td>{item.name}</td>
                             <td>${(item.quantity * item.price).toFixed(2)}</td>
-                            <td>{item.quantity}</td>
-                            <td>
-                                <button className="minus" onClick={() => updateItemQuantity(item.id, item.quantity - 1)}>-</button>
-                                <button className="plus" onClick={() => updateItemQuantity(item.id, item.quantity + 1)}>+</button>
-                                <button className="delete" onClick={() => removeItem(item.id)}>Remove Item</button>
+                            <td className='quantity'>{item.quantity}</td>
+                            <td className='adjust'>
+                                <div className = "changeQuantity">
+                                    <button className="minus" onClick={() => updateItemQuantity(item.id, item.quantity - 1)}>-</button>
+                                    <button className="plus" onClick={() => updateItemQuantity(item.id, item.quantity + 1)}>+</button>
+                                </div>
+                                <div className = "removeItem">
+                                    <button className="delete" onClick={() => removeItem(item.id)}>Remove Item</button>
+                                </div>
                             </td>
                         </tr>
                     ))}
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td>Total Price:</td>
-                        <td>${cartTotal.toFixed(2)}</td>
-                        <td>
+                        <td colSpan="2">Total Price:</td>
+                        <td colSpan="2">${cartTotal.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td colSpan="2">
                             <button onClick={() => emptyCart()}>Clear Order</button>
                         </td>
-                        <td>
+                        <td colSpan="2">
                             <button onClick={() => emptyCart()}>Buy Now</button>
                         </td>
                     </tr>
