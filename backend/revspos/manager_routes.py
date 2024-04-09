@@ -5,7 +5,7 @@ from sqlalchemy.exc import ObjectNotExecutableError
 # import os, decimal, datetime
 from .api_master import api, db
 
-AddMenuItem_model = api.model('AddMenuItem', {"menuid":fields.Integer(required=True), "itemname":fields.String(required=True, min_length=3, max_length=30), "price":fields.Float(required=True)})
+AddMenuItem_model = api.model('AddMenuItem', {"catagory":fields.Integer(required=True), "itemname":fields.String(required=True, min_length=3, max_length=30), "price":fields.Float(required=True)})
 UpdateMenuItem_model = api.model('UpdateMenuItem', {"menuid":fields.Integer(required=True), "itemname":fields.String(min_length=3, max_length=30), "price":fields.Float})
 DeleteMenuItem_model = api.model('DeleteMenuItem', {"menuid":fields.Integer(required=True)})
 
@@ -36,16 +36,21 @@ class MenuItems(Resource):
                 menuitemlist.append({"menuid":row.menuid, "itemname":row.itemname, "price":row.price})
         return jsonify(menuitemlist)
     
-    @api.expect(AddMenuItem_model, validate=True)
+    @api.expect(AddMenuItem_model, validate=False)
     def post(self): #AddMenuItem
+        print("GOT HERE")
         data = request.get_json()
-        menuid = data.get("menuid")
+        catagory = data.get("catagory")
         itemname = data.get("itemname")
         price = data.get("price")
-        
-        if (menuid == 0 or itemname == "string" or price == 0):
-            return jsonify({"message":"failed to insert menuitem. Missing fields. All fields are required."})
-        
+        menuid = 0
+
+        select_query = text("SELECT MENUID FROM MENUITEMS WHERE MENUID BETWEEN {lowerbound} AND {upperbound} ORDER BY MENUID DESC LIMIT 1;".format(lowerbound = catagory,upperbound = int(catagory) + 100))
+        with db.engine.connect() as conn:
+            result = conn.execution_options(stream_results=True).execute(select_query)
+            for row in result:
+                menuid = row.menuid + 1
+
         add_menu_item_query = text("INSERT INTO MenuItems (MenuID, ItemName, Price) VALUES ({inputmenuid}, '{inputitemname}', {inputprice})".format(inputmenuid=menuid, inputitemname=itemname, inputprice=price))
         try:
             with db.engine.connect() as conn:

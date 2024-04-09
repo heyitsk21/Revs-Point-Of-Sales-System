@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS Orders CASCADE;
 DROP TABLE IF EXISTS InventoryLog CASCADE;
 DROP TABLE IF EXISTS MenuItemIngredients CASCADE;
 DROP TABLE IF EXISTS OrderMenuItems CASCADE;
+DROP TABLE IF EXISTS MenuItemCustomizations CASCADE;
 
 
 --CREATE TABLES AND JUNCTIONTABLE BELOW
@@ -68,6 +69,18 @@ CREATE TABLE MenuItemIngredients (
         REFERENCES MenuItems(MenuID)
 );
 
+-- Create MenuItemCustomizations junction table
+CREATE TABLE MenuItemCustomizations (
+    MenuID INT ,
+    CustomizationID INT,
+    PRIMARY KEY (MenuID, CustomizationID),
+    CONSTRAINT fk_ingredient
+        FOREIGN KEY(CustomizationID) 
+        REFERENCES Ingredients(IngredientID),
+    CONSTRAINT fk_menu
+        FOREIGN KEY(MenuID) 
+        REFERENCES MenuItems(MenuID)
+);
 
 -- Create OrderMenuItems junction table
 CREATE TABLE OrderMenuItems (
@@ -93,6 +106,8 @@ CREATE TABLE OrderMenuItems (
 \COPY MenuItems (MenuID, ItemName, Price) FROM 'database_generation/MenuItems.csv' DELIMITER ',' CSV HEADER;
 
 \COPY MenuItemIngredients (MenuID, IngredientID) FROM 'database_generation/MenuItemsIngredients.csv' DELIMITER ',' CSV HEADER;
+
+\COPY MenuItemCustomizations (MenuID, CustomizationID) FROM 'database_generation/MenuItemsCustomizations.csv' DELIMITER ',' CSV HEADER;
 
 \COPY Employee (EmployeeID, EmployeeName, IsManager, Salary, Password) FROM 'database_generation/Employee.csv' DELIMITER ',' CSV HEADER;
 
