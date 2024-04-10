@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './Ordering.css';
 import { useCart } from "react-use-cart";
-//import { CartProvider } from "react-use-cart";
-//import { useTextSize } from '../../../TextSizeContext';
+import { useTextSize } from '../../../TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
 import Cart from '../Cart/Cart'
-import { useTextSize } from '../../../TextSizeContext';
 const Ordering = ({ onCatChange }) => {
+    const [currentTime, setCurrentTime] = useState('');
     const { textSize, toggleTextSize } = useTextSize();
     const [category, setCategory] = useState('Value Meals');
     const [selectedMenuSection] = useState(null);  //setSelectedMenuSection
@@ -22,9 +21,20 @@ const Ordering = ({ onCatChange }) => {
     const {addItem} = useCart();
     console.log('Cart Hook:', useCart());
 
+    const updateTime = () => {
+        const date = new Date();
+        const timeString = date.toLocaleTimeString();
+        setCurrentTime(timeString);
+    };
+
+    useEffect(() => {
+        const interval = setInterval(updateTime, 1000);
+        return () => clearInterval(interval);
+    }, []);
+
     const fetchMenuSection = async (currentIdStart) => {
         try {
-            const response = await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/Ordering/getmenuitems',  { menugroup: currentIdStart });
+            const response = await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/employee/getmenuitems',  { menugroup: currentIdStart });
             switch (currentIdStart) {
                 case 100:
                     setBurgerList(response.data);
