@@ -62,17 +62,36 @@ const MenuItems = ({ onPageChange }) => {
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        setNewMenuItem(prevState => ({ ...prevState, [name]: value }));
+        setSelectedItem(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleUpdateMenuItem = async () => {
+        try {
+            const payload = {
+                menuid: selectedItem.menuid,
+                itemname: selectedItem.itemname,
+                price: parseFloat(selectedItem.price)
+            };
+    
+            await axios.put('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitems', payload);
+            
+            fetchMenuItems();
+        } catch (error) {
+            console.error('Error updating menu item:', error);
+        }
     };
 
     const handleAddMenuItem = async () => {
-        try{
+        try {
             console.log(newMenuItem.name);
             console.log(newMenuItem.catagory);
             console.log(newMenuItem.price);
-            await axios.post('http://127.0.0.1:5000/api/manager/menuitems', { catagory: newMenuItem.catagory,itemname: newMenuItem.name,price : newMenuItem.price });
+            await axios.post('http://127.0.0.1:5000/api/manager/menuitems', { catagory: newMenuItem.catagory, itemname: newMenuItem.name, price: newMenuItem.price });
         }
-        catch{
+        catch {
             console.log("Error adding menu item");
         }
         fetchMenuItems();
@@ -88,10 +107,10 @@ const MenuItems = ({ onPageChange }) => {
             console.log('Selected Menu Item ID:', selectedItem.menuid);
             console.log('Selected Ingredient ID:', ingredientId);
             await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid, ingredientid: ingredientId });
-            
+
             const response = await axios.put('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid });
             setCheckedItems(response.data); // Update the checkedItems state with the updated list
-    
+
         } catch (error) {
             console.error('Error adding ingredient:', error);
         }
@@ -99,17 +118,17 @@ const MenuItems = ({ onPageChange }) => {
 
     const handleDeleteIngredient = async (ingredientIdToDelete) => {
         try {
-            await axios.delete('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { 
-                data: { 
+            await axios.delete('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', {
+                data: {
                     menuitemid: selectedItem.menuid, // Pass the selected menu item ID
                     ingredientid: ingredientIdToDelete // Pass the ID of the ingredient to delete
-                } 
+                }
             });
-            
+
             // Fetch the updated list of checked ingredients for the selected menu item
             const response = await axios.put('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid });
             setCheckedItems(response.data); // Update the checkedItems state with the updated list
-    
+
         } catch (error) {
             console.error('Error deleting ingredient:', error);
         }
@@ -175,32 +194,32 @@ const MenuItems = ({ onPageChange }) => {
             <div className='manager-menu-items'>
                 <div className="left-panel">
                     <div className="add-item-section">
-                                <h2 onMouseOver={handleMouseOver}>Add New MenuItem</h2>
-                            <div>
-                                <label>Item Name:</label>
-                                <input
-                                    type="text"
-                                    value={newMenuItem.name}
-                                    onChange={(e) => setNewMenuItem({ ...newMenuItem, name: e.target.value })}
-                                />
-                            </div>
-                            <div>
-                                <label>Price:</label>
-                                <input
-                                    type="number"
-                                    value={newMenuItem.price}
-                                    onChange={(e) => setNewMenuItem({ ...newMenuItem, price: e.target.value })}
-                                />
-                            </div>
-                            <div>
-                                <label>Catagory:</label>
-                                <input
-                                    type="number"
-                                    value={newMenuItem.count}
-                                    onChange={(e) => setNewMenuItem({ ...newMenuItem, catagory: e.target.value })}
-                                />
-                            </div>
-                            <button onClick={handleAddMenuItem} onMouseOver={handleMouseOver}>Submit</button>    
+                        <h2 onMouseOver={handleMouseOver}>Add New MenuItem</h2>
+                        <div>
+                            <label>Item Name:</label>
+                            <input
+                                type="text"
+                                value={newMenuItem.name}
+                                onChange={(e) => setNewMenuItem({ ...newMenuItem, name: e.target.value })}
+                            />
+                        </div>
+                        <div>
+                            <label>Price:</label>
+                            <input
+                                type="number"
+                                value={newMenuItem.price}
+                                onChange={(e) => setNewMenuItem({ ...newMenuItem, price: e.target.value })}
+                            />
+                        </div>
+                        <div>
+                            <label>Catagory:</label>
+                            <input
+                                type="number"
+                                value={newMenuItem.count}
+                                onChange={(e) => setNewMenuItem({ ...newMenuItem, catagory: e.target.value })}
+                            />
+                        </div>
+                        <button onClick={handleAddMenuItem} onMouseOver={handleMouseOver}>Submit</button>
                     </div>
                 </div>
                 <div className="right-panel">
@@ -211,6 +230,7 @@ const MenuItems = ({ onPageChange }) => {
                             <input type="text" id="editName" name="name" value={selectedItem.itemname} onChange={handleInputChange} onMouseOver={handleMouseOver} />
                             <label htmlFor="editPrice" onMouseOver={handleMouseOver}>Price:</label>
                             <input type="text" id="editPrice" name="price" value={selectedItem.price} onChange={handleInputChange} onMouseOver={handleMouseOver} />
+                            <button onClick={handleUpdateMenuItem}>Update</button>
                             <h3 onMouseOver={handleMouseOver}>Ingredients:</h3>
                             <ul>
                                 {checkedItems.map((ingredient, index) => (
