@@ -1,15 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import './Employee.css';
+import './Ordering.css';
 import { useCart } from "react-use-cart";
-import { CartProvider } from "react-use-cart";
-import { useTextSize } from '../TextSizeContext';
+//import { CartProvider } from "react-use-cart";
+//import { useTextSize } from '../../../TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
-import Cart from './Cart'
-const Employee = ({ onCatChange }) => {
+import Cart from '../Cart/Cart'
+import { useTextSize } from '../../../TextSizeContext';
+const Ordering = ({ onCatChange }) => {
     const { textSize, toggleTextSize } = useTextSize();
-    const [loggedIn, setLoggedIn] = useState(false);
-    const [username, setUsername] = useState('');
-    const [currentTime, setCurrentTime] = useState('');
     const [category, setCategory] = useState('Value Meals');
     const [selectedMenuSection] = useState(null);  //setSelectedMenuSection
     const [initialFetchDone, setInitialFetchDone] = useState(false);
@@ -24,37 +22,9 @@ const Employee = ({ onCatChange }) => {
     const {addItem} = useCart();
     console.log('Cart Hook:', useCart());
 
-    const handleLoginLogout = () => {
-        if (loggedIn) {
-            setLoggedIn(false);
-            setUsername('');
-        } else {
-            const fakeUsername = 'JohnDoe';
-            setLoggedIn(true);
-            setUsername(fakeUsername);
-        }
-    };
-
-    const updateTime = () => {
-        const date = new Date();
-        const timeString = date.toLocaleTimeString();
-        setCurrentTime(timeString);
-    };
-
-    useEffect(() => {
-        const interval = setInterval(updateTime, 1000);
-        return () => clearInterval(interval);
-    }, []);
-
-    const speakText = (text) => {
-        const utterance = new SpeechSynthesisUtterance();
-        utterance.text = text;
-        window.speechSynthesis.speak(utterance);
-    };
-
     const fetchMenuSection = async (currentIdStart) => {
         try {
-            const response = await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/employee/getmenuitems',  { menugroup: currentIdStart });
+            const response = await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/Ordering/getmenuitems',  { menugroup: currentIdStart });
             switch (currentIdStart) {
                 case 100:
                     setBurgerList(response.data);
@@ -153,20 +123,7 @@ const Employee = ({ onCatChange }) => {
     };	  
 
     return (
-        <div className={`employee ${textSize === 'large' ? 'large-text' : ''}`}>
-            <div className="top-bar">
-                <div className="user-info">
-                    <span>{loggedIn ? `Welcome, ${username}` : 'Please log in'}</span>
-                    <span>{currentTime}</span>
-                </div>
-                <button onClick={handleLoginLogout}>{loggedIn ? 'Logout' : 'Login'}</button>
-                <button onClick={() => speakText("Employee... Sandwiches... Sides... Drinks... Limited Time")}>Speak</button>
-                <button onClick={toggleTextSize}>Toggle Text Size</button>
-                <button> Work Hours </button>
-            </div>
-
-            <div id="google_translate_element"></div>
-
+        <div className={`Ordering ${textSize === 'large' ? 'large-text' : ''}`}>
             <div className="middle-content">
                 <section className="layout">
                     <div className="leftSide">
@@ -196,4 +153,4 @@ const Employee = ({ onCatChange }) => {
     );
 };
 
-export default Employee;
+export default Ordering;

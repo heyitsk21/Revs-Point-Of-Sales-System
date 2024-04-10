@@ -10,7 +10,7 @@ import SalesReport from './SalesReport';
 import ExcessReport from './ExcessReport';
 import RestockReport from './RestockReport';
 import OrderTrend from './OrderTrend';
-import Employee from './Employee/Employee';
+import Employee from './Employee/pages/Employee';
 import { TextSizeProvider } from './TextSizeContext';
 import { CartProvider } from 'react-use-cart';
 
