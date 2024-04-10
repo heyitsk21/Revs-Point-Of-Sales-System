@@ -1,33 +1,5 @@
 /* Ordering.css */
 
-.employee {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    font-size: 24px;
-}
-
-button {
-    background-color: #005bbd;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 8px 16px;
-    cursor: pointer;
-    font-size: 24px;
-}
-
-button:hover {
-    background-color: rgb(0, 69, 142);
-}
-
-.top-bar button {
-    background-color: #005bbd;
-}
-.top-bar button:hover {
-    background-color: rgb(0, 69, 142);
-}
-
 .bottom-nav button {
     font-size: 24px;
     background-color: #005bbd;
@@ -36,22 +8,8 @@ button:hover {
     background-color: rgb(0, 69, 142);
 }
 
-.large-text .top-bar button,
 .large-text .bottom-nav button {
     font-size: 40px;
-}
-
-.top-bar {
-    background-color: #333;
-    color: #fff;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.user-info span {
-    margin-right: 10px;
 }
 
 .middle-content {
