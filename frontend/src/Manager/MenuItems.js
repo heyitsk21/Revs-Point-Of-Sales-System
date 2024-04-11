@@ -5,7 +5,7 @@ import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
 import ManagerBottomBar from '../components/ManagerBottomBar';
 
-const MenuItems = ({ onPageChange }) => {
+function MenuItems () {
     const [menu, setMenu] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [checkedItems, setCheckedItems] = useState([]);
@@ -267,7 +267,7 @@ const MenuItems = ({ onPageChange }) => {
                     <button onClick={handleDeleteButtonClick} disabled={!selectedItem} onMouseOver={handleMouseOver}>Delete</button>
                 </div>
             </div>
-            <ManagerBottomBar onPageChange={onPageChange} />
+            <ManagerBottomBar />
         </div>
     );
 };
