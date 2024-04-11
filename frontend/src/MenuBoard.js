@@ -3,26 +3,52 @@ import './MenuBoard.css';
 import axios from 'axios';
 
 const MenuBoard = ({ onPageChange }) => {
-    const [menuItems, setMenuItems] = useState([]);
+    const [menuGroups, setMenuGroups] = useState([]);
 
     useEffect(() => {
-        fetchMenuItems();
+        fetchMenuGroups();
     }, []);
 
-    const fetchMenuItems = async () => {
+    const fetchMenuGroups = async () => {
         try {
-            const response = await axios.get('http://127.0.0.1:5000/api/manager/menuitems');
-            setMenuItems(response.data);
+            const menuGroupsData = await Promise.all([
+                fetchMenuGroup(100, 'Burgers'),
+                fetchMenuGroup(200, 'Sandwiches'),
+                fetchMenuGroup(300, 'Salads'),
+                fetchMenuGroup(400, 'Desserts'),
+                fetchMenuGroup(500, 'Drinks & Fries'),
+                fetchMenuGroup(600, 'Value Meals'),
+                fetchMenuGroup(700, 'Limited Time')
+            ]);
+
+            setMenuGroups(menuGroupsData);
         } catch (error) {
-            console.error('Error fetching menu items:', error);
+            console.error('Error fetching menu groups:', error);
+        }
+    };
+
+    const fetchMenuGroup = async (group, title) => {
+        try {
+            const response = await axios.post('http://127.0.0.1:5000/api/employee/getmenuitems', { menugroup: group });
+            return { title, items: response.data };
+        } catch (error) {
+            console.error(`Error fetching menu items for group ${group}:`, error);
+            return { title, items: [] };
         }
     };
 
     const renderMenuItems = () => {
-        return menuItems.map(item => (
-            <div key={item.menuid} className="menu-item">
-                <div className="item-name">{item.itemname}</div>
-                <div className="item-price">${item.price}</div>
+        return menuGroups.map(group => (
+            <div key={group.title} className="menu-group">
+                <h2>{group.title}</h2>
+                <div className="menu-items-container">
+                    {group.items.map(item => (
+                        <div key={item.menuid} className="menu-item">
+                            <div className="item-name">{item.itemname}</div>
+                            <div className="item-price">${item.price}</div>
+                        </div>
+                    ))}
+                </div>
             </div>
         ));
     };
@@ -35,9 +61,7 @@ const MenuBoard = ({ onPageChange }) => {
         <div className="menu-board">
             <button className="return-button" onClick={handleReturnClick}>Return to Manager</button>
             <h1 className="menu-title">Menu</h1>
-            <div className="menu-items-container">
-                {renderMenuItems()}
-            </div>
+            {renderMenuItems()}
         </div>
     );
 };
