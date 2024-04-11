@@ -42,7 +42,6 @@ const Inventory = ({ onPageChange }) => {
 
     const handleIngredientSubmit = async () => {
         try {
-            // Convert count, ppu, and minamount to numbers
             const newIngredientData = {
                 ...newIngredient,
                 count: parseInt(newIngredient.count),
@@ -204,7 +203,7 @@ const Inventory = ({ onPageChange }) => {
             </div>
 
 
-            <ManagerBottomBar onPageChange={onPageChange} />
+            <ManagerBottomBar/>
         </div>
     );
 };

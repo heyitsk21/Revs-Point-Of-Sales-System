@@ -109,7 +109,7 @@ function MenuItems () {
             await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid, ingredientid: ingredientId });
 
             const response = await axios.put('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid });
-            setCheckedItems(response.data);
+            setCheckedItems(response.data); // Update the checkedItems state with the updated list
 
         } catch (error) {
             console.error('Error adding ingredient:', error);
@@ -120,13 +120,14 @@ function MenuItems () {
         try {
             await axios.delete('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', {
                 data: {
-                    menuitemid: selectedItem.menuid,
-                    ingredientid: ingredientIdToDelete
+                    menuitemid: selectedItem.menuid, // Pass the selected menu item ID
+                    ingredientid: ingredientIdToDelete // Pass the ID of the ingredient to delete
                 }
             });
 
+            // Fetch the updated list of checked ingredients for the selected menu item
             const response = await axios.put('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid });
-            setCheckedItems(response.data);
+            setCheckedItems(response.data); // Update the checkedItems state with the updated list
 
         } catch (error) {
             console.error('Error deleting ingredient:', error);
@@ -267,7 +268,7 @@ function MenuItems () {
                     <button onClick={handleDeleteButtonClick} disabled={!selectedItem} onMouseOver={handleMouseOver}>Delete</button>
                 </div>
             </div>
-            <ManagerBottomBar />
+            <ManagerBottomBar/>
         </div>
     );
 };
