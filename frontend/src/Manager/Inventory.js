@@ -4,7 +4,7 @@ import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
 import ManagerBottomBar from '../components/ManagerBottomBar';
-const Inventory = ({ onPageChange }) => {
+function Inventory () {
     const [inventory, setInventory] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [newIngredient, setNewIngredient] = useState({
