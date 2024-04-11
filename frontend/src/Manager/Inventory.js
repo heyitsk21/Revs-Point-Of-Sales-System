@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './Inventory.css';
-import { useTextSize } from './components/TextSizeContext';
+import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
-import ManagerTopBar from './components/ManagerTopBar';
-import ManagerBottomBar from './components/ManagerBottomBar';
+import ManagerTopBar from '../components/ManagerTopBar';
+import ManagerBottomBar from '../components/ManagerBottomBar';
 const Inventory = ({ onPageChange }) => {
     const [inventory, setInventory] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);

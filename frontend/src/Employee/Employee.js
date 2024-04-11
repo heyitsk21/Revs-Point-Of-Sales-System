@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Employee.css';
-import { useTextSize } from '../TextSizeContext';
+import { useTextSize } from '../components/TextSizeContext';
 
 const Employee = ({ onPageChange }) => {
     const { textSize, toggleTextSize } = useTextSize();

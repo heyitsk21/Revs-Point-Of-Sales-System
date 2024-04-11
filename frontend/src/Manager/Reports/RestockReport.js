@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import './RestockReport.css';
-import { useTextSize } from './components/TextSizeContext';
+import { useTextSize } from '../../components/TextSizeContext';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const RestockReport = ({ onPageChange }) => {
+function RestockReport () {
+    const navigate = useNavigate();
     const [reportData, setReportData] = useState([]);
     const [speakEnabled, setSpeakEnabled] = useState(false); // State to track whether speak feature is enabled
     const { textSize, toggleTextSize } = useTextSize();
@@ -73,7 +75,7 @@ const RestockReport = ({ onPageChange }) => {
                 <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
                 <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             </div>
-            <button onClick={() => onPageChange('trends')} onMouseOver={handleMouseOver}>Go to Trends</button>
+            <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
             <h2 onMouseOver={handleMouseOver}>Restock Report</h2>
             <div className="report-list">
                 <div className="report-header">

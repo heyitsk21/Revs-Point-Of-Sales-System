@@ -3,10 +3,11 @@ import { UserContext } from './UserContext';
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import './LoginScreen.css'
-import App from './App'
+import { useNavigate  } from 'react-router-dom';
 
 function LoginScreen(){
     const { user, setUser, authority, setAuthority, loggedIn, setLoggedIn } = useContext(UserContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         console.log("User state changed:", user);
@@ -26,6 +27,8 @@ function LoginScreen(){
                 setUser(res.data);
                 setAuthority(3);
                 setLoggedIn(true);
+                localStorage.setItem('isLoggedIn', true);
+                console.log("Now logged in:", user);
             } catch (err) {
                 console.log(err);
             }
@@ -34,7 +37,7 @@ function LoginScreen(){
 
     if (loggedIn){
         if (authority >= 3){
-            return <App />;
+            navigate('/manager');
         } else if (authority >= 2){
             console.log("Employee would be here");
         } else {

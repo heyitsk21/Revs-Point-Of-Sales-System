@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './ProdUsage.css';
-import { useTextSize } from './components/TextSizeContext';
+import { useTextSize } from '../../components/TextSizeContext';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const ProdUsage = ({ onPageChange }) => {
+function ProdUsage () {
+    const navigate = useNavigate();
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [ingredientData, setIngredientData] = useState([]);
@@ -89,7 +91,7 @@ const ProdUsage = ({ onPageChange }) => {
                 <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
                 <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             </div>
-            <button onClick={() => onPageChange('trends')} onMouseOver={handleMouseOver}>Go to Trends</button>
+            <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
             <h1 onMouseOver={handleMouseOver}>Produce Usage (negative)</h1>
             <div className="date-fields">
                 <label onMouseOver={handleMouseOver}>Start Date:</label>
