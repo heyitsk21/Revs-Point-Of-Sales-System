@@ -19,7 +19,7 @@ const ManagerTab = ({ onPageChange }) => {
         if (speakEnabled) {
             setTimeout(() => {
                 speakText(text);
-            }, 1000); // 1-second delay
+            }, 1000);
         }
     };
 

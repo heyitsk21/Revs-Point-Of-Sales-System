@@ -7,7 +7,7 @@ const SalesReport = ({ onPageChange }) => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [reportData, setReportData] = useState([]);
-    const [speakEnabled, setSpeakEnabled] = useState(false); // State to track whether speak feature is enabled
+    const [speakEnabled, setSpeakEnabled] = useState(false);
     const { textSize, toggleTextSize } = useTextSize();
 
     useEffect(() => {

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './ExcessReport.css';
 import { useTextSize } from './components/TextSizeContext';
-import axios from 'axios'; // Import Axios for making API requests
+import axios from 'axios'; 
 
 const ExcessReport = ({ onPageChange }) => {
     const [startDate, setStartDate] = useState('');
     const [reportData, setReportData] = useState([]);
-    const [speakEnabled, setSpeakEnabled] = useState(false); // State to track whether speak feature is enabled
+    const [speakEnabled, setSpeakEnabled] = useState(false);
     const { textSize, toggleTextSize } = useTextSize();
 
     const fetchData = async () => {

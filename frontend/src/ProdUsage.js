@@ -7,7 +7,7 @@ const ProdUsage = ({ onPageChange }) => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [ingredientData, setIngredientData] = useState([]);
-    const [speakEnabled, setSpeakEnabled] = useState(false); // State to track whether speak feature is enabled
+    const [speakEnabled, setSpeakEnabled] = useState(false);
     const { textSize, toggleTextSize } = useTextSize();
 
     useEffect(() => {

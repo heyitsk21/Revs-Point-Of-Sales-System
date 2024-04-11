@@ -1,26 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import './OrderHistory.css';
 import { useTextSize } from './components/TextSizeContext';
-import axios from 'axios'; // Import Axios for making API requests
+import axios from 'axios';
 import ManagerTopBar from './components/ManagerTopBar';
 import ManagerBottomBar from './components/ManagerBottomBar';
 
 const OrderHistory = ({ onPageChange }) => {
-    const [orders, setOrders] = useState([]); // Initialize state for orders
+    const [orders, setOrders] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null);
-    const [speakEnabled] = useState(false); // State to track whether speak feature is enabled
-    const { textSize} = useTextSize(); // Access textSize state and toggleTextSize function
+    const [speakEnabled] = useState(false);
+    const { textSize} = useTextSize();
 
     const fetchOrderHistory = async () => {
         try {
             const response = await axios.get('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/orderhistory');
-            setOrders(response.data); // Update orders state with response data
+            setOrders(response.data);
         } catch (error) {
             console.error('Error fetching order history:', error);
         }
     };
 
-    // Call fetchOrderHistory function when component mounts
     useEffect(() => {
         fetchOrderHistory();
     }, []);

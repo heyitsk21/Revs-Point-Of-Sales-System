@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const RestockReport = ({ onPageChange }) => {
     const [reportData, setReportData] = useState([]);
-    const [speakEnabled, setSpeakEnabled] = useState(false); // State to track whether speak feature is enabled
+    const [speakEnabled, setSpeakEnabled] = useState(false);
     const { textSize, toggleTextSize } = useTextSize();
 
     useEffect(() => {
