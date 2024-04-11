@@ -1,29 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import './OrderTrend.css';
-import { useTextSize } from './components/TextSizeContext';
+import './RestockReport.css';
+import { useTextSize } from '../../components/TextSizeContext';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const OrderTrend = ({ onPageChange }) => {
-    const [menuData, setMenuData] = useState([]);
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
+function RestockReport () {
+    const navigate = useNavigate();
+    const [reportData, setReportData] = useState([]);
     const [speakEnabled, setSpeakEnabled] = useState(false);
     const { textSize, toggleTextSize } = useTextSize();
 
     useEffect(() => {
-        if (startDate && endDate) {
-            fetchData(startDate, endDate);
-        }
-    }, [startDate, endDate]);
+        fetchData();
+    }, []);
 
-    const fetchData = async (startDate, endDate) => {
+    const fetchData = async () => {
         try {
-            const response = await axios.post('http://127.0.0.1:5000/api/manager/reports/generateordertrend', {
-                startdate: startDate,
-                enddate: endDate
-            });
+            const response = await axios.get('http://127.0.0.1:5000/api/manager/reports/generaterestockreport');
             console.log('Response from API:', response.data);
-            setMenuData(response.data);
+            setReportData(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -75,43 +70,24 @@ const OrderTrend = ({ onPageChange }) => {
     };
 
     return (
-        <div className={`order-trend ${textSize === 'large' ? 'large-text' : ''}`}>
+        <div className={`restock-report ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
             <div className="toggle-button-container">
                 <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
                 <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             </div>
-            <button onClick={() => onPageChange('trends')} onMouseOver={handleMouseOver}>Back to Trends</button>
-            <h2 onMouseOver={handleMouseOver}>Order Trend Report</h2>
-            <div className="date-fields">
-                <label>Start Date:</label>
-                <input
-                    type="text"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    placeholder="YYYY-MM-DD"
-                    onMouseOver={handleMouseOver}
-                />
-                <label>End Date:</label>
-                <input
-                    type="text"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    placeholder="YYYY-MM-DD"
-                    onMouseOver={handleMouseOver}
-                />
-            </div>
-            <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Trend Report</button>
-            <div className="report-list" onMouseOver={handleMouseOver}>
+            <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
+            <h2 onMouseOver={handleMouseOver}>Restock Report</h2>
+            <div className="report-list">
                 <div className="report-header">
-                    <span className="header-item">Menu Item 1</span>
-                    <span className="header-item">Menu Item 2</span>
-                    <span className="header-item">Pair Count</span>
+                    <span className="header-item">Ingredient</span>
+                    <span className="header-item">Current Amount</span>
+                    <span className="header-item">Minimum Amount</span>
                 </div>
-                {menuData.map((item, index) => (
+                {reportData.map((item, index) => (
                     <div key={index} className="report-item">
-                        <span className="report-item">{item.menuid1}</span>
-                        <span className="report-item">{item.menuid2}</span>
-                        <span className="report-item">{item.count}</span>
+                        <span className="report-item" onMouseOver={handleMouseOver}>{item.ingredientname}</span>
+                        <span className="report-item" onMouseOver={handleMouseOver}>{item.count}</span>
+                        <span className="report-item" onMouseOver={handleMouseOver}>{item.minamount}</span>
                     </div>
                 ))}
             </div>
@@ -119,4 +95,4 @@ const OrderTrend = ({ onPageChange }) => {
     );
 };
 
-export default OrderTrend;
+export default RestockReport;

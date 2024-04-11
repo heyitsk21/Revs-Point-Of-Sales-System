@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './Inventory.css';
-import { useTextSize } from './components/TextSizeContext';
+import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
-import ManagerTopBar from './components/ManagerTopBar';
-import ManagerBottomBar from './components/ManagerBottomBar';
-
+import ManagerTopBar from '../components/ManagerTopBar';
+import ManagerBottomBar from '../components/ManagerBottomBar';
 const Inventory = ({ onPageChange }) => {
     const [inventory, setInventory] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -16,7 +15,7 @@ const Inventory = ({ onPageChange }) => {
         minamount: 0
     });
     const [speakEnabled] = useState(false);
-    const { textSize } = useTextSize();
+    const { textSize} = useTextSize();
 
     const fetchInventory = async () => {
         try {
@@ -31,49 +30,93 @@ const Inventory = ({ onPageChange }) => {
         setSelectedItem(item);
     };
 
-    const handleItemUpdate = async () => {
+    const handleItemUpdate = async (itemId, updatedData) => {
         try {
-            const payload = {
-                ingredientid: selectedItem.ingredientid,
-                ingredientname: selectedItem.ingredientname,
-                count: parseInt(selectedItem.count),
-                ppu: parseFloat(selectedItem.ppu),
-                minamount: parseFloat(selectedItem.minamount)
-            };
-
-            await axios.put('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/ingredients', payload);
-            
+            const response = await axios.put(`https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/editingredient/${itemId}`, updatedData);
+            console.log('Item updated successfully:', response.data);
             fetchInventory();
         } catch (error) {
-            console.error('Error updating ingredient:', error);
+            console.error('Error updating item:', error);
         }
     };
 
     const handleIngredientSubmit = async () => {
         try {
-            const response = await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/ingredients', newIngredient);
+            // Convert count, ppu, and minamount to numbers
+            const newIngredientData = {
+                ...newIngredient,
+                count: parseInt(newIngredient.count),
+                ppu: parseFloat(newIngredient.ppu),
+                minamount: parseFloat(newIngredient.minamount)
+            };
+
+            const response = await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/ingredients', newIngredientData);
             console.log('Ingredient added successfully:', response.data);
             fetchInventory();
         } catch (error) {
             console.error('Error adding ingredient:', error);
+            // Handle error and provide feedback to the user
         }
     };
 
-    const handleInputChange = (e, field) => {
-        const value = e.target.value;
-        setSelectedItem(prevState => ({
-            ...prevState,
-            [field]: value
-        }));
+
+    const handleIngredientDelete = async (itemId,deleteCount) => {
+        try {
+            const response = await axios.delete('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/ingredients', { data: { ingredientid: itemId ,count:deleteCount} });
+            console.log('Item deleted successfully:', response.data);
+            fetchInventory();
+        } catch (error) {
+            console.error('Error deleting item:', error);
+        }
     };
+
+    const speakText = (text) => {
+        const utterance = new SpeechSynthesisUtterance();
+        utterance.text = text;
+        window.speechSynthesis.speak(utterance);
+    };
+
+    const debounce = (func, wait) => {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                timeout = null;
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    };
+
+    const handleMouseOver = debounce((event) => {
+        let hoveredElementText = '';
+        if (speakEnabled) {
+            if (event.target.innerText) {
+                hoveredElementText = event.target.innerText;
+            } else if (event.target.value) {
+                hoveredElementText = event.target.value;
+            } else if (event.target.getAttribute('aria-label')) {
+                hoveredElementText = event.target.getAttribute('aria-label');
+            } else if (event.target.getAttribute('aria-labelledby')) {
+                const id = event.target.getAttribute('aria-labelledby');
+                const labelElement = document.getElementById(id);
+                if (labelElement) {
+                    hoveredElementText = labelElement.innerText;
+                }
+            }
+            speakText(hoveredElementText);
+        }
+    }, 1000); 
+
 
     const renderInventoryItems = () => {
         return inventory.map(item => (
-            <div key={item.ingredientid} className="inventory-item" onClick={() => handleItemSelected(item)}>
+            <div key={item.ingredientid} className="inventory-item" onClick={() => handleItemSelected(item)} onMouseOver={handleMouseOver}>
                 <span>{item.ingredientname}</span>
                 <span>Price Per Unit: ${item.ppu}</span>
                 <span>Count: {item.count}</span>
                 <span>Min Amount: {item.minamount}</span>
+                <button onClick={(e) => { e.stopPropagation(); handleIngredientDelete(item.ingredientid,item.count); }}>Delete</button>
             </div>
         ));
     };
@@ -84,9 +127,9 @@ const Inventory = ({ onPageChange }) => {
 
     return (
         <div className={`inventory ${textSize === 'large' ? 'large-text' : ''}`}>
-            <ManagerTopBar />
+            <ManagerTopBar/>
             <div className="inventory-details">
-                <h2>Selected Item Details</h2>
+                <h2 onMouseOver={handleMouseOver}>Selected Item Details</h2>
                 {selectedItem && (
                     <div className="selected-item">
                         <h3>{selectedItem.ingredientname}</h3>
@@ -95,7 +138,7 @@ const Inventory = ({ onPageChange }) => {
                             <input
                                 type="number"
                                 value={selectedItem.ppu}
-                                onChange={(e) => handleInputChange(e, 'ppu')}
+                                onChange={(e) => handleItemUpdate(selectedItem.ingredientid, { ppu: e.target.value })}
                             />
                         </div>
                         <div>
@@ -103,7 +146,7 @@ const Inventory = ({ onPageChange }) => {
                             <input
                                 type="number"
                                 value={selectedItem.count}
-                                onChange={(e) => handleInputChange(e, 'count')}
+                                onChange={(e) => handleItemUpdate(selectedItem.ingredientid, { count: e.target.value })}
                             />
                         </div>
                         <div>
@@ -111,15 +154,14 @@ const Inventory = ({ onPageChange }) => {
                             <input
                                 type="number"
                                 value={selectedItem.minamount}
-                                onChange={(e) => handleInputChange(e, 'minamount')}
+                                onChange={(e) => handleItemUpdate(selectedItem.ingredientid, { minamount: e.target.value })}
                             />
                         </div>
-                        <button onClick={handleItemUpdate}>Submit</button>
                     </div>
                 )}
             </div>
             <div className="new-ingredient">
-                <h2>Add New Ingredient</h2>
+                <h2 onMouseOver={handleMouseOver}>Add New Ingredient</h2>
                 <div>
                     <label>Ingredient Name:</label>
                     <input
@@ -152,13 +194,16 @@ const Inventory = ({ onPageChange }) => {
                         onChange={(e) => setNewIngredient({ ...newIngredient, minamount: e.target.value })}
                     />
                 </div>
-                <button onClick={handleIngredientSubmit}>Submit</button>
+                <button onClick={handleIngredientSubmit} onMouseOver={handleMouseOver}>Submit</button>
             </div>
-
+            
             <div className="inventory-list">
-                <h2>Inventory Items</h2>
+        
+                <h2 onMouseOver={handleMouseOver}>Inventory Items</h2>
                 {renderInventoryItems()}
             </div>
+
+
             <ManagerBottomBar onPageChange={onPageChange} />
         </div>
     );

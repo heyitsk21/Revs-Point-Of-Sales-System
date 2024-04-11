@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import './ExcessReport.css';
-import { useTextSize } from './components/TextSizeContext';
-import axios from 'axios'; 
+import { useTextSize } from '../../components/TextSizeContext';
+import axios from 'axios'; // Import Axios for making API requests
+import { useNavigate  } from 'react-router-dom';
 
-const ExcessReport = ({ onPageChange }) => {
+function ExcessReport () {
+    const navigate = useNavigate();
     const [startDate, setStartDate] = useState('');
     const [reportData, setReportData] = useState([]);
-    const [speakEnabled, setSpeakEnabled] = useState(false);
+    const [speakEnabled, setSpeakEnabled] = useState(false); // State to track whether speak feature is enabled
     const { textSize, toggleTextSize } = useTextSize();
 
     const fetchData = async () => {
@@ -84,7 +86,7 @@ const ExcessReport = ({ onPageChange }) => {
                 <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
                 <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             </div>
-            <button onClick={() => onPageChange('trends')} onMouseOver={handleMouseOver}>Go to Trends</button>
+            <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
             <h2 onMouseOver={handleMouseOver}>Excess Report</h2>
             <div className="date-fields">
                 <label onMouseOver={handleMouseOver}>Start Date:</label>

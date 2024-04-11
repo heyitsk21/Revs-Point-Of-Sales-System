@@ -1,8 +1,10 @@
 
 import React, {useState}from 'react';
+import { useNavigate  } from 'react-router-dom';
 import './ManagerBottomBar.css';
 
-const ManagerBottomBar = ({onPageChange}) => {
+function ManagerBottomBar() {
+    const navigate = useNavigate();
     const [speakEnabled] = useState(false);
 
     const debounce = (func, wait) => {
@@ -43,17 +45,42 @@ const ManagerBottomBar = ({onPageChange}) => {
         window.speechSynthesis.speak(utterance);
     };
 
-
-
+    const handleButtonClick = (buttonName) => {
+        // Perform actions based on which button is clicked
+        switch (buttonName) {
+          case 'trends':
+            // Do something for Trends button
+            console.log('Trends button clicked');
+            navigate('/manager/trends');
+            break;
+          case 'inventory':
+            // Do something for Inventory button
+            console.log('Inventory button clicked');
+            navigate('/manager/inventory');
+            break;
+          case 'menuItems':
+            // Do something for Menu Items button
+            console.log('Menu Items button clicked');
+            navigate('/manager/menuitems');
+            break;
+          case 'orderHistory':
+            // Do something for Order History button
+            console.log('Order History button clicked');
+            navigate('/manager/orderhistory');
+            break;
+          default:
+            break;
+        }
+    };
 
     return(            
-    <div className="bottom-nav">
-    <button onMouseOver={() => handleMouseOver("Trends")} onClick={() => onPageChange('trends')}>Trends</button>
-    <button onMouseOver={() => handleMouseOver("Inventory")} onClick={() => onPageChange('inventory')}>Inventory</button>
-    <button onMouseOver={() => handleMouseOver("Menu Items")} onClick={() => onPageChange('menuItems')}>Menu Items</button>
-    <button onMouseOver={() => handleMouseOver("Order History")} onClick={() => onPageChange('orderHistory')}>Order History</button>
-</div>
-);
+        <div className="bottom-nav">
+            <button className="bottom-bar-button" onClick={() => handleButtonClick('trends')}>Trends</button>
+            <button className="bottom-bar-button" onClick={() => handleButtonClick('inventory')}>Inventory</button>
+            <button className="bottom-bar-button" onClick={() => handleButtonClick('menuItems')}>Menu Items</button>
+            <button className="bottom-bar-button" onClick={() => handleButtonClick('orderHistory')}>Order History</button>
+        </div>
+    );
 };
 
 export default ManagerBottomBar;

@@ -1,25 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import './OrderHistory.css';
-import { useTextSize } from './components/TextSizeContext';
-import axios from 'axios';
-import ManagerTopBar from './components/ManagerTopBar';
-import ManagerBottomBar from './components/ManagerBottomBar';
+import { useTextSize } from '../components/TextSizeContext';
+import axios from 'axios'; // Import Axios for making API requests
+import ManagerTopBar from '../components/ManagerTopBar';
+import ManagerBottomBar from '../components/ManagerBottomBar';
 
 const OrderHistory = ({ onPageChange }) => {
-    const [orders, setOrders] = useState([]);
+    const [orders, setOrders] = useState([]); // Initialize state for orders
     const [selectedOrder, setSelectedOrder] = useState(null);
-    const [speakEnabled] = useState(false);
-    const { textSize} = useTextSize();
+    const [speakEnabled] = useState(false); // State to track whether speak feature is enabled
+    const { textSize} = useTextSize(); // Access textSize state and toggleTextSize function
 
+    // Function to fetch order history from the backend API
     const fetchOrderHistory = async () => {
         try {
             const response = await axios.get('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/orderhistory');
-            setOrders(response.data);
+            setOrders(response.data); // Update orders state with response data
         } catch (error) {
             console.error('Error fetching order history:', error);
         }
     };
 
+    // Call fetchOrderHistory function when component mounts
     useEffect(() => {
         fetchOrderHistory();
     }, []);
@@ -30,11 +32,11 @@ const OrderHistory = ({ onPageChange }) => {
 
     const renderOrderItems = () => {
         return orders.map(order => (
-            <div key={order.orderid} className={`order-item ${selectedOrder && selectedOrder.orderid === order.orderid ? 'selected' : ''}`} onClick={() => handleOrderClick(order)}>
-                <div onMouseOver={handleMouseOver}>ID: {order.orderid}</div>
-                <div onMouseOver={handleMouseOver}>Customer: {order.customername}</div>
-                <div onMouseOver={handleMouseOver}>Price: ${parseFloat(order.baseprice) + parseFloat(order.taxprice)}</div>
-                <div onMouseOver={handleMouseOver}>Date/Time: {order.orderdatetime}</div>
+            <div key={order.orderid} className={`order-item ${selectedOrder && selectedOrder.orderid === order.orderid ? 'selected' : ''}`} onClick={() => handleOrderClick(order)} onMouseOver={handleMouseOver}>
+                <div>ID: {order.orderid}</div>
+                <div>Customer: {order.customername}</div>
+                <div>Price: ${parseFloat(order.baseprice) + parseFloat(order.taxprice)}</div>
+                <div>Date/Time: {order.orderdatetime}</div>
             </div>
         ));
     };
