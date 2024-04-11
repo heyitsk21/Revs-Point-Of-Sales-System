@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './OrderHistory.css';
-import { useTextSize } from './components/TextSizeContext';
+import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
-import ManagerTopBar from './components/ManagerTopBar';
-import ManagerBottomBar from './components/ManagerBottomBar';
+import ManagerTopBar from '../components/ManagerTopBar';
+import ManagerBottomBar from '../components/ManagerBottomBar';
 
 const OrderHistory = ({ onPageChange }) => {
     const [orders, setOrders] = useState([]); // Initialize state for orders

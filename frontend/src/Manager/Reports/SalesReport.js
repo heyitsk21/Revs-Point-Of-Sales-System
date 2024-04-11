@@ -1,32 +1,39 @@
-import React, { useEffect, useState } from 'react';
-import './OrderTrend.css';
-import { useTextSize } from './components/TextSizeContext';
+import React, { useState, useEffect } from 'react';
+import './SalesReport.css';
+import { useTextSize } from '../../components/TextSizeContext';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const OrderTrend = ({ onPageChange }) => {
-    const [menuData, setMenuData] = useState([]);
+function SalesReport () {
+    const navigate = useNavigate();
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [reportData, setReportData] = useState([]);
     const [speakEnabled, setSpeakEnabled] = useState(false); // State to track whether speak feature is enabled
     const { textSize, toggleTextSize } = useTextSize();
 
     useEffect(() => {
-        if (startDate && endDate) {
+        if (isValidDate(startDate) && isValidDate(endDate)) {
             fetchData(startDate, endDate);
         }
     }, [startDate, endDate]);
 
     const fetchData = async (startDate, endDate) => {
         try {
-            const response = await axios.post('http://127.0.0.1:5000/api/manager/reports/generateordertrend', {
+            const response = await axios.post('http://127.0.0.1:5000/api/manager/reports/generatesalesreport', {
                 startdate: startDate,
                 enddate: endDate
             });
             console.log('Response from API:', response.data);
-            setMenuData(response.data);
+
+            setReportData(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
+    };
+
+    const isValidDate = (date) => {
+        return date.match(/\d{4}-\d{2}-\d{2}/);
     };
 
     const speakText = (text) => {
@@ -75,48 +82,46 @@ const OrderTrend = ({ onPageChange }) => {
     };
 
     return (
-        <div className={`order-trend ${textSize === 'large' ? 'large-text' : ''}`}>
+        <div className={`sales-report ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
             <div className="toggle-button-container">
                 <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
                 <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             </div>
-            <button onClick={() => onPageChange('trends')} onMouseOver={handleMouseOver}>Back to Trends</button>
-            <h2 onMouseOver={handleMouseOver}>Order Trend Report</h2>
+            <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
+            <h2 onMouseOver={handleMouseOver}>Sales Report</h2>
             <div className="date-fields">
-                <label>Start Date:</label>
+                <label onMouseOver={handleMouseOver}>Start Date:</label>
                 <input
                     type="text"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                     placeholder="YYYY-MM-DD"
-                    onMouseOver={handleMouseOver}
                 />
-                <label>End Date:</label>
+                <label onMouseOver={handleMouseOver}>End Date:</label>
                 <input
                     type="text"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                     placeholder="YYYY-MM-DD"
-                    onMouseOver={handleMouseOver}
                 />
             </div>
-            <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Trend Report</button>
-            <div className="report-list" onMouseOver={handleMouseOver}>
-                <div className="report-header">
-                    <span className="header-item">Menu Item 1</span>
-                    <span className="header-item">Menu Item 2</span>
-                    <span className="header-item">Pair Count</span>
-                </div>
-                {menuData.map((item, index) => (
-                    <div key={index} className="report-item">
-                        <span className="report-item">{item.menuid1}</span>
-                        <span className="report-item">{item.menuid2}</span>
-                        <span className="report-item">{item.count}</span>
-                    </div>
-                ))}
+            <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Sales Report</button>
+            <div className="report-list">
+                {reportData.length > 0 ? (
+                    reportData.map((item, index) => (
+                        <div key={index} className="report-item">
+                            <span onMouseOver={handleMouseOver}>Menu ID: {item.menuid}</span>
+                            <span onMouseOver={handleMouseOver}>Item Name: {item.itemname}</span>
+                            <span onMouseOver={handleMouseOver}>Sales: ${parseFloat(item.totalsales).toFixed(2)}</span>
+                            <span onMouseOver={handleMouseOver}>Amount Sold: {item.ordercount}</span>
+                        </div>
+                    ))
+                ) : (
+                    <p onMouseOver={handleMouseOver}>No data to display</p>
+                )}
             </div>
         </div>
     );
 };
 
-export default OrderTrend;
+export default SalesReport;

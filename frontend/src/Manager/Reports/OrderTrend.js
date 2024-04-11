@@ -1,36 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import './ExcessReport.css';
-import { useTextSize } from './components/TextSizeContext';
-import axios from 'axios'; // Import Axios for making API requests
+import './OrderTrend.css';
+import { useTextSize } from '../../components/TextSizeContext';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const ExcessReport = ({ onPageChange }) => {
+function OrderTrend () {
+    const navigate = useNavigate();
+    const [menuData, setMenuData] = useState([]);
     const [startDate, setStartDate] = useState('');
-    const [reportData, setReportData] = useState([]);
+    const [endDate, setEndDate] = useState('');
     const [speakEnabled, setSpeakEnabled] = useState(false); // State to track whether speak feature is enabled
     const { textSize, toggleTextSize } = useTextSize();
 
-    const fetchData = async () => {
+    useEffect(() => {
+        if (startDate && endDate) {
+            fetchData(startDate, endDate);
+        }
+    }, [startDate, endDate]);
+
+    const fetchData = async (startDate, endDate) => {
         try {
-            const response = await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/reports/generateexcessreport', {
-                startdate: startDate
+            const response = await axios.post('http://127.0.0.1:5000/api/manager/reports/generateordertrend', {
+                startdate: startDate,
+                enddate: endDate
             });
-            const formattedData = response.data.map(item => ({ itemname: item.itemname, menuid: item.menuid }));
-            setReportData(formattedData);
+            console.log('Response from API:', response.data);
+            setMenuData(response.data);
         } catch (error) {
-            console.error('Error fetching excess report data:', error);
+            console.error('Error fetching data:', error);
         }
-    };
-
-    const handleGenerateExcessReport = () => {
-        if (isValidDate(startDate)) {
-            fetchData();
-        } else {
-            alert('Please enter a valid start date (YYYY-MM-DD).');
-        }
-    };
-
-    const isValidDate = (date) => {
-        return date.match(/\d{4}-\d{2}-\d{2}/);
     };
 
     const speakText = (text) => {
@@ -79,15 +77,15 @@ const ExcessReport = ({ onPageChange }) => {
     };
 
     return (
-        <div className={`excess-report ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
+        <div className={`order-trend ${textSize === 'large' ? 'large-text' : ''}`}>
             <div className="toggle-button-container">
                 <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
                 <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
             </div>
-            <button onClick={() => onPageChange('trends')} onMouseOver={handleMouseOver}>Go to Trends</button>
-            <h2 onMouseOver={handleMouseOver}>Excess Report</h2>
+            <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
+            <h2 onMouseOver={handleMouseOver}>Order Trend Report</h2>
             <div className="date-fields">
-                <label onMouseOver={handleMouseOver}>Start Date:</label>
+                <label>Start Date:</label>
                 <input
                     type="text"
                     value={startDate}
@@ -95,22 +93,32 @@ const ExcessReport = ({ onPageChange }) => {
                     placeholder="YYYY-MM-DD"
                     onMouseOver={handleMouseOver}
                 />
+                <label>End Date:</label>
+                <input
+                    type="text"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    placeholder="YYYY-MM-DD"
+                    onMouseOver={handleMouseOver}
+                />
             </div>
-            <div className="report-table">
-                <div className="report-row header">
-                    <div className="report-cell">Ingredient ID</div>
-                    <div className="report-cell">Ingredient Name</div>
+            <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Trend Report</button>
+            <div className="report-list" onMouseOver={handleMouseOver}>
+                <div className="report-header">
+                    <span className="header-item">Menu Item 1</span>
+                    <span className="header-item">Menu Item 2</span>
+                    <span className="header-item">Pair Count</span>
                 </div>
-                {reportData.map((item, index) => (
-                    <div key={index} className="report-row">
-                        <div className="report-cell" onMouseOver={handleMouseOver}>{item.menuid}</div>
-                        <div className="report-cell" onMouseOver={handleMouseOver}>{item.itemname}</div>
+                {menuData.map((item, index) => (
+                    <div key={index} className="report-item">
+                        <span className="report-item">{item.menuid1}</span>
+                        <span className="report-item">{item.menuid2}</span>
+                        <span className="report-item">{item.count}</span>
                     </div>
                 ))}
             </div>
-            <button onClick={handleGenerateExcessReport} onMouseOver={handleMouseOver}>Generate Excess Report</button>
         </div>
     );
 };
 
-export default ExcessReport;
+export default OrderTrend;
