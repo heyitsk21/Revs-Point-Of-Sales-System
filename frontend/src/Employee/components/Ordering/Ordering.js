@@ -4,6 +4,8 @@ import { useCart } from "react-use-cart";
 import { useTextSize } from '../../../TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
 import Cart from '../Cart/Cart'
+import SimpleBar from 'simplebar-react';
+import 'simplebar-react/dist/simplebar.min.css';
 const Ordering = ({ onCatChange }) => {
     const { textSize, toggleTextSize } = useTextSize();
     const [category, setCategory] = useState('Value Meals');
@@ -128,9 +130,11 @@ const Ordering = ({ onCatChange }) => {
                         <div className='categoryName'>
                             {category}
                         </div>
-                        <div className='items'>
-                            {renderMenuSection()}
-                        </div>
+                        <SimpleBar style={{ height: 600, width: 990}}>
+                            <div className='items'>
+                                {renderMenuSection()}
+                            </div>
+                        </SimpleBar>
                     </div>
                     <div className="rightSide">
                         <Cart />
