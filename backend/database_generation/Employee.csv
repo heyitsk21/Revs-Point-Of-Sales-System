@@ -7,3 +7,9 @@ EmployeeID,EmployeeName,IsManager,Salary,Password
 6,Anjali Varghese,FALSE,10,cashierpassword#6
 7,admin,TRUE,0,admin
 8,test,FALSE,0,test
+9,darren.l.collingwood@gmail.com,FALSE,10,test
+10,dlcollingwood@tamu.edu,TRUE,20,test
+11,heyitsk21@tamu.edu,TRUE,19,test
+12,jessjakubik@tamu.edu,TRUE,19,test
+13,jnuccitelli@tamu.edu,TRUE,19,test
+14,joshdrobert@tamu.edu,TRUE,19,test
