@@ -26,6 +26,16 @@ GenerateProductUsage_model = api.model('GenerateProductUsage',{"startdate": fiel
 GenerateSalesReport_model = api.model('GenerateSalesReport',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
 GenerateOrderTrend_model = api.model('GenerateOrderTrend',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
 
+@api.route('/api/manager/employee')
+class Employee(Resource):
+    def get(self):
+        with db.engine.connect() as conn:
+            result = conn.execution_options(stream_results=True).execute(text("select * from employee"))
+            employeelist = []
+            for row in result:
+                employeelist.append({"employeeid":row.employeeid, "employeename":row.employeename, "ismanager":row.ismanager, "salary":row.salary, "password":row.password})
+        return jsonify(employeelist)
+
 @api.route('/api/manager/menuitems')
 class MenuItems(Resource):
     def get(self): #GetMenuItem
