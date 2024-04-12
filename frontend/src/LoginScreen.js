@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { UserContext } from './UserContext';
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
@@ -12,6 +12,30 @@ function LoginScreen(){
     useEffect(() => {
         console.log("User state changed:", user);
     }, [user]);
+
+    const [employees, setEmployees] = useState([]);
+
+    useEffect(() => {
+        fetchEmployees();
+    }, []);
+
+    const fetchEmployees = async () => {
+        try {
+            const response = await axios.get('/api/manager/employee');
+            setEmployees(response.data);
+        } catch (error) {
+            console.error('Error fetching employees:', error);
+        }
+    };
+
+    const getAuthority = (userData) => {
+        const employee = employees.find(emp => emp.employeename === userData.name);
+        if (employee) {
+            return employee.ismanager ? 3 : 2;
+        } else {
+            return 1;
+        }
+    };
     
     const login = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
@@ -25,10 +49,11 @@ function LoginScreen(){
                     }
                 );
                 setUser(res.data);
-                setAuthority(2);
+                const authority = getAuthority(res.data);
+                setAuthority(authority);
                 setLoggedIn(true);
                 localStorage.setItem('isLoggedIn', true);
-                console.log("Now logged in:", user);
+                console.log("Now logged in:", res.data);
             } catch (err) {
                 console.log(err);
             }
