@@ -25,7 +25,7 @@ function LoginScreen(){
                     }
                 );
                 setUser(res.data);
-                setAuthority(3);
+                setAuthority(2);
                 setLoggedIn(true);
                 localStorage.setItem('isLoggedIn', true);
                 console.log("Now logged in:", user);
@@ -40,8 +40,10 @@ function LoginScreen(){
             navigate('/manager');
         } else if (authority >= 2){
             console.log("Employee would be here");
+            navigate('/employee');
         } else {
             console.log("Rando logged in");
+            navigate('/customer');
         }
     }else{
         return (
