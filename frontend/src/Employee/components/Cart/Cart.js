@@ -4,6 +4,8 @@ import ConfirmClearOrder from '../ConfirmClearOrder/ConfirmClearOrder';
 import './Cart.css';
 import { useCart } from 'react-use-cart';
 import { useState } from 'react'
+import SimpleBar from 'simplebar-react';
+import 'simplebar-react/dist/simplebar.min.css';
 
 const Cart = () => {
     const { 
@@ -26,48 +28,54 @@ const Cart = () => {
             {isEmpty ? (
                 <div className ='emptyMessage'>Your Cart is Empty</div>
             ) : (
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Adjust</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {items.map((item, index)=> (
-                            <tr key={index}>
-                                <td>{item.name}</td>
-                                <td>${(item.quantity * item.price).toFixed(2)}</td>
-                                <td className='quantity'>{item.quantity}</td>
-                                <td className='adjust'>
-                                    <div className = "changeQuantity">
-                                        <button className="minus" onClick={() => updateItemQuantity(item.id, item.quantity - 1)}>-</button>
-                                        <button className="plus" onClick={() => updateItemQuantity(item.id, item.quantity + 1)}>+</button>
-                                    </div>
-                                    <div className = "removeItem">
-                                        <button className="delete" onClick={() => removeItem(item.id)}>Remove Item</button>
-                                    </div>
+                <div>
+                <SimpleBar style={{ height: 400, width: 500}}>
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Adjust</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {items.map((item, index)=> (
+                                <tr key={index}>
+                                    <td>{item.name}</td>
+                                    <td>${(item.quantity * item.price).toFixed(2)}</td>
+                                    <td className='quantity'>{item.quantity}</td>
+                                    <td className='adjust'>
+                                        <div className = "changeQuantity">
+                                            <button className="minus" onClick={() => updateItemQuantity(item.id, item.quantity - 1)}>-</button>
+                                            <button className="plus" onClick={() => updateItemQuantity(item.id, item.quantity + 1)}>+</button>
+                                        </div>
+                                        <div className = "removeItem">
+                                            <button className="delete" onClick={() => removeItem(item.id)}>Remove Item</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </SimpleBar>
+                    <table>
+                        <tfoot>
+                            <tr>
+                                <td colSpan="2">Total Price:</td>
+                                <td colSpan="2">${cartTotal.toFixed(2)}</td>
+                            </tr>
+                            <tr>
+                                <td colSpan="2">
+                                    <button onClick={() => setClearOrderPopup(true)}>Clear Order</button>
+                                </td>
+                                <td colSpan="2">
+                                    <button onClick={() => setSubmitPopup(true)}>Buy Now</button>
                                 </td>
                             </tr>
-                        ))}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colSpan="2">Total Price:</td>
-                            <td colSpan="2">${cartTotal.toFixed(2)}</td>
-                        </tr>
-                        <tr>
-                            <td colSpan="2">
-                                <button onClick={() => setClearOrderPopup(true)}>Clear Order</button>
-                            </td>
-                            <td colSpan="2">
-                                <button onClick={() => setSubmitPopup(true)}>Buy Now</button>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </tfoot>
+                    </table>
+                </div>
             )}
 
             <ConfirmClearOrder trigger={clearOrderPopup} setTrigger={setClearOrderPopup} emptyCart={emptyCart}>
