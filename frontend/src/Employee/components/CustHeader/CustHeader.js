@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './CustHeader.css';
-import { useTextSize } from '../../../TextSizeContext';
+import { useTextSize } from '../../../components/TextSizeContext';
 const EmpHeader = ({ onCatChange }) => {
     const { textSize, toggleTextSize } = useTextSize();
     const [currentTime, setCurrentTime] = useState('');

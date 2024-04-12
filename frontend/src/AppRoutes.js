@@ -1,7 +1,8 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import App from './App';
-import Employee from './Employee/Employee';
+import Employee from './Employee/pages/Employee';
+import Customer from './Employee/pages/Customer';
 import LoginScreen from './LoginScreen';
 import Inventory from './Manager/Inventory';
 import MenuItems from './Manager/MenuItems';
@@ -31,6 +32,7 @@ function AppRoutes() {
       <Route path="/manager/trends/ordertrend" element={<OrderTrend />} />
 
       <Route path="/employee" element={<Employee />} />
+      <Route path="/customer" element={<Customer />} />
     </Routes>
   );
 }

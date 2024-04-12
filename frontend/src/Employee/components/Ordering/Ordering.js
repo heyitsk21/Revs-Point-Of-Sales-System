@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './Ordering.css';
 import { useCart } from "react-use-cart";
-import { useTextSize } from '../../../TextSizeContext';
+import { useTextSize } from '../../../components/TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
 import Cart from '../Cart/Cart'
 import SimpleBar from 'simplebar-react';

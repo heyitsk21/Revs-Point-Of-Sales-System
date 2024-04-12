@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './EmpHeader.css';
-import { useTextSize } from '../../../TextSizeContext';
+import { useTextSize } from '../../../components/TextSizeContext';
 const EmpHeader = ({ onCatChange }) => {
     const { textSize, toggleTextSize } = useTextSize();
     const [loggedIn, setLoggedIn] = useState(false);
