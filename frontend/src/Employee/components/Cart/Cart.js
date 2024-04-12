@@ -20,6 +20,13 @@ const Cart = () => {
     const [submitPopup, setSubmitPopup] = useState(false);
     const [clearOrderPopup, setClearOrderPopup] = useState(false);
 
+    const handleConfirmSubmit = () => {
+        const data = {
+            items: items.map(item => ({ id: item.id, quantity: item.quantity }))
+        };
+        setSubmitPopup(data);
+    };
+
     return (
         <div className='cart'>
             <div className='cartTitle'>
@@ -70,7 +77,7 @@ const Cart = () => {
                                     <button onClick={() => setClearOrderPopup(true)}>Clear Order</button>
                                 </td>
                                 <td colSpan="2">
-                                    <button onClick={() => setSubmitPopup(true)}>Buy Now</button>
+                                    <button onClick={handleConfirmSubmit}>Buy Now</button>
                                 </td>
                             </tr>
                         </tfoot>

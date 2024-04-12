@@ -23,3 +23,30 @@
     top: 16px;
     right: 16px;
 }
+
+.confirm {
+    background-color: #005bbd;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 24px;
+}
+.large-text .confirm {
+    font-size: 40px;
+}
+
+.label {
+    padding: 10px;
+}
+
+.prompt {
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.large-text .prompt {
+    font-size: 40px;
+}
