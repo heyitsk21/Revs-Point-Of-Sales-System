@@ -14,7 +14,7 @@ const OrderHistory = ({ onPageChange }) => {
     // Function to fetch order history from the backend API
     const fetchOrderHistory = async () => {
         try {
-            const response = await axios.get('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/orderhistory');
+            const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/orderhistory');
             setOrders(response.data); // Update orders state with response data
         } catch (error) {
             console.error('Error fetching order history:', error);

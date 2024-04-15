@@ -13,7 +13,7 @@ function ExcessReport () {
 
     const fetchData = async () => {
         try {
-            const response = await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/reports/generateexcessreport', {
+            const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/reports/generateexcessreport', {
                 startdate: startDate
             });
             const formattedData = response.data.map(item => ({ itemname: item.itemname, menuid: item.menuid }));

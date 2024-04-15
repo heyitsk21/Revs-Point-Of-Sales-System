@@ -22,7 +22,7 @@ function MenuItems () {
 
     const fetchMenuItems = async () => {
         try {
-            const response = await axios.get('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitems');
+            const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/menuitems');
             setMenu(response.data);
         } catch (error) {
             console.error('Error fetching menu items:', error);
@@ -31,7 +31,7 @@ function MenuItems () {
 
     const fetchIngredients = async () => {
         try {
-            const response = await axios.get('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/ingredients');
+            const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/ingredients');
             setIngredients(response.data);
         } catch (error) {
             console.error('Error fetching ingredients:', error);
@@ -41,7 +41,7 @@ function MenuItems () {
     const rowClicked = async (event, item) => {
         setSelectedItem(item);
         try {
-            const response = await axios.put('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: item.menuid });
+            const response = await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', { menuitemid: item.menuid });
             setCheckedItems(response.data);
         } catch (error) {
             console.error('Error fetching ingredients:', error);
@@ -51,7 +51,7 @@ function MenuItems () {
     const handleDeleteButtonClick = async () => {
         if (!selectedItem) return;
         try {
-            await axios.delete('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitems', { data: { menuid: selectedItem.menuid } });
+            await axios.delete('https://team21revsbackend.onrender.com/api/manager/menuitems', { data: { menuid: selectedItem.menuid } });
             setMenu(prevMenu => prevMenu.filter(item => item.menuid !== selectedItem.menuid));
             setSelectedItem(null);
             setCheckedItems([]);
@@ -76,7 +76,7 @@ function MenuItems () {
                 price: parseFloat(selectedItem.price)
             };
     
-            await axios.put('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitems', payload);
+            await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitems', payload);
             
             fetchMenuItems();
         } catch (error) {
@@ -106,9 +106,9 @@ function MenuItems () {
             const ingredientId = parseInt(selectedIngredient);
             console.log('Selected Menu Item ID:', selectedItem.menuid);
             console.log('Selected Ingredient ID:', ingredientId);
-            await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid, ingredientid: ingredientId });
+            await axios.post('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid, ingredientid: ingredientId });
 
-            const response = await axios.put('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid });
+            const response = await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid });
             setCheckedItems(response.data); // Update the checkedItems state with the updated list
 
         } catch (error) {
@@ -118,7 +118,7 @@ function MenuItems () {
 
     const handleDeleteIngredient = async (ingredientIdToDelete) => {
         try {
-            await axios.delete('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', {
+            await axios.delete('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', {
                 data: {
                     menuitemid: selectedItem.menuid, // Pass the selected menu item ID
                     ingredientid: ingredientIdToDelete // Pass the ID of the ingredient to delete
@@ -126,7 +126,7 @@ function MenuItems () {
             });
 
             // Fetch the updated list of checked ingredients for the selected menu item
-            const response = await axios.put('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid });
+            const response = await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid });
             setCheckedItems(response.data); // Update the checkedItems state with the updated list
 
         } catch (error) {

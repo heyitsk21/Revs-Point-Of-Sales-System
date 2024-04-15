@@ -20,7 +20,7 @@ function OrderTrend () {
 
     const fetchData = async (startDate, endDate) => {
         try {
-            const response = await axios.post('http://127.0.0.1:5000/api/manager/reports/generateordertrend', {
+            const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/reports/generateordertrend', {
                 startdate: startDate,
                 enddate: endDate
             });

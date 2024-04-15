@@ -20,7 +20,7 @@ function ProdUsage () {
 
     const fetchData = async (startDate, endDate) => {
         try {
-            const response = await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/reports/generateproductusage', {
+            const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/reports/generateproductusage', {
                 startdate: startDate,
                 enddate: endDate
             });
