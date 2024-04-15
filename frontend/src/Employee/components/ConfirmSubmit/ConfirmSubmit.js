@@ -11,7 +11,7 @@ function ConfirmSubmit(props) {
         employeeid: 1 
       };
 
-      const response = await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/employee/placeorder', orderData);
+      const response = await axios.post('https://team21revsbackend.onrender.com/api/employee/placeorder', orderData);
       console.log('Order submitted successfully:', response.data);
     } catch (error) {
       console.error('Error submitting order:', error);

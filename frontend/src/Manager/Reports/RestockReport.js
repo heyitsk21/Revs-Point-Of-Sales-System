@@ -16,7 +16,7 @@ function RestockReport () {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get('http://127.0.0.1:5000/api/manager/reports/generaterestockreport');
+            const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/reports/generaterestockreport');
             console.log('Response from API:', response.data);
             setReportData(response.data);
         } catch (error) {

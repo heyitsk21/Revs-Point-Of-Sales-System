@@ -19,7 +19,7 @@ function Inventory () {
 
     const fetchInventory = async () => {
         try {
-            const response = await axios.get('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/ingredients');
+            const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/ingredients');
             setInventory(response.data);
         } catch (error) {
             console.error('Error fetching inventory:', error);
@@ -32,7 +32,7 @@ function Inventory () {
 
     const handleItemUpdate = async (itemId, updatedData) => {
         try {
-            const response = await axios.put(`https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/editingredient/${itemId}`, updatedData);
+            const response = await axios.put(`https://team21revsbackend.onrender.com/api/manager/editingredient/${itemId}`, updatedData);
             console.log('Item updated successfully:', response.data);
             fetchInventory();
         } catch (error) {
@@ -49,7 +49,7 @@ function Inventory () {
                 minamount: parseFloat(newIngredient.minamount)
             };
 
-            const response = await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/ingredients', newIngredientData);
+            const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/ingredients', newIngredientData);
             console.log('Ingredient added successfully:', response.data);
             fetchInventory();
         } catch (error) {
@@ -61,7 +61,7 @@ function Inventory () {
 
     const handleIngredientDelete = async (itemId,deleteCount) => {
         try {
-            const response = await axios.delete('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/manager/ingredients', { data: { ingredientid: itemId ,count:deleteCount} });
+            const response = await axios.delete('https://team21revsbackend.onrender.com/api/manager/ingredients', { data: { ingredientid: itemId ,count:deleteCount} });
             console.log('Item deleted successfully:', response.data);
             fetchInventory();
         } catch (error) {

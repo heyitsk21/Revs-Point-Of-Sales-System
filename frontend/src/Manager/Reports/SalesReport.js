@@ -20,7 +20,7 @@ function SalesReport () {
 
     const fetchData = async (startDate, endDate) => {
         try {
-            const response = await axios.post('http://127.0.0.1:5000/api/manager/reports/generatesalesreport', {
+            const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/reports/generatesalesreport', {
                 startdate: startDate,
                 enddate: endDate
             });
