@@ -14,6 +14,7 @@ import ExcessReport from './Manager/Reports/ExcessReport';
 import RestockReport from './Manager/Reports/RestockReport';
 import OrderTrend from './Manager/Reports/OrderTrend';
 import ManagerHome from './Manager/ManagerHome'
+import MenuBoard from './MenuBoard';
 
 function AppRoutes() {
   return (
@@ -32,6 +33,7 @@ function AppRoutes() {
       <Route path="/manager/trends/ordertrend" element={<OrderTrend />} />
 
       <Route path="/employee" element={<Employee />} />
+      <Route path="/menuboard" element={<MenuBoard />} />
       <Route path="/customer" element={<Customer />} />
     </Routes>
   );
