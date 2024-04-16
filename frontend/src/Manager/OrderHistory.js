@@ -5,7 +5,7 @@ import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
 import ManagerBottomBar from '../components/ManagerBottomBar';
 
-const OrderHistory = ({ onPageChange }) => {
+const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [speakEnabled] = useState(false);
@@ -35,7 +35,6 @@ const OrderHistory = ({ onPageChange }) => {
                 <div>Customer: {order.customername}</div>
                 <div>Price: ${parseFloat(order.baseprice) + parseFloat(order.taxprice)}</div>
                 <div>Date/Time: {order.orderdatetime}</div>
-                <button onClick={(e) => handleDeleteOrder(e, order)}>Delete</button>
             </div>
         ));
     };
@@ -61,18 +60,6 @@ const OrderHistory = ({ onPageChange }) => {
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
         };
-    };
-
-    const handleDeleteOrder = async (e, order) => {
-        e.stopPropagation();
-        try {
-            await axios.delete('https://team21revsbackend.onrender.com/api/manager/orderhistory', {
-                data: { orderid: order.orderid }
-            });
-            fetchOrderHistory();
-        } catch (error) {
-            console.error('Error deleting order:', error);
-        }
     };
 
     const handleMouseOver = debounce((event) => {
@@ -118,7 +105,7 @@ const OrderHistory = ({ onPageChange }) => {
                     {renderOrderItems()}
                 </div>
             </div>
-            <ManagerBottomBar onPageChange={onPageChange} />
+            <ManagerBottomBar />
         </div>
     );
 };

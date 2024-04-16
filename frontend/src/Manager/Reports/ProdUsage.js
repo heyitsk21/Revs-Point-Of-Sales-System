@@ -143,7 +143,7 @@ function ProdUsage() {
             .attr('class', 'label')
             .style('font-size', '12px')
             .each(function(d, i) {
-                if (i % 3 !== 1) {
+                if (i % 3 !== 1) { 
                     d3.select(this).remove();
                 }
             });
