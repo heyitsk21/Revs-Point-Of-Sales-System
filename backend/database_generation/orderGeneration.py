@@ -33,14 +33,41 @@ MENUITEMSPOOL = {
 703 : 7.99,
 704 : 7.99}
 
+MENUITEMINGREDIENTPOOL = {
+101 : (1, 2, 6, 14, 33),
+101 : (6, 13, 14, 33),
+103 : (2, 6, 13, 14, 33, 46),
+104 : (6),
+105 : (6, 13, 14, 33),
+201 : (1),
+202 : (6, 13),
+203 : (13),
+301 : (13),
+701 : (13),
+703 : (2, 60),
+704 : (13, 14, 60)
+}
+
+# CUSTOMIZEDINGREDIENTPOOL = {
+# 1 : 1.50,
+# 2 : 0.75,
+# 6 : 0.20,
+# 13 : 0.70,
+# 14 : 0.50,
+# 33 : 0.20,
+# 46 : 0.10,
+# 60 : 0.25
+# }
+
 
 class OrderGenerator:
     
     f1 = None
     f2 = None
     f3 = None
+    f4 = None
 
-    def CreateOrder(self, date, ID, LogId):
+    def CreateOrder(self, date, ID, LogId, CustomizationOrderMenuID):
         name = random.choice(self.NAMEPOOL)
         #Pick a random name with equal weight to all choices
 
@@ -51,13 +78,44 @@ class OrderGenerator:
         numberOfMenuItems = random.choices([1,2,3,4,5,6,7,8,9,10,50],[4000,5000,4300,200,100,100,100,100,100,100,1],k=1)[0]
         
         totalPrice = 0
+        
         for i in range(numberOfMenuItems):
             item = random.choices(list(range(25)),
                 [4,4,4,4,4,4,4,4,1,1,1,1,1,1,1,1,1,1,4,4,4,4,4,4,1])[0] 
+            # print("item: "+ str(item))
             itemID = list(MENUITEMSPOOL.keys())[item]
+            # print("itemid: "+str(itemID))
             totalPrice += MENUITEMSPOOL[itemID]
-            self.f2.write(str(ID) + ',' + str(itemID) +'\n')
+            self.f2.write(str(ID) + ',' + str(itemID) + ',' + str(CustomizationOrderMenuID[0]) + '\n') #OrderID,MenuID,CustomizationOrderMenuID
+            
+            if itemID in MENUITEMINGREDIENTPOOL: #if the item can possibly have a customization
+                cust_list = MENUITEMINGREDIENTPOOL[itemID] #get the tuple from the pool of the customizable ingredients
+                # print("cust_list: "+str(cust_list))
+                try:
+                    cust_len = len(cust_list) 
+                    # print("cust_len: "+str(cust_len))
+                    cust_num_select = random.randint(0,cust_len)
+                    # print("cust_num_select: "+str(cust_num_select))
+                    for i in range(cust_num_select):
+                        self.f4.write(str(CustomizationOrderMenuID[0]) + ',' + str(cust_list[i]) + '\n') #CustomizationOrderMenuID,IngredientID
+                except:
+                    cust_num_select = random.randint(0,1)
+                    # print("cust_num_select: "+str(cust_num_select))
+                    for i in range(cust_num_select):
+                        self.f4.write(str(CustomizationOrderMenuID[0]) + ',' + str(cust_list) + '\n') #CustomizationOrderMenuID,IngredientID
+            
+            CustomizationOrderMenuID[0] += 1
             #insert into sql junction table
+
+
+            # customization = random.choices(list(range(12)))[0]
+            # customization = random.choices([5,4,6,1,4,1,2,1,1,1,2,3])
+            # print(customization)
+            # customizationid = list(MENUITEMINGREDIENTPOOL.keys())[customization]
+            # print(customizationid)
+            # cust_len = len(MENUITEMINGREDIENTPOOL[customizationid])
+            # print(cust_len)
+
         
 
         #Calcuate Tax with function below
@@ -95,14 +153,18 @@ class OrderGenerator:
         self.f1 = open("Orders.csv","w")
         self.f2 = open("JunctionOrdersMenu.csv","w")
         self.f3 = open("InventoryLog.csv", "w")
+        self.f4 = open("CustomizationOrderMenuID_Ingredients.csv", "w")
+        
         self.f1.write("CustomerName,TaxPrice,BasePrice,OrderDateTime,EmployeeID\n")
-        self.f2.write("OrderID,MenuID\n")
-        self.f3.write(" IngredientID, AmountChanged,LogMessage, LogDateTime\n")
+        self.f2.write("OrderID,MenuID,CustomizationOrderMenuID\n")
+        self.f3.write("IngredientID,AmountChanged,LogMessage,LogDateTime\n")
+        self.f4.write("CustomizationOrderMenuID,IngredientID\n")
 
     def __del__(self):
         self.f1.close()
         self.f2.close()
         self.f3.close()
+        self.f4.close()
 
 
 
@@ -113,17 +175,20 @@ def Main():
     delta = timedelta(days = 1)
     ID = 1
     LogId = 0
-    for i in range(0,370):
+    CustomizationOrderMenuID = [1]
+    for i in range(0,500):
         # generate a random number of requests per day
         orderMod = random.randrange(0,100)
         for j in range(0,500 + orderMod):
-            LogId = og.CreateOrder(day,ID,LogId)
+            LogId = og.CreateOrder(day,ID,LogId,CustomizationOrderMenuID)
             ID += 1
+            # CustomizationOrderMenuID += 1
         if(day == date.fromisoformat('2024-01-19') or day == date.fromisoformat('2023-08-19')):
             for j in range(0,5500):
-                LogId  = og.CreateOrder(day,ID, LogId)
+                LogId  = og.CreateOrder(day,ID, LogId, CustomizationOrderMenuID)
                 ID += 1
         day += delta
+        
         print(day)
     return
 
