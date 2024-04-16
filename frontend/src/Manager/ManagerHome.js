@@ -11,8 +11,9 @@ function ManagerHome() {
         <TextSizeProvider>
             <div >
                 <ManagerTopBar/>
+                <translate />
                     <div className='middleContent'>
-                        Welcome HOME King and/or Queen!
+                        Welcome Manager to Rev's!
                     </div>
                 <ManagerBottomBar />
             </div>
