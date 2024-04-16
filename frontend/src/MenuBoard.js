@@ -59,7 +59,6 @@ const MenuBoard = ({ onPageChange }) => {
 
     return (
         <div className="menu-board">
-            <button className="return-button" onClick={handleReturnClick}>Return to Manager</button>
             <h1 className="menu-title">Menu</h1>
             {renderMenuItems()}
         </div>
