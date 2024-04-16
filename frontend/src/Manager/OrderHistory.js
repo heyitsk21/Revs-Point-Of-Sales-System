@@ -1,27 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import './OrderHistory.css';
 import { useTextSize } from '../components/TextSizeContext';
-import axios from 'axios'; // Import Axios for making API requests
+import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
 import ManagerBottomBar from '../components/ManagerBottomBar';
 
 const OrderHistory = ({ onPageChange }) => {
-    const [orders, setOrders] = useState([]); // Initialize state for orders
+    const [orders, setOrders] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null);
-    const [speakEnabled] = useState(false); // State to track whether speak feature is enabled
-    const { textSize} = useTextSize(); // Access textSize state and toggleTextSize function
+    const [speakEnabled] = useState(false);
+    const { textSize } = useTextSize();
 
-    // Function to fetch order history from the backend API
     const fetchOrderHistory = async () => {
         try {
             const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/orderhistory');
-            setOrders(response.data); // Update orders state with response data
+            setOrders(response.data);
         } catch (error) {
             console.error('Error fetching order history:', error);
         }
     };
 
-    // Call fetchOrderHistory function when component mounts
     useEffect(() => {
         fetchOrderHistory();
     }, []);
@@ -37,6 +35,7 @@ const OrderHistory = ({ onPageChange }) => {
                 <div>Customer: {order.customername}</div>
                 <div>Price: ${parseFloat(order.baseprice) + parseFloat(order.taxprice)}</div>
                 <div>Date/Time: {order.orderdatetime}</div>
+                <button onClick={(e) => handleDeleteOrder(e, order)}>Delete</button>
             </div>
         ));
     };
@@ -62,6 +61,18 @@ const OrderHistory = ({ onPageChange }) => {
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
         };
+    };
+
+    const handleDeleteOrder = async (e, order) => {
+        e.stopPropagation();
+        try {
+            await axios.delete('https://team21revsbackend.onrender.com/api/manager/orderhistory', {
+                data: { orderid: order.orderid }
+            });
+            fetchOrderHistory();
+        } catch (error) {
+            console.error('Error deleting order:', error);
+        }
     };
 
     const handleMouseOver = debounce((event) => {
@@ -102,10 +113,10 @@ const OrderHistory = ({ onPageChange }) => {
                 )}
             </div>
             <div className='order-history'>
-            <div className="order-list">
-                <h2 onMouseOver={handleMouseOver}>Order History</h2>
-                {renderOrderItems()}
-            </div>
+                <div className="order-list">
+                    <h2 onMouseOver={handleMouseOver}>Order History</h2>
+                    {renderOrderItems()}
+                </div>
             </div>
             <ManagerBottomBar onPageChange={onPageChange} />
         </div>
