@@ -17,6 +17,9 @@ GetIngredientsFromMenuItem_model = api.model('GetIngredientsFromMenuItem', {"men
 AddIngredientToMenuItem_model = api.model('AddIngredientToMenuItem', {"menuitemid":fields.Integer(required=True), "ingredientid":fields.Integer(required=True)})
 DeleteIngredientFromMenuItem_model = api.model('DeleteIngredientFromMenuItem', {"menuitemid":fields.Integer(required=True), "ingredientid":fields.Integer(required=True)})
 
+GetCustomizationsFromMenuItem_model = api.model('GetCustomizationsFromMenuItem', {"menuitemid":fields.Integer(required=True)})
+AddCustomizationToMenuItem_model = api.model('AddCustomizationToMenuItem', {"menuitemid":fields.Integer(required=True), "customizationid":fields.Integer(required=True)})
+
 # GetOrder_model = api.model('GetOrder', {"orderid":fields.Integer, "numberOfOutputs":fields.Integer})
 UpdateOrder_model = api.model('UpdateOrder', {"orderid":fields.Integer(required=True), "customername":fields.String(min_length=3, max_length=25), "baseprice":fields.Float, "employeeid":fields.Integer})
 DeleteOrder_model = api.model('DeleteOrder', {"orderid":fields.Integer(required=True)})
@@ -238,7 +241,7 @@ class MenuItemIngredients(Resource):
         return jsonify(menuitemingredientslist)
     
     @api.expect(DeleteIngredientFromMenuItem_model, validate=True)
-    def delete(self): 
+    def delete(self): #DeleteIngredientFromMenuItem
         menuitemid = request.get_json().get("menuitemid") 
         ingredientid = request.get_json().get("ingredientid") 
 
@@ -248,6 +251,51 @@ class MenuItemIngredients(Resource):
             conn.connection.cursor().execute(delete_ingredient_query)
             conn.connection.commit()
             return jsonify({"message":"successfully deleted order with menuid = {inputmenuitemid} and ingredient = {inputingredientid}".format(inputmenuitemid = menuitemid, inputingredientid = ingredientid)})
+
+@api.route('/api/manager/menuitemcustomizations')
+class MenuItemIngredients(Resource):
+    @api.expect(GetCustomizationsFromMenuItem_model, validate=True)
+    def put(self): #GetCustomizationsFromMenuItem
+        with db.engine.connect() as conn:
+            menuitemid = request.get_json().get("menuitemid") 
+            result = conn.execution_options(stream_results=True).execute(text("SELECT Ingredients.IngredientID, Ingredients.IngredientName " +
+                "FROM menuitems JOIN menuitemcustomizations ON menuitems.MenuID = menuitemcustomizations.MenuID " +
+                "JOIN Ingredients ON menuitemcustomizations.CustomizationID = Ingredients.IngredientID " +
+                "WHERE menuitems.MenuID = {inputmenuitemid}".format(inputmenuitemid = menuitemid)))
+            menuitemingredientslist = []
+            for row in result:
+                menuitemingredientslist.append({"ingredientname":row.ingredientname, "ingredientid":row.ingredientid})
+        return jsonify(menuitemingredientslist)
+    
+    @api.expect(AddCustomizationToMenuItem_model, validate=True)
+    def post(self): #AddCustomizationToMenuItem
+        menuitemid = request.get_json().get("menuitemid") 
+        customizationid = request.get_json().get("customizationid") 
+
+        add_customization_query = "INSERT INTO menuitemCustomizations (MenuID, CustomizationID) values ({inputmenuitemid},{inputcustomizationid})".format(inputmenuitemid = menuitemid, inputcustomizationid = customizationid)
+                   
+        with db.engine.connect() as conn:
+            result = conn.execute(text(add_customization_query)) #execution_options(stream_results=True).
+            conn.commit()
+
+            select_add_customization_query = "SELECT * FROM menuitemcustomizations WHERE menuid = {inputmenuitemid}".format(inputmenuitemid = menuitemid)
+            resultselect = conn.execution_options(stream_results=True).execute(text(select_add_customization_query))
+            menuitemcustomizationslist = []
+            for row in resultselect:
+                menuitemcustomizationslist.append({"menuid":row.menuid,"customizationid":row.customizationid})
+        return jsonify(menuitemcustomizationslist)
+    
+    # @api.expect(DeleteIngredientFromMenuItem_model, validate=True)
+    # def delete(self): 
+    #     menuitemid = request.get_json().get("menuitemid") 
+    #     ingredientid = request.get_json().get("ingredientid") 
+
+    #     delete_ingredient_query = "DELETE FROM menuitemIngredients WHERE MenuID={inputmenuitemid} AND ingredientID={inputingredientid}".format(inputmenuitemid = menuitemid, inputingredientid = ingredientid)
+
+    #     with db.engine.connect() as conn:
+    #         conn.connection.cursor().execute(delete_ingredient_query)
+    #         conn.connection.commit()
+    #         return jsonify({"message":"successfully deleted order with menuid = {inputmenuitemid} and ingredient = {inputingredientid}".format(inputmenuitemid = menuitemid, inputingredientid = ingredientid)})
 
 @api.route('/api/manager/orderhistory')
 class OrderHistory(Resource):
