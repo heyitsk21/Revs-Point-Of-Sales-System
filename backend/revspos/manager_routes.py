@@ -19,6 +19,7 @@ DeleteIngredientFromMenuItem_model = api.model('DeleteIngredientFromMenuItem', {
 
 GetCustomizationsFromMenuItem_model = api.model('GetCustomizationsFromMenuItem', {"menuitemid":fields.Integer(required=True)})
 AddCustomizationToMenuItem_model = api.model('AddCustomizationToMenuItem', {"menuitemid":fields.Integer(required=True), "customizationid":fields.Integer(required=True)})
+DeleteCustomizationFromMenuItem_model = api.model('DeleteCustomizationFromMenuItem', {"menuitemid":fields.Integer(required=True), "customizationid":fields.Integer(required=True)})
 
 # GetOrder_model = api.model('GetOrder', {"orderid":fields.Integer, "numberOfOutputs":fields.Integer})
 UpdateOrder_model = api.model('UpdateOrder', {"orderid":fields.Integer(required=True), "customername":fields.String(min_length=3, max_length=25), "baseprice":fields.Float, "employeeid":fields.Integer})
@@ -241,7 +242,7 @@ class MenuItemIngredients(Resource):
         return jsonify(menuitemingredientslist)
     
     @api.expect(DeleteIngredientFromMenuItem_model, validate=True)
-    def delete(self): #DeleteIngredientFromMenuItem
+    def delete(self): 
         menuitemid = request.get_json().get("menuitemid") 
         ingredientid = request.get_json().get("ingredientid") 
 
@@ -253,7 +254,7 @@ class MenuItemIngredients(Resource):
             return jsonify({"message":"successfully deleted order with menuid = {inputmenuitemid} and ingredient = {inputingredientid}".format(inputmenuitemid = menuitemid, inputingredientid = ingredientid)})
 
 @api.route('/api/manager/menuitemcustomizations')
-class MenuItemIngredients(Resource):
+class MenuItemCustomizations(Resource):
     @api.expect(GetCustomizationsFromMenuItem_model, validate=True)
     def put(self): #GetCustomizationsFromMenuItem
         with db.engine.connect() as conn:
@@ -285,17 +286,17 @@ class MenuItemIngredients(Resource):
                 menuitemcustomizationslist.append({"menuid":row.menuid,"customizationid":row.customizationid})
         return jsonify(menuitemcustomizationslist)
     
-    # @api.expect(DeleteIngredientFromMenuItem_model, validate=True)
-    # def delete(self): 
-    #     menuitemid = request.get_json().get("menuitemid") 
-    #     ingredientid = request.get_json().get("ingredientid") 
+    @api.expect(DeleteCustomizationFromMenuItem_model, validate=True)
+    def delete(self): #DeleteCustomizationFromMenuItem
+        menuitemid = request.get_json().get("menuitemid") 
+        customizationid = request.get_json().get("customizationid") 
 
-    #     delete_ingredient_query = "DELETE FROM menuitemIngredients WHERE MenuID={inputmenuitemid} AND ingredientID={inputingredientid}".format(inputmenuitemid = menuitemid, inputingredientid = ingredientid)
+        delete_customization_query = "DELETE FROM menuitemCustomizations WHERE MenuID={inputmenuitemid} AND customizationID={inputcustomizationid}".format(inputmenuitemid = menuitemid, inputcustomizationid = customizationid)
 
-    #     with db.engine.connect() as conn:
-    #         conn.connection.cursor().execute(delete_ingredient_query)
-    #         conn.connection.commit()
-    #         return jsonify({"message":"successfully deleted order with menuid = {inputmenuitemid} and ingredient = {inputingredientid}".format(inputmenuitemid = menuitemid, inputingredientid = ingredientid)})
+        with db.engine.connect() as conn:
+            conn.connection.cursor().execute(delete_customization_query)
+            conn.connection.commit()
+            return jsonify({"message":"successfully deleted order with menuid = {inputmenuitemid} and customizationid = {inputcustomizationid}".format(inputmenuitemid = menuitemid, inputcustomizationid = customizationid)})
 
 @api.route('/api/manager/orderhistory')
 class OrderHistory(Resource):
