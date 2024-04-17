@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './RestockReport.css';
+import './Report.css';
 import { useTextSize } from '../../components/TextSizeContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';

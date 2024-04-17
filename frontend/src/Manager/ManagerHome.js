@@ -1,9 +1,8 @@
 import React from 'react';
-import './MenuItems.css';
 import ManagerTopBar from '../components/ManagerTopBar';
 import ManagerBottomBar from '../components/ManagerBottomBar';
 import { TextSizeProvider } from '../components/TextSizeContext';
-import './ManagerHome.css'
+import './Manager.css'
 
 function ManagerHome() {
 
