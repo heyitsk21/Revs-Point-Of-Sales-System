@@ -51,11 +51,19 @@ function Inventory () {
 
     const handleIngredientSubmit = async () => {
         try {
-            const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/ingredients', newIngredient);
+            const newIngredientData = {
+                ...newIngredient,
+                count: parseInt(newIngredient.count),
+                ppu: parseFloat(newIngredient.ppu),
+                minamount: parseFloat(newIngredient.minamount)
+            };
+
+            const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/ingredients', newIngredientData);
             console.log('Ingredient added successfully:', response.data);
             fetchInventory();
         } catch (error) {
             console.error('Error adding ingredient:', error);
+            // Handle error and provide feedback to the user
         }
     };
 
