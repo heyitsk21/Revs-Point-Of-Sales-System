@@ -67,6 +67,16 @@ function Inventory () {
         }
     };
 
+    const handleIngredientDelete = async (itemId,deleteCount) => {
+        try {
+            const response = await axios.delete('https://team21revsbackend.onrender.com/api/manager/ingredients', { data: { ingredientid: itemId ,count:deleteCount} });
+            console.log('Item deleted successfully:', response.data);
+            fetchInventory();
+        } catch (error) {
+            console.error('Error deleting item:', error);
+        }
+    };
+
     const handleInputChange = (e, field) => {
         const value = e.target.value;
         setSelectedItem(prevState => ({
@@ -75,6 +85,44 @@ function Inventory () {
         }));
     };
 
+    const speakText = (text) => {
+        const utterance = new SpeechSynthesisUtterance();
+        utterance.text = text;
+        window.speechSynthesis.speak(utterance);
+    };
+
+    const debounce = (func, wait) => {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                timeout = null;
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    };
+
+    const handleMouseOver = debounce((event) => {
+        let hoveredElementText = '';
+        if (speakEnabled) {
+            if (event.target.innerText) {
+                hoveredElementText = event.target.innerText;
+            } else if (event.target.value) {
+                hoveredElementText = event.target.value;
+            } else if (event.target.getAttribute('aria-label')) {
+                hoveredElementText = event.target.getAttribute('aria-label');
+            } else if (event.target.getAttribute('aria-labelledby')) {
+                const id = event.target.getAttribute('aria-labelledby');
+                const labelElement = document.getElementById(id);
+                if (labelElement) {
+                    hoveredElementText = labelElement.innerText;
+                }
+            }
+            speakText(hoveredElementText);
+        }
+    }, 1000); 
+
     const renderInventoryItems = () => {
         return inventory.map(item => (
             <div key={item.ingredientid} className="inventory-item" onClick={() => handleItemSelected(item)}>
@@ -82,6 +130,7 @@ function Inventory () {
                 <span>Price Per Unit: ${item.ppu}</span>
                 <span>Count: {item.count}</span>
                 <span>Min Amount: {item.minamount}</span>
+                <button onClick={(e) => { e.stopPropagation(); handleIngredientDelete(item.ingredientid,item.count); }}>Delete</button>
             </div>
         ));
     };
