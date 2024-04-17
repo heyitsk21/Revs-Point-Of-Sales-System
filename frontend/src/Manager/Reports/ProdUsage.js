@@ -3,8 +3,9 @@ import './Report.css';
 import { useTextSize } from '../../components/TextSizeContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import * as d3 from 'd3';
 
-function ProdUsage () {
+function ProdUsage() {
     const navigate = useNavigate();
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
@@ -85,6 +86,76 @@ function ProdUsage () {
         setSpeakEnabled(!speakEnabled);
     };
 
+    const renderChart = () => {
+        const total = calculateTotal();
+        const svgWidth = 1250;
+        const svgHeight = 800;
+        const margin = { top: 100, right: 10, bottom: 100, left: 100 };
+        const width = svgWidth - margin.left - margin.right;
+        const height = svgHeight - margin.top - margin.bottom;
+    
+        const svg = d3.select('.chart')
+            .append('svg')
+            .attr('width', svgWidth)
+            .attr('height', svgHeight)
+            .append('g')
+            .attr('transform', `translate(${margin.left},${margin.top})`);
+    
+        const x = d3.scaleBand()
+            .range([0, width])
+            .domain(ingredientData.map(d => d.ingredientname))
+            .padding(0.2);
+    
+        const y = d3.scaleLinear()
+            .range([height, 0])
+            .domain([0, d3.max(ingredientData, d => Math.abs(parseFloat(d.totalamountchanged)))]);
+    
+        svg.append('g')
+            .attr('transform', `translate(0,${height})`)
+            .call(d3.axisBottom(x))
+            .selectAll('text')
+            .attr('transform', 'rotate(-45)')
+            .style('text-anchor', 'end')
+            .attr('dx', '-0.8em')
+            .attr('dy', '0.15em');
+    
+        svg.append('g')
+            .call(d3.axisLeft(y));
+    
+        svg.selectAll('.bar')
+            .data(ingredientData)
+            .enter()
+            .append('rect')
+            .attr('class', 'bar')
+            .attr('x', d => x(d.ingredientname))
+            .attr('y', d => y(Math.abs(parseFloat(d.totalamountchanged))))
+            .attr('width', x.bandwidth())
+            .attr('height', d => height - y(Math.abs(parseFloat(d.totalamountchanged))));
+    
+        svg.selectAll('.label')
+            .data(ingredientData)
+            .enter()
+            .append('text')
+            .text(d => Math.abs(parseFloat(d.totalamountchanged)).toFixed(2))
+            .attr('x', d => x(d.ingredientname) + x.bandwidth() / 2)
+            .attr('y', d => y(Math.abs(parseFloat(d.totalamountchanged))) - 50)
+            .attr('text-anchor', 'middle')
+            .attr('class', 'label')
+            .style('font-size', '12px')
+            .each(function(d, i) {
+                if (i % 3 !== 1) { 
+                    d3.select(this).remove();
+                }
+            });
+        };
+
+    useEffect(() => {
+        if (ingredientData.length > 0) {
+            d3.select('.chart').selectAll('*').remove();
+            renderChart();
+        }
+    }, [ingredientData]);
+
     return (
         <div className={`prod-usage ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
             <div className="toggle-button-container">
@@ -110,23 +181,7 @@ function ProdUsage () {
                 />
             </div>
             <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Product Usage</button>
-            <div className="chart">
-                {ingredientData.length > 0 ? (
-                    ingredientData.map((ingredient, index) => (
-                        <div key={index} className="line-container">
-                            <div
-                                className="line"
-                                style={{ width: (Math.abs(parseFloat(ingredient.totalamountchanged)) / calculateTotal() * 100) * 100 + '%' }}
-                            >
-                                <span className="line-label">{Math.abs(parseFloat(ingredient.totalamountchanged)).toFixed(2)}</span>
-                            </div>
-                            <span className="label" onMouseOver={handleMouseOver}>{ingredient.ingredientname}</span>
-                        </div>
-                    ))
-                ) : (
-                    <p>No data to display</p>
-                )}
-            </div>
+            <div className="chart"></div>
         </div>
     );
 };
