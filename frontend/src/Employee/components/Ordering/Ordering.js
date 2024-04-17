@@ -24,7 +24,7 @@ const Ordering = ({ onCatChange }) => {
 
     const fetchMenuSection = async (currentIdStart) => {
         try {
-            const response = await axios.post('https://project-3-full-stack-agile-web-team-21-1.onrender.com/api/employee/getmenuitems',  { menugroup: currentIdStart });
+            const response = await axios.post('https://team21revsbackend.onrender.com/api/employee/getmenuitems',  { menugroup: currentIdStart });
             switch (currentIdStart) {
                 case 100:
                     setBurgerList(response.data);
