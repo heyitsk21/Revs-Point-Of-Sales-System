@@ -36,16 +36,24 @@ class PlaceOrder(Resource):
         name = request.get_json().get("customername")
         employeeid = request.get_json().get("employeeid")
         menuitems = request.get_json().get("menuitems", [])
-        # menuid = request.get_json().get("menuid")
-        # customizationids = request.get_json().get("customizationids")
-        # print(str(menuitems))
-        # menuItemsInString ='(' + ','.join(str(x) for x in menuitems) + ')'
-        # print(str(menuItemsInString))
+        # print('name: '+str(name))
+        # print('empl id: '+str(employeeid))
+        # print('menuitems: '+str(menuitems))
+        
         allmenuids = '('
+        allcustomizationids = {}
         for item in menuitems:
             menuid = item.get("menuid")
             allmenuids += str(menuid) + ','
-            customizationids = item.get("customizationids", [])
+            currcust_list = item.get("customizationids", [])
+            for cust in currcust_list:
+                if not (cust in allcustomizationids):
+                    allcustomizationids[cust] = 1
+                else:
+                    allcustomizationids[cust] += 1
+        
+        # for thing in allcustomizationids:
+        #     print('allcust: '+str(thing) + '::'+str(allcustomizationids[thing]))
         allmenuids = allmenuids[:-1]
         allmenuids += ')'
         # print(str(allmenuids))
@@ -60,6 +68,7 @@ class PlaceOrder(Resource):
             logMessage = "Order placed by: " + str(employeeid)
             for row in result:
                 if row.count - row.selectioncount < row.minamount:
+                    print("returned because ingredient counts less ")
                     return None
                 upIng += "UPDATE Ingredients SET Count = Count - "+ str(row.selectioncount) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
                 logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(-row.selectioncount)+", '"+logMessage+"', NOW()); "
@@ -67,9 +76,12 @@ class PlaceOrder(Resource):
             result_cust = conn.execution_options(stream_results=True).execute(text("SELECT Ingredients.IngredientID, Ingredients.MinAmount, Ingredients.Count, COUNT(menuitems.MenuID) AS SelectionCount FROM menuitems JOIN menuitemcustomizations ON menuitems.MenuID = menuitemcustomizations.MenuID JOIN Ingredients ON menuitemcustomizations.CustomizationID = Ingredients.IngredientID WHERE menuitems.MenuID IN " + allmenuids + " GROUP BY Ingredients.IngredientID, Ingredients.MinAmount"))
             for row in result_cust:
                 if row.count - row.selectioncount < row.minamount:
+                    print("custmzations do not have enough inventory to be processed")
                     return None
-                upIng += "UPDATE Ingredients SET Count = Count - "+ str(row.selectioncount) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
-                logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(-row.selectioncount)+", '"+logMessage+"', NOW()); "
+                if row.ingredientid in allcustomizationids:
+                    upIng += "UPDATE Ingredients SET Count = Count - "+ str(allcustomizationids[row.ingredientid]) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
+                    logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(-allcustomizationids[row.ingredientid])+", '"+logMessage+"', NOW()); "
+
             
             conn.connection.cursor().execute(upIng)
             conn.connection.cursor().execute(logIng)
@@ -79,7 +91,8 @@ class PlaceOrder(Resource):
                 
 
 
-        print(totalprice)
+        # print(totalprice)
+        
         return None
     
 def init():
