@@ -42,10 +42,14 @@ class PlaceOrder(Resource):
         
         allmenuids = '('
         allcustomizationids = {}
+        allmenuidcustomizations = {}
         for item in menuitems:
             menuid = item.get("menuid")
             allmenuids += str(menuid) + ','
             currcust_list = item.get("customizationids", [])
+
+            allmenuidcustomizations[menuid] = currcust_list
+            
             for cust in currcust_list:
                 if not (cust in allcustomizationids):
                     allcustomizationids[cust] = 1
@@ -76,23 +80,29 @@ class PlaceOrder(Resource):
             result_cust = conn.execution_options(stream_results=True).execute(text("SELECT Ingredients.IngredientID, Ingredients.MinAmount, Ingredients.Count, COUNT(menuitems.MenuID) AS SelectionCount FROM menuitems JOIN menuitemcustomizations ON menuitems.MenuID = menuitemcustomizations.MenuID JOIN Ingredients ON menuitemcustomizations.CustomizationID = Ingredients.IngredientID WHERE menuitems.MenuID IN " + allmenuids + " GROUP BY Ingredients.IngredientID, Ingredients.MinAmount"))
             for row in result_cust:
                 if row.count - row.selectioncount < row.minamount:
-                    print("custmzations do not have enough inventory to be processed")
+                    print("customizations do not have enough inventory to be processed")
                     return None
                 if row.ingredientid in allcustomizationids:
                     upIng += "UPDATE Ingredients SET Count = Count - "+ str(allcustomizationids[row.ingredientid]) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
                     logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(-allcustomizationids[row.ingredientid])+", '"+logMessage+"', NOW()); "
-
             
             conn.connection.cursor().execute(upIng)
             conn.connection.cursor().execute(logIng)
-            conn.connection.cursor().execute("INSERT INTO Orders (CustomerName, TaxPrice, BasePrice, OrderDateTime, EmployeeID) VALUES ( '"+name+"', "+str(float(totalprice) * 0.0825)+", "+str(totalprice)+", NOW(), "+str(employeeid)+")")
-            #TODO add to menu items order junction table
             conn.connection.commit()
-                
-
-
+            getOrderID = conn.connection.cursor().execute("INSERT INTO Orders (CustomerName, TaxPrice, BasePrice, OrderDateTime, EmployeeID, OrderStat) VALUES ( '"+name+"', "+str(float(totalprice) * 0.0825)+", "+str(totalprice)+", NOW(), "+str(employeeid)+", 'inprogress') RETURNING orderid")
+            conn.connection.commit()
+            print(str(getOrderID))
+            #TODO add to menu items order junction table
+            for item in allmenuidcustomizations:
+                curr_result = conn.connection.cursor().execute("INSERT INTO ordermenuitems (OrderID,MenuID) VALUES ("+str(getOrderID)+","+str(item)+") RETURNING joinid")
+                getJoinID = curr_result.fetchall()
+                print(str(getJoinID))
+                conn.connection.cursor().execute("UPDATE ordermenuitems SET customizationid = "+str(getJoinID)+" where join = "+str(getJoinID))
+                if len(allmenuidcustomizations[item]) > 0:
+                    for cust in allmenuidcustomizations[item]:
+                        conn.connection.cursor().execute("INSERT INTO CustomizationOrderMenu (customizationordermenuid,ingredientid) VALUES ("+str(getJoinID)+","+str(cust)+")")
+            conn.connection.commit()
         # print(totalprice)
-        
         return None
     
 def init():
