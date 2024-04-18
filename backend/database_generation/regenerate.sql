@@ -107,7 +107,7 @@ CREATE TABLE OrderMenuItems (
 
 \COPY MenuItemIngredients (MenuID, IngredientID) FROM 'database_generation/MenuItemsIngredients.csv' DELIMITER ',' CSV HEADER;
 
-\COPY MenuItemCustomizations (MenuID, CustomizationID) FROM 'database_generation/MenuItemsCustomizations.csv' DELIMITER ',' CSV HEADER;
+\COPY MenuItemCustomizations (MenuID, CustomizationID) FROM 'database_generation/MenuItemCustomizations.csv' DELIMITER ',' CSV HEADER;
 
 \COPY Employee (EmployeeID, EmployeeName, IsManager, Salary, Password) FROM 'database_generation/Employee.csv' DELIMITER ',' CSV HEADER;
 
