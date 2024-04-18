@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './MenuBoard.css';
 import axios from 'axios';
+import revLogo from './rev.png';
 
 const MenuBoard = ({ onPageChange }) => {
     const [menuGroups, setMenuGroups] = useState([]);
+    const [marqueeText, setMarqueeText] = useState('Your Promotional Text Here...');
 
     useEffect(() => {
         fetchMenuGroups();
@@ -14,13 +16,12 @@ const MenuBoard = ({ onPageChange }) => {
             const menuGroupsData = await Promise.all([
                 fetchMenuGroup(100, 'Burgers'),
                 fetchMenuGroup(200, 'Sandwiches'),
-                fetchMenuGroup(300, 'Salads'),
                 fetchMenuGroup(400, 'Desserts'),
+                fetchMenuGroup(700, 'Limited Time'),
                 fetchMenuGroup(500, 'Drinks & Fries'),
-                fetchMenuGroup(600, 'Value Meals'),
-                fetchMenuGroup(700, 'Limited Time')
+                fetchMenuGroup(300, 'Salads'),
+                fetchMenuGroup(600, 'Value Meals')
             ]);
-
             setMenuGroups(menuGroupsData);
         } catch (error) {
             console.error('Error fetching menu groups:', error);
@@ -57,10 +58,28 @@ const MenuBoard = ({ onPageChange }) => {
         onPageChange('manager');
     };
 
+    const handleMarqueeTextChange = (event) => {
+        setMarqueeText(event.target.innerText);
+    };
+
     return (
         <div className="menu-board">
-            <h1 className="menu-title">Menu</h1>
-            {renderMenuItems()}
+            <div className="marquee">
+                <div className="marquee-content">
+                    <span
+                        contentEditable
+                        suppressContentEditableWarning={true}
+                        onBlur={handleMarqueeTextChange}
+                        dangerouslySetInnerHTML={{ __html: marqueeText }}
+                    />
+                    <img src={revLogo} alt="Rev Logo" className="marquee-image" />
+                </div>
+            </div>
+            <div className="clearfix">
+                <h1 className="menu-title">Rev's American Grill</h1>
+                {renderMenuItems()}
+            </div>
+            <button onClick={handleReturnClick} className="return-button">Return</button>
         </div>
     );
 };
