@@ -1,0 +1,16 @@
+.kitchen-board-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.order-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+}

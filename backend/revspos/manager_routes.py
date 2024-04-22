@@ -30,6 +30,49 @@ GenerateProductUsage_model = api.model('GenerateProductUsage',{"startdate": fiel
 GenerateSalesReport_model = api.model('GenerateSalesReport',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
 GenerateOrderTrend_model = api.model('GenerateOrderTrend',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
 
+CompleteOrder_model = api.model('CompleteOrder',{"orderid":fields.Integer(required=True)})
+
+@api.route('/api/kitchen/completeorder')
+class CompleteOrder(Resource):
+
+
+    @api.expect(CompleteOrder_model, validate=True)
+    def post(self):
+        data = request.get_json()
+        orderid = data.get("orderid")
+        with db.engine.connect() as conn:
+            conn.connection.cursor().execute(f"UPDATE ORDERS SET ORDERSTAT = 'completed' WHERE ORDERID = {orderid};")
+            conn.connection.commit()
+        
+
+@api.route('/api/kitchen/getinprogressorders')
+class GetInProgressOrders(Resource):
+    def get(self):
+        with db.engine.connect() as conn:
+            result = conn.execution_options(stream_results=True).execute(text("SELECT * FROM ORDERS WHERE ORDERSTAT = 'inprogress' ORDER BY ORDERID;"))
+            orderlist = []
+            for row in result:
+                order = {}
+                order['orderid'] = row.orderid
+                order['customername'] = row.customername
+                orderlist.append(order)
+                menuitems = []
+                menuresult = conn.execution_options(stream_results=True).execute(text(f"SELECT menuitems.itemname, customizationID FROM orders JOIN ordermenuitems ON ordermenuitems.orderID = orders.orderID JOIN menuitems ON ordermenuitems.menuID = menuitems.menuID where orders.orderID = {row.orderid};"))
+                for row2 in menuresult:
+                    menuitem = {}
+                    menuitem['menuitemname'] = row2.itemname   
+                    if(row2.customizationid != None):
+                        custresult = conn.execution_options(stream_results=True).execute(text(f"SELECT customizationID,ingredients.ingredientname AS WantedCustimzation FROM ordermenuitems JOIN customizationordermenu ON ordermenuitems.customizationID = customizationordermenu.customizationordermenuID JOIN ingredients ON customizationordermenu.ingredientID = ingredients.ingredientID JOIN menuitems ON ordermenuitems.menuID = menuitems.menuID WHERE customizationid = {row2.customizationid};"))
+                        custs = []
+                        for row3 in custresult:
+                            custs.append(row3.wantedcustimzation)
+                        menuitem['customizations'] = custs
+                    menuitems.append(menuitem)
+                order['menuitems'] = menuitems
+            return jsonify(orderlist)
+        
+
+
 @api.route('/api/manager/employee')
 class Employee(Resource):
     def get(self):
