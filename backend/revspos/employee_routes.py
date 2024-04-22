@@ -89,13 +89,16 @@ class PlaceOrder(Resource):
             conn.connection.cursor().execute(upIng)
             conn.connection.cursor().execute(logIng)
             conn.connection.commit()
-            getOrderID = conn.connection.cursor().execute("INSERT INTO Orders (CustomerName, TaxPrice, BasePrice, OrderDateTime, EmployeeID, OrderStat) VALUES ( '"+name+"', "+str(float(totalprice) * 0.0825)+", "+str(totalprice)+", NOW(), "+str(employeeid)+", 'inprogress') RETURNING orderid")
+            curr_result1 = conn.connection.cursor().execute("INSERT INTO Orders (CustomerName, TaxPrice, BasePrice, OrderDateTime, EmployeeID, OrderStat) VALUES ( '"+name+"', "+str(float(totalprice) * 0.0825)+", "+str(totalprice)+", NOW(), "+str(employeeid)+", 'inprogress') RETURNING orderid")
             conn.connection.commit()
+            getOrderID = curr_result1.fetchone()[0]
             print(str(getOrderID))
             #TODO add to menu items order junction table
             for item in allmenuidcustomizations:
-                curr_result = conn.connection.cursor().execute("INSERT INTO ordermenuitems (OrderID,MenuID) VALUES ("+str(getOrderID)+","+str(item)+") RETURNING joinid")
-                getJoinID = curr_result.fetchall()
+                curr_result2 = conn.connection.cursor().execute("INSERT INTO ordermenuitems (OrderID,MenuID) VALUES ("+str(getOrderID)+","+str(item)+") RETURNING joinid")
+
+                conn.connection.commit()
+                getJoinID = curr_result2.fetchone()[0]
                 print(str(getJoinID))
                 conn.connection.cursor().execute("UPDATE ordermenuitems SET customizationid = "+str(getJoinID)+" where join = "+str(getJoinID))
                 if len(allmenuidcustomizations[item]) > 0:
