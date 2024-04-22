@@ -67,7 +67,7 @@ function ManagerTopBar() {
                 <span>{currentTime}</span>
             </div>
 
-            <button onClick={handleLoginLogout} onMouseOver={() => handleMouseOver('Login button')}>{loggedIn ? 'Logout' : 'Login'}</button>
+            <button className="top-bar-button" onClick={handleLoginLogout} onMouseOver={() => handleMouseOver('Login button')}>{loggedIn ? 'Logout' : 'Login'}</button>
 
             <div className="dropdown-container">
                 <button className={`dropdown-toggle ${dropdownVisible ? 'active' : ''}`} onClick={toggleDropdown}>

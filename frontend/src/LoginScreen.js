@@ -11,6 +11,7 @@ function LoginScreen(){
 
     useEffect(() => {
         console.log("User state changed:", user);
+
     }, [user]);
 
     const [employees, setEmployees] = useState([]);
@@ -21,7 +22,7 @@ function LoginScreen(){
 
     const fetchEmployees = async () => {
         try {
-            const response = await axios.get('/api/manager/employee');
+            const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/employee');
             setEmployees(response.data);
         } catch (error) {
             console.error('Error fetching employees:', error);
@@ -29,7 +30,8 @@ function LoginScreen(){
     };
 
     const getAuthority = (userData) => {
-        const employee = employees.find(emp => emp.employeename === userData.name);
+        const employee = employees.find(emp => emp.employeename === userData.email);
+        console.log("authority: ", employee);
         if (employee) {
             return employee.ismanager ? 3 : 2;
         } else {
@@ -62,9 +64,10 @@ function LoginScreen(){
 
     if (loggedIn){
         if (authority >= 3){
+            console.log("Manager logged in");
             navigate('/manager');
         } else if (authority >= 2){
-            console.log("Employee would be here");
+            console.log("Employee logged in");
             navigate('/employee');
         } else {
             console.log("Rando logged in");
