@@ -38,6 +38,20 @@ function MenuItems () {
         }
     };
 
+    const [categories] = useState([
+        { value: 100, label: 'Burgers' },
+        { value: 200, label: 'Sandwiches' },
+        { value: 400, label: 'Desserts' },
+        { value: 700, label: 'Limited Time' },
+        { value: 500, label: 'Drinks & Fries' },
+        { value: 300, label: 'Salads' },
+        { value: 600, label: 'Value Meals' }
+    ]);
+    
+    const handleCategoryChange = (event) => {
+        setNewMenuItem({ ...newMenuItem, catagory: event.target.value });
+    };
+
     const rowClicked = async (event, item) => {
         setSelectedItem(item);
         try {
@@ -67,6 +81,7 @@ function MenuItems () {
             [name]: value
         }));
     };
+    
 
     const handleUpdateMenuItem = async () => {
         try {
@@ -86,17 +101,20 @@ function MenuItems () {
 
     const handleAddMenuItem = async () => {
         try {
-            console.log(newMenuItem.name);
-            console.log(newMenuItem.catagory);
-            console.log(newMenuItem.price);
-            await axios.post('http://127.0.0.1:5000/api/manager/menuitems', { catagory: newMenuItem.catagory, itemname: newMenuItem.name, price: newMenuItem.price });
+            console.log('Name:', newMenuItem.name, 'Type:', typeof newMenuItem.name);
+            console.log('Category:', newMenuItem.catagory, 'Type:', typeof newMenuItem.catagory);
+            console.log('Price:', newMenuItem.price, 'Type:', typeof newMenuItem.price);
+            
+            const itemName = newMenuItem.name.toString();
+    
+            await axios.post('https://team21revsbackend.onrender.com/api/manager/menuitems', { catagory: newMenuItem.catagory, itemname: itemName, price: newMenuItem.price });
         }
-        catch {
-            console.log("Error adding menu item");
+        catch (error) {
+            console.error("Error adding menu item:", error);
         }
         fetchMenuItems();
     };
-
+    
     const handleIngredientChange = (event) => {
         setSelectedIngredient(event.target.value);
     };
@@ -109,7 +127,7 @@ function MenuItems () {
             await axios.post('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid, ingredientid: ingredientId });
 
             const response = await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid });
-            setCheckedItems(response.data); // Update the checkedItems state with the updated list
+            setCheckedItems(response.data); 
 
         } catch (error) {
             console.error('Error adding ingredient:', error);
@@ -120,14 +138,13 @@ function MenuItems () {
         try {
             await axios.delete('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', {
                 data: {
-                    menuitemid: selectedItem.menuid, // Pass the selected menu item ID
-                    ingredientid: ingredientIdToDelete // Pass the ID of the ingredient to delete
+                    menuitemid: selectedItem.menuid, 
+                    ingredientid: ingredientIdToDelete 
                 }
             });
 
-            // Fetch the updated list of checked ingredients for the selected menu item
             const response = await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid });
-            setCheckedItems(response.data); // Update the checkedItems state with the updated list
+            setCheckedItems(response.data);
 
         } catch (error) {
             console.error('Error deleting ingredient:', error);
@@ -212,12 +229,18 @@ function MenuItems () {
                             />
                         </div>
                         <div>
-                            <label>Catagory:</label>
-                            <input
-                                type="number"
-                                value={newMenuItem.count}
-                                onChange={(e) => setNewMenuItem({ ...newMenuItem, catagory: e.target.value })}
-                            />
+                            <label>Category:</label>
+                            <select
+                                value={newMenuItem.catagory}
+                                onChange={handleCategoryChange}
+                            >
+                                <option value="">Select Category</option>
+                                {categories.map(catagory => (
+                                    <option key={catagory.value} value={catagory.value}>
+                                        {catagory.label}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                         <button onClick={handleAddMenuItem} onMouseOver={handleMouseOver}>Submit</button>
                     </div>
@@ -227,7 +250,7 @@ function MenuItems () {
                     {selectedItem && (
                         <>
                             <label htmlFor="editName" onMouseOver={handleMouseOver}>Name:</label>
-                            <input type="text" id="editName" name="name" value={selectedItem.itemname} onChange={handleInputChange} onMouseOver={handleMouseOver} />
+                            <input type="text" id="editName" name="itemname" value={selectedItem.itemname} onChange={handleInputChange} />
                             <label htmlFor="editPrice" onMouseOver={handleMouseOver}>Price:</label>
                             <input type="text" id="editPrice" name="price" value={selectedItem.price} onChange={handleInputChange} onMouseOver={handleMouseOver} />
                             <button onClick={handleUpdateMenuItem}>Update</button>
@@ -270,7 +293,7 @@ function MenuItems () {
             </div>
             <ManagerBottomBar/>
         </div>
-    );
+    );    
 };
 
 export default MenuItems;
