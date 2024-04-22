@@ -15,6 +15,7 @@ import RestockReport from './Manager/Reports/RestockReport';
 import OrderTrend from './Manager/Reports/OrderTrend';
 import ManagerHome from './Manager/ManagerHome'
 import MenuBoard from './MenuBoard';
+import KitchenBoard from './Manager/KitchenBoard'
 
 function AppRoutes() {
 
@@ -132,6 +133,17 @@ function AppRoutes() {
           )
         }
       />
+
+      <Route path="/kitchen"
+        element={
+          localStorage.getItem('authority') >= 2 ? (
+            <KitchenBoard />
+          ) : (
+            <Navigate to="/unauthorized" replace />
+          )
+        }
+      />
+
       <Route path="/menuboard" element={<MenuBoard />} />
       <Route path="/customer" element={<Customer />} />
 
