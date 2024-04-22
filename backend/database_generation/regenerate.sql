@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS CustomizationOrderMenu CASCADE;
 
 
 CREATE TYPE ORDERSTATUS AS ENUM ('completed','inprogress','deleted','canceled');
+CREATE TYPE KITCHENLOCATIONS AS ENUM ('freezer','fridge','pantry');
 
 --CREATE TABLES AND JUNCTIONTABLE BELOW
 -- Create Ingredients table
@@ -19,7 +20,9 @@ CREATE TABLE Ingredients (
     IngredientName VARCHAR(100),
     PPU NUMERIC(10, 2), -- I used NUMERIC (10,2) because it cuts us off to 2 decimal places for money
     Count INT,
-    MinAmount INT
+    MinAmount INT,
+    Location KITCHENLOCATIONS,
+    CaseAmount INT
 );
 
 -- Create MenuItems table
@@ -117,7 +120,7 @@ CREATE TABLE CustomizationOrderMenu (
 --COPY CHUNKS BELOW
 -- Copy data from CSV files into their corresponding tables
 
-\COPY Ingredients (IngredientName, PPU, Count, MinAmount) FROM 'database_generation/Ingredients.csv' DELIMITER ',' CSV HEADER;
+\COPY Ingredients (IngredientName, PPU, Count, MinAmount, Location, CaseAmount) FROM 'database_generation/Ingredients.csv' DELIMITER ',' CSV HEADER;
 
 \COPY MenuItems (MenuID, ItemName, Price) FROM 'database_generation/MenuItems.csv' DELIMITER ',' CSV HEADER;
 
