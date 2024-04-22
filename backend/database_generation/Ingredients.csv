@@ -1,63 +1,63 @@
-IngeredientName,PPU,Count,MinAmount,Location,CaseAmount,
-Bacon,0.1,200,100,freezer,20,
-American Cheese,0.05,200,100,fridge,20,
-Hamburger Bun,0.08,300,150,freezer,20,
-Beef patty,0.5,300,150,freezer,20,
-Chicken breast,1,150,75,freezer,20,
-Onions,0.03,200,100,fridge,20,
-Texas Toast,0.15,150,75,freezer,20,
-Black bean patty,0.6,150,75,freezer,10,
-Grilled chicken breast,1.2,150,75,freezer,20,
-Sandwich bun,0.1,200,100,freezer,20,
-Spicy chicken breast,1.3,100,50,freezer,20,
-Chicken breast,0.05,100,50,freezer,20,
-Lettuce,0.1,200,100,fridge,50,
-Tomato,0.75,200,100,fridge,50,
-Corn Dog,0.5,200,100,freezer,20,
-Hot Dog,0.8,200,100,freezer,20,
-Chicken Tenders,0.03,150,75,freezer,50,
-Potato fries,0.5,300,150,freezer,100,
-Shake base - Chocolate,0.6,150,75,freezer,10,
-Shake base - Oreo Cookie,0.4,150,75,freezer,10,
-Shake base - Vanilla,0.45,150,75,freezer,10,
-Shake base - Strawberry,0.5,150,75,freezer,10,
-Ice cream,0.1,100,50,freezer,10,
-Cookie crumbles,0.25,100,50,pantry,10,
-Root beer,0.15,100,50,fridge,10,<--
-16 oz. of Aquafina water,0.2,100,50,fridge,50,
-20 oz. of Aquafina water,0.1,100,50,fridge,50,
-Fountain drink,0.25,200,100,fridge,10,<--
-Wrapper,1.5,150,75,pantry,100,
-BBQ ribs,0.05,100,50,freezer,20,
-BBQ sauce,0.05,100,50,fridge,10,
-Tortilla ,0.75,150,75,freezer,20,
-Pickles,1,100,50,fridge,50,
-Gravy,0.05,100,50,fridge,20,
-Steak fingers,0.05,40,20,freezer,20,
-Gig em sauce,0.1,200,100,fridge,20,
-Onion rings,0.01,150,75,fridge,50,
-Napkins,0.02,300,150,pantry,100,
-Straws,0.02,300,150,pantry,100,
-Forks,0.02,300,150,pantry,100,
-Knives,0.05,300,150,pantry,100,
-Spoons,0.05,300,150,pantry,100,
-Cups,0.1,300,150,pantry,100,
-Basket,0.01,600,300,pantry,100,
-Ketchup,0.1,200,100,fridge,10,
-Mustard,0.1,200,100,fridge,10,
-Salt packets,0.1,200,100,pantry,10,
-Pepper packets,1,200,100,pantry,10,
-Salad dressing packets,1,100,50,fridge,10,
-To-go containers,0.05,150,75,pantry,100,
-Paper towels,0.1,200,100,pantry,100,
-Cleaning supplies,1,40,20,pantry,10,
-Receipt paper,0.15,200,100,pantry,10,
-Trash bags,1,100,50,pantry,20,
-Ice,0.5,200,100,freezer,20,
-Freezer bags,1,40,20,pantry,50,
-Swiss Cheese,0.5,100,50,fridge,50,
-Guacamole,1.5,100,50,fridge,20,
-Mayo,0.25,200,100,fridge,10,
-Bowl,0.1,200,100,pantry,100,
-Fish Patty,0.2,150,75,freezer,20,
-Tuna,0.05,150,75,freezer,20,
+IngeredientName,PPU,Count,MinAmount,Location,RecommendedAmount,CaseAmount
+Bacon,0.1,200,100,freezer,1000,20
+American Cheese,0.05,200,100,fridge,1000,20
+Hamburger Bun,0.08,300,150,freezer,1500,20
+Beef patty,0.5,300,150,freezer,1500,20
+Chicken breast,1,150,75,freezer,750,20
+Onions,0.03,200,100,fridge,1000,20
+Texas Toast,0.15,150,75,freezer,750,20
+Black bean patty,0.6,150,75,freezer,750,10
+Grilled chicken breast,1.2,150,75,freezer,750,20
+Sandwich bun,0.1,200,100,freezer,1000,20
+Spicy chicken breast,1.3,100,50,freezer,500,20
+Chicken breast,0.05,100,50,freezer,500,20
+Lettuce,0.1,200,100,fridge,1000,50
+Tomato,0.75,200,100,fridge,1000,50
+Corn Dog,0.5,200,100,freezer,1000,20
+Hot Dog,0.8,200,100,freezer,1000,20
+Chicken Tenders,0.03,150,75,freezer,750,50
+Potato fries,0.5,300,150,freezer,1500,100
+Shake base - Chocolate,0.6,150,75,freezer,750,10
+Shake base - Oreo Cookie,0.4,150,75,freezer,750,10
+Shake base - Vanilla,0.45,150,75,freezer,750,10
+Shake base - Strawberry,0.5,150,75,freezer,750,10
+Ice cream,0.1,100,50,freezer,500,10
+Cookie crumbles,0.25,100,50,pantry,500,10
+Root beer,0.15,100,50,fridge,500,10
+16 oz. of Aquafina water,0.2,100,50,fridge,500,50
+20 oz. of Aquafina water,0.1,100,50,fridge,500,50
+Fountain drink,0.25,200,100,fridge,1000,10
+Wrapper,1.5,150,75,pantry,750,100
+BBQ ribs,0.05,100,50,freezer,500,20
+BBQ sauce,0.05,100,50,fridge,500,10
+Tortilla ,0.75,150,75,freezer,750,20
+Pickles,1,100,50,fridge,500,50
+Gravy,0.05,100,50,fridge,500,20
+Steak fingers,0.05,40,20,freezer,200,20
+Gig em sauce,0.1,200,100,fridge,1000,20
+Onion rings,0.01,150,75,fridge,750,50
+Napkins,0.02,300,150,pantry,750,100
+Straws,0.02,300,150,pantry,1500,100
+Forks,0.02,300,150,pantry,1500,100
+Knives,0.05,300,150,pantry,1500,100
+Spoons,0.05,300,150,pantry,1500,100
+Cups,0.1,300,150,pantry,1500,100
+Basket,0.01,600,300,pantry,1500,100
+Ketchup,0.1,200,100,fridge,3000,10
+Mustard,0.1,200,100,fridge,1000,10
+Salt packets,0.1,200,100,pantry,1000,10
+Pepper packets,1,200,100,pantry,1000,10
+Salad dressing packets,1,100,50,fridge,1000,10
+To-go containers,0.05,150,75,pantry,500,100
+Paper towels,0.1,200,100,pantry,750,100
+Cleaning supplies,1,40,20,pantry,1000,10
+Receipt paper,0.15,200,100,pantry,200,10
+Trash bags,1,100,50,pantry,1000,20
+Ice,0.5,200,100,freezer,500,20
+Freezer bags,1,40,20,pantry,1000,50
+Swiss Cheese,0.5,100,50,fridge,200,50
+Guacamole,1.5,100,50,fridge,500,20
+Mayo,0.25,200,100,fridge,500,10
+Bowl,0.1,200,100,pantry,1000,100
+Fish Patty,0.2,150,75,freezer,1000,20
+Tuna,0.05,150,75,freezer,750,20
