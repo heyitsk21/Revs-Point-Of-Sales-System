@@ -22,6 +22,7 @@ CREATE TABLE Ingredients (
     Count INT,
     MinAmount INT,
     Location KITCHENLOCATIONS,
+    RecommendedAmount INT,
     CaseAmount INT
 );
 
@@ -120,7 +121,7 @@ CREATE TABLE CustomizationOrderMenu (
 --COPY CHUNKS BELOW
 -- Copy data from CSV files into their corresponding tables
 
-\COPY Ingredients (IngredientName, PPU, Count, MinAmount, Location, CaseAmount) FROM 'database_generation/Ingredients.csv' DELIMITER ',' CSV HEADER;
+\COPY Ingredients (IngredientName, PPU, Count, MinAmount, Location, RecommendedAmount, CaseAmount) FROM 'database_generation/Ingredients.csv' DELIMITER ',' CSV HEADER;
 
 \COPY MenuItems (MenuID, ItemName, Price) FROM 'database_generation/MenuItems.csv' DELIMITER ',' CSV HEADER;
 
