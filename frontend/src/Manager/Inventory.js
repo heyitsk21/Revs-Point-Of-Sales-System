@@ -13,7 +13,10 @@ function Inventory () {
         ingredientname: "",
         count: 0,
         ppu: 0,
-        minamount: 0
+        minamount: 0,
+        location: "",
+        recommendedamount: 0,
+        caseamount: 0
     });
     const [speakEnabled] = useState(false);
     const { textSize } = useTextSize();
@@ -38,7 +41,11 @@ function Inventory () {
                 ingredientname: selectedItem.ingredientname,
                 count: parseInt(selectedItem.count),
                 ppu: parseFloat(selectedItem.ppu),
-                minamount: parseFloat(selectedItem.minamount)
+                minamount: parseFloat(selectedItem.minamount),
+                location: selectedItem.location,
+                recommendedamount: selectedItem.recommendedamount,
+                caseamount: selectedItem.caseamount
+
             };
 
             await axios.put('https://team21revsbackend.onrender.com/api/manager/ingredients', payload);
@@ -55,7 +62,9 @@ function Inventory () {
                 ...newIngredient,
                 count: parseInt(newIngredient.count),
                 ppu: parseFloat(newIngredient.ppu),
-                minamount: parseFloat(newIngredient.minamount)
+                minamount: parseFloat(newIngredient.minamount),
+                recommendedamount: parseInt(newIngredient.recommendedamount),
+                caseamount: parseInt(newIngredient.caseamount)
             };
 
             const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/ingredients', newIngredientData);
@@ -130,6 +139,9 @@ function Inventory () {
                 <span>Price Per Unit: ${item.ppu}</span>
                 <span>Count: {item.count}</span>
                 <span>Min Amount: {item.minamount}</span>
+                <span>Location: {item.location}</span>
+                <span>Recommended Amount: {item.recommendedamount}</span>
+                <span>Case Amount: {item.caseamount}</span>
                 <button onClick={(e) => { e.stopPropagation(); handleIngredientDelete(item.ingredientid,item.count); }}>Delete</button>
             </div>
         ));
@@ -171,6 +183,30 @@ function Inventory () {
                                 onChange={(e) => handleInputChange(e, 'minamount')}
                             />
                         </div>
+                        <div>
+                            <label>location:</label>
+                            <input
+                                type="text"
+                                value={selectedItem.location}
+                                onChange={(e) => handleInputChange(e, 'location')}
+                            />
+                        </div>
+                        <div>
+                            <label>recommendedamount:</label>
+                            <input
+                                type="number"
+                                value={selectedItem.recommendedamount}
+                                onChange={(e) => handleInputChange(e, 'recommendedamount')}
+                            />
+                        </div>
+                        <div>
+                            <label>caseamount:</label>
+                            <input
+                                type="number"
+                                value={selectedItem.caseamount}
+                                onChange={(e) => handleInputChange(e, 'caseamount')}
+                            />
+                        </div>
                         <button onClick={handleItemUpdate}>Submit</button>
                     </div>
                 )}
@@ -207,6 +243,30 @@ function Inventory () {
                         type="number"
                         value={newIngredient.minamount}
                         onChange={(e) => setNewIngredient({ ...newIngredient, minamount: e.target.value })}
+                    />
+                </div>
+                <div>
+                    <label>location:</label>
+                    <input
+                        type="text"
+                        value={newIngredient.location}
+                        onChange={(e) => setNewIngredient({ ...newIngredient, location: e.target.value })}
+                    />
+                </div>
+                <div>
+                    <label>recommendedamount:</label>
+                    <input
+                        type="number"
+                        value={newIngredient.recommendedamount}
+                        onChange={(e) => setNewIngredient({ ...newIngredient, recommendedamount: e.target.value })}
+                    />
+                </div>
+                <div>
+                    <label>caseamount:</label>
+                    <input
+                        type="number"
+                        value={newIngredient.caseamount}
+                        onChange={(e) => setNewIngredient({ ...newIngredient, caseamount: e.target.value })}
                     />
                 </div>
                 <button onClick={handleIngredientSubmit}>Submit</button>
