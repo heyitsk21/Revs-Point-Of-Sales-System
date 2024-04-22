@@ -1,25 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useTextSize } from './TextSizeContext';
 import './ManagerTopBar.css';
+import { useNavigate } from 'react-router-dom';
 
 function ManagerTopBar() {
+    const navigate = useNavigate();
     const { toggleTextSize } = useTextSize();
     const [loggedIn, setLoggedIn] = useState(false);
     const [username, setUsername] = useState('');
     const [currentTime, setCurrentTime] = useState('');
     const [speakEnabled, setSpeakEnabled] = useState(false);
     const [dropdownVisible, setDropdownVisible] = useState(false);
-
-    const handleLoginLogout = () => {
-        if (loggedIn) {
-            setLoggedIn(false);
-            setUsername('');
-        } else {
-            const fakeUsername = 'JohnDoe';
-            setLoggedIn(true);
-            setUsername(fakeUsername);
-        }
-    };
 
     const updateTime = () => {
         const date = new Date();
@@ -60,14 +51,22 @@ function ManagerTopBar() {
         setDropdownVisible(!dropdownVisible);
     };
 
+    const handleLogout = () => {
+        console.log('Button clicked!');
+        localStorage.setItem('authority', 0);
+        localStorage.setItem('isLoggedIn', false);
+        localStorage.setItem('userInfo', null);
+        navigate('/');
+    };
+
     return (
         <div className="top-bar">
             <div className="user-info">
-                <span>{loggedIn ? `Welcome, ${username}` : 'Please log in'}</span>
+                <span>{`Welcome, ${localStorage.getItem('username')}`}</span>
                 <span>{currentTime}</span>
             </div>
 
-            <button onClick={handleLoginLogout} onMouseOver={() => handleMouseOver('Login button')}>{loggedIn ? 'Logout' : 'Login'}</button>
+            <button onClick={handleLogout}>Logout</button>
 
             <div className="dropdown-container">
                 <button className={`dropdown-toggle ${dropdownVisible ? 'active' : ''}`} onClick={toggleDropdown}>
