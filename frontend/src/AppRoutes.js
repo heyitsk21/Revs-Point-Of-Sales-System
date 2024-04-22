@@ -15,10 +15,8 @@ import RestockReport from './Manager/Reports/RestockReport';
 import OrderTrend from './Manager/Reports/OrderTrend';
 import ManagerHome from './Manager/ManagerHome'
 import MenuBoard from './MenuBoard';
-import { UserContext } from './UserContext';
 
 function AppRoutes() {
-  const { authority } = useContext(UserContext);
 
   return (
     <Routes>
@@ -27,7 +25,7 @@ function AppRoutes() {
       <Route
         path="/manager"
         element={
-          authority >= 3 ? (
+          localStorage.getItem('authority') >= 3 ? (
             <ManagerHome />
           ) : (
             <Navigate to="/unauthorized" replace />
@@ -37,7 +35,7 @@ function AppRoutes() {
       <Route
         path="/manager/inventory"
         element={
-          authority >= 3 ? (
+          localStorage.getItem('authority') >= 3 ? (
             <Inventory />
           ) : (
             <Navigate to="/unauthorized" replace />
@@ -47,7 +45,7 @@ function AppRoutes() {
       <Route
         path="/manager/menuitems"
         element={
-          authority >= 3 ? (
+          localStorage.getItem('authority') >= 3 ? (
             <MenuItems />
           ) : (
             <Navigate to="/unauthorized" replace />
@@ -57,7 +55,7 @@ function AppRoutes() {
       <Route
         path="/manager/orderhistory"
         element={
-          authority >= 3 ? (
+          localStorage.getItem('authority') >= 3 ? (
             <OrderHistory />
           ) : (
             <Navigate to="/unauthorized" replace />
@@ -67,7 +65,7 @@ function AppRoutes() {
       <Route
         path="/manager/trends"
         element={
-          authority >= 3 ? (
+          localStorage.getItem('authority') >= 3 ? (
             <Trends />
           ) : (
             <Navigate to="/unauthorized" replace />
@@ -77,7 +75,7 @@ function AppRoutes() {
       <Route
         path="/manager/trends/sales"
         element={
-          authority >= 3 ? (
+          localStorage.getItem('authority') >= 3 ? (
             <SalesReport />
           ) : (
             <Navigate to="/unauthorized" replace />
@@ -87,7 +85,7 @@ function AppRoutes() {
       <Route
         path="/manager/trends/productusage"
         element={
-          authority >= 3 ? (
+          localStorage.getItem('authority') >= 3 ? (
             <ProdUsage />
           ) : (
             <Navigate to="/unauthorized" replace />
@@ -97,7 +95,7 @@ function AppRoutes() {
       <Route
         path="/manager/trends/excess"
         element={
-          authority >= 3 ? (
+          localStorage.getItem('authority') >= 3 ? (
             <ExcessReport />
           ) : (
             <Navigate to="/unauthorized" replace />
@@ -107,7 +105,7 @@ function AppRoutes() {
       <Route
         path="/manager/trends/restock"
         element={
-          authority >= 3 ? (
+          localStorage.getItem('authority') >= 3 ? (
             <RestockReport />
           ) : (
             <Navigate to="/unauthorized" replace />
@@ -117,7 +115,7 @@ function AppRoutes() {
       <Route
         path="/manager/trends/ordertrend"
         element={
-          authority >= 3 ? (
+          localStorage.getItem('authority') >= 3 ? (
             <OrderTrend />
           ) : (
             <Navigate to="/unauthorized" replace />
@@ -127,7 +125,7 @@ function AppRoutes() {
 
       <Route path="/employee" 
         element={
-          authority >= 2 ? (
+          localStorage.getItem('authority') >= 2 ? (
             <Employee />
           ) : (
             <Navigate to="/unauthorized" replace />
