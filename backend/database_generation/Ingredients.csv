@@ -1,64 +1,64 @@
-IngeredientName,PPU,Count,MinAmount
-Bacon,0.1,200,100
-American Cheese,0.05,200,100
-Hamburger Bun,0.08,300,150
-Beef patty,0.5,300,150
-Chicken breast,1,150,75
-Onions,0.03,200,100
-Texas Toast,0.15,150,75
-Black bean patty,0.6,150,75
-Grilled chicken breast,1.2,150,75
-Sandwich bun,0.1,200,100
-Spicy chicken breast,1.3,100,50
-Chicken breast,0.05,100,50
-Lettuce,0.1,200,100
-Tomato,0.75,200,100
-Corn Dog,0.5,200,100
-Hot Dog,0.8,200,100
-Chicken Tenders,0.03,150,75
-Potato fries,0.5,300,150
-Shake base - Chocolate,0.6,150,75
-Shake base - Oreo Cookie,0.4,150,75
-Shake base - Vanilla,0.45,150,75
-Shake base - Strawberry,0.5,150,75
-Ice cream,0.1,100,50
-Cookie crumbles,0.25,100,50
-Root beer,0.15,100,50
-16 oz. of Aquafina water,0.2,100,50
-20 oz. of Aquafina water,0.1,100,50
-Fountain drink,0.25,200,100
-Wrapper,1.5,150,75
-BBQ ribs,0.05,100,50
-BBQ sauce,0.05,100,50
-Tortilla ,0.75,150,75
-Pickles,1,100,50
-Gravy,0.05,100,50
-Steak fingers,0.05,40,20
-Gig em sauce,0.1,200,100
-Onion rings,0.01,150,75
-Texas toast,0.01,150,75
-Napkins,0.02,300,150
-Straws,0.02,300,150
-Forks,0.02,300,150
-Knives,0.05,300,150
-Spoons,0.05,300,150
-Cups,0.1,300,150
-Basket,0.01,600,300
-Ketchup,0.1,200,100
-Mustard,0.1,200,100
-Salt packets,0.1,200,100
-Pepper packets,1,200,100
-Salad dressing packets,1,100,50
-To-go containers,0.05,150,75
-Paper towels,0.1,200,100
-Cleaning supplies,1,40,20
-Receipt paper,0.15,200,100
-Trash bags,1,100,50
-Ice,0.5,200,100
-Freezer bags,1,40,20
-Swiss Cheese,0.5,100,50
-Guacamole,1.5,100,50
-Mayo,0.25,200,100
-Bowl,0.1,200,100
-Fish Patty,0.2,150,75
-Tuna,0.05,150,75
+IngeredientName,PPU,Count,MinAmount,RecommendedAmount,CaseAmount
+Bacon,0.1,200,100,1000
+American Cheese,0.05,200,100,1000
+Hamburger Bun,0.08,300,150,1500
+Beef patty,0.5,300,150,1500
+Chicken breast,1,150,75,750
+Onions,0.03,200,100,1000
+Texas Toast,0.15,150,75,750
+Black bean patty,0.6,150,75,750
+Grilled chicken breast,1.2,150,75,750
+Sandwich bun,0.1,200,100,1000
+Spicy chicken breast,1.3,100,50,500
+Chicken breast,0.05,100,50,500
+Lettuce,0.1,200,100,1000
+Tomato,0.75,200,100,1000
+Corn Dog,0.5,200,100,1000
+Hot Dog,0.8,200,100,1000
+Chicken Tenders,0.03,150,75,750
+Potato fries,0.5,300,150,1500
+Shake base - Chocolate,0.6,150,75,750
+Shake base - Oreo Cookie,0.4,150,75,750
+Shake base - Vanilla,0.45,150,75,750
+Shake base - Strawberry,0.5,150,75,750
+Ice cream,0.1,100,50,500
+Cookie crumbles,0.25,100,50,500
+Root beer,0.15,100,50,500
+16 oz. of Aquafina water,0.2,100,50,500
+20 oz. of Aquafina water,0.1,100,50,500
+Fountain drink,0.25,200,100,1000
+Wrapper,1.5,150,75,750
+BBQ ribs,0.05,100,50,500
+BBQ sauce,0.05,100,50,500
+Tortilla ,0.75,150,75,750
+Pickles,1,100,50,500
+Gravy,0.05,100,50,500
+Steak fingers,0.05,40,20,200
+Gig em sauce,0.1,200,100,1000
+Onion rings,0.01,150,75,750
+Texas toast,0.01,150,75,750
+Napkins,0.02,300,150,1500
+Straws,0.02,300,150,1500
+Forks,0.02,300,150,1500
+Knives,0.05,300,150,1500
+Spoons,0.05,300,150,1500
+Cups,0.1,300,150,1500
+Basket,0.01,600,300,3000
+Ketchup,0.1,200,100,1000
+Mustard,0.1,200,100,1000
+Salt packets,0.1,200,100,1000
+Pepper packets,1,200,100,1000
+Salad dressing packets,1,100,50,500
+To-go containers,0.05,150,75,750
+Paper towels,0.1,200,100,1000
+Cleaning supplies,1,40,20,200
+Receipt paper,0.15,200,100,1000
+Trash bags,1,100,50,500
+Ice,0.5,200,100,1000
+Freezer bags,1,40,20,200
+Swiss Cheese,0.5,100,50,500
+Guacamole,1.5,100,50,500
+Mayo,0.25,200,100,1000
+Bowl,0.1,200,100,1000
+Fish Patty,0.2,150,75,750
+Tuna,0.05,150,75,750
