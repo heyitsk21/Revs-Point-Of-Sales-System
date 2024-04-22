@@ -11,7 +11,7 @@ function KitchenBoard() {
         const payload = {
             orderid:id
         };
-        await axios.post('http://127.0.0.1:5000/api/kitchen/completeorder', payload);
+        await axios.post('https://team21revsbackend.onrender.com/api/kitchen/completeorder', payload);
         fetchOrders();
     };
 
@@ -19,7 +19,7 @@ function KitchenBoard() {
 
     const fetchOrders = async () => {
         try {
-            const response = await axios.get('http://127.0.0.1:5000/api/kitchen/getinprogressorders');
+            const response = await axios.get('https://team21revsbackend.onrender.com/api/kitchen/getinprogressorders');
             setOrders(response.data);
         } catch (error) {
             console.error('Error fetching inventory:', error);
