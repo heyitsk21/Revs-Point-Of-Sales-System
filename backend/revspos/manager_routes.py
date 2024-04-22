@@ -10,7 +10,7 @@ UpdateMenuItem_model = api.model('UpdateMenuItem', {"menuid":fields.Integer(requ
 DeleteMenuItem_model = api.model('DeleteMenuItem', {"menuid":fields.Integer(required=True)})
 
 AddIngredient_model = api.model('AddIngredient', { "ingredientname":fields.String(min_length=3,max_length=30,required=True), "count":fields.Integer(required=True), "ppu":fields.Float(required=True), "minamount":fields.Integer(required=True), "location":fields.String(required=True,min_length=6,max_length=7),"recommendedamount":fields.Integer(required=True),"caseamount":fields.Integer(required=True)})
-UpdateIngredient_model = api.model('UpdateIngredient', {"ingredientid":fields.Integer(required=True), "ingredientname":fields.String(min_length=3,max_length=30), "count":fields.Integer, "ppu":fields.Float, "minamount":fields.Integer})
+UpdateIngredient_model = api.model('UpdateIngredient', {"ingredientid":fields.Integer(required=True), "ingredientname":fields.String(min_length=3,max_length=30), "count":fields.Integer, "ppu":fields.Float, "minamount":fields.Integer, "location":fields.String(min_length=6,max_length=7),"recommendedamount":fields.Integer,"caseamount":fields.Integer})
 DeleteIngredient_model = api.model('DeleteIngredient', {"ingredientid":fields.Integer(required=True), "count":fields.Integer(required=True)})
 
 GetIngredientsFromMenuItem_model = api.model('GetIngredientsFromMenuItem', {"menuitemid":fields.Integer(required=True)})
@@ -201,10 +201,13 @@ class Ingredients(Resource):
         newcount = data.get("count")
         newppu = data.get("ppu")
         newminamount = data.get("minamount")
+        newloc = data.get("location")
+        newrecamt = data.get("recommendedamount")
+        newcaseamt = data.get("caseamount")
         
         if (ingredientid == 0):
-            return jsonify({"message": "No orderid entered. No query executed."})
-        elif (newname == "string" and newcount == 0 and newppu == 0 and newminamount == 0):
+            return jsonify({"message": "No ingredientid entered. No query executed."})
+        elif (newname == "string" and newcount == 0 and newppu == 0 and newminamount == 0 and newloc == "string" and newrecamt == 0 and newcaseamt == 0):
             return jsonify({"message": "No inputs entered. No query executed."})
 
         update_query = "UPDATE ingredients SET "
@@ -216,6 +219,12 @@ class Ingredients(Resource):
             update_query += "ppu = {inputnewppu},".format(inputnewppu=newppu)
         if (newminamount > 0):
             update_query += "minamount = {inputnewminamount},".format(inputnewminamount=newminamount)
+        if (newloc != "string"):
+            update_query += "location = '{inputloc}',".format(inputloc=newloc)
+        if (newrecamt > 0):
+            update_query += "recommenedamount = {inputrecamt},".format(inputrecamt=newrecamt)
+        if (newcaseamt > 0):
+            update_query += "caseamount = {inputcaseamt},".format(inputcaseamt=newcaseamt)
         
         update_query = update_query[:-1]
         update_query += " WHERE IngredientID = {inputingredientid}".format(inputingredientid=ingredientid)
