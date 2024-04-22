@@ -9,7 +9,7 @@ AddMenuItem_model = api.model('AddMenuItem', {"catagory":fields.Integer(required
 UpdateMenuItem_model = api.model('UpdateMenuItem', {"menuid":fields.Integer(required=True), "itemname":fields.String(min_length=3, max_length=30), "price":fields.Float})
 DeleteMenuItem_model = api.model('DeleteMenuItem', {"menuid":fields.Integer(required=True)})
 
-AddIngredient_model = api.model('AddIngredient', { "ingredientname":fields.String(min_length=3,max_length=30,required=True), "count":fields.Integer(required=True), "ppu":fields.Float(required=True), "minamount":fields.Integer(required=True)})
+AddIngredient_model = api.model('AddIngredient', { "ingredientname":fields.String(min_length=3,max_length=30,required=True), "count":fields.Integer(required=True), "ppu":fields.Float(required=True), "minamount":fields.Integer(required=True), "location":fields.String(required=True,min_length=6,max_length=7),"recommendedamount":fields.Integer(required=True),"caseamount":fields.Integer(required=True)})
 UpdateIngredient_model = api.model('UpdateIngredient', {"ingredientid":fields.Integer(required=True), "ingredientname":fields.String(min_length=3,max_length=30), "count":fields.Integer, "ppu":fields.Float, "minamount":fields.Integer})
 DeleteIngredient_model = api.model('DeleteIngredient', {"ingredientid":fields.Integer(required=True), "count":fields.Integer(required=True)})
 
@@ -168,7 +168,7 @@ class Ingredients(Resource):
             result = conn.execution_options(stream_results=True).execute(text("select * from ingredients"))
             menuitemlist = []
             for row in result:
-                menuitemlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount})
+                menuitemlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount,"location":row.location,"recommendedamount":row.recommendedamount,"caseamount:"row.caseamount})
         return jsonify(menuitemlist)
     
     @api.expect(AddIngredient_model, validate=True)
@@ -179,11 +179,15 @@ class Ingredients(Resource):
         count = data.get("count")
         ppu = data.get("ppu")
         minamount = data.get("minamount")
+        location = data.get("location")
+        recommendedamount = data.get("recommendedamount")
+        caseamount = data.get("caseamount")
+
         
-        if (ingredientname == "string" or count == 0 or ppu == 0 or minamount == 0):
+        if (ingredientname == "string" or count == 0 or ppu == 0 or minamount == 0 or location == 'string' or recommendedamount == 0 or caseamount == 0):
             return jsonify({"message":"failed to insert ingredient. Missing fields. All fields are required."})
         
-        insert_query = text("INSERT INTO Ingredients (Ingredientname, Count, PPU, minamount) VALUES ('{inputingredientname}', {inputcount}, {inputppu}, {inputminamount})".format(inputingredientname=ingredientname,inputcount=count,inputppu=ppu, inputminamount=minamount))
+        insert_query = text("INSERT INTO Ingredients (Ingredientname, Count, PPU, minamount, location, recommendedamount, caseamount) VALUES ('{inputingredientname}', {inputcount}, {inputppu}, {inputminamount}, {inputlocation}, {inputrecamt}, {inputcaseamt})".format(inputingredientname=ingredientname,inputcount=count,inputppu=ppu, inputminamount=minamount,inputlocation=location,inputrecamt=recommendedamount,inputcaseamt=caseamount))
         with db.engine.connect() as conn:
             conn.execute(insert_query)
             conn.commit()
