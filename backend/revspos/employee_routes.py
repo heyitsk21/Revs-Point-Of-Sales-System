@@ -89,18 +89,23 @@ class PlaceOrder(Resource):
             conn.connection.cursor().execute(upIng)
             conn.connection.cursor().execute(logIng)
             conn.connection.commit()
-            curr_result1 = conn.connection.cursor().execute("INSERT INTO Orders (CustomerName, TaxPrice, BasePrice, OrderDateTime, EmployeeID, OrderStat) VALUES ( '"+name+"', "+str(float(totalprice) * 0.0825)+", "+str(totalprice)+", NOW(), "+str(employeeid)+", 'inprogress') RETURNING orderid")
+            conn.connection.cursor().execute("INSERT INTO Orders (CustomerName, TaxPrice, BasePrice, OrderDateTime, EmployeeID, OrderStat) VALUES ( '"+name+"', "+str(float(totalprice) * 0.0825)+", "+str(totalprice)+", NOW(), "+str(employeeid)+", 'inprogress') RETURNING orderid")
             conn.connection.commit()
-            getOrderID = curr_result1.fetchone()[0]
+            result = conn.execution_options(stream_results=True).execute(text(f"SELECT ORDERID FROM ORDERS WHERE CUSTOMERNAME = '{name}' ORDER BY ORDERDATETIME DESC LIMIT 1;"))
+            
+            for row in result:
+                getOrderID = row.orderid
+
             print(str(getOrderID))
             #TODO add to menu items order junction table
             for item in allmenuidcustomizations:
-                curr_result2 = conn.connection.cursor().execute("INSERT INTO ordermenuitems (OrderID,MenuID) VALUES ("+str(getOrderID)+","+str(item)+") RETURNING joinid")
+                conn.connection.cursor().execute("INSERT INTO ordermenuitems (OrderID,MenuID) VALUES ("+str(getOrderID)+","+str(item)+") RETURNING joinid")
 
-                conn.connection.commit()
-                getJoinID = curr_result2.fetchone()[0]
+                result =conn.execution_options(stream_results=True).execute(text(f"SELECT JOINID FROM ORDERMENUITEMS ORDER BY JOINID DESC LIMIT 1;"))
+                for row in result:
+                    getJoinID = row.joinid
                 print(str(getJoinID))
-                conn.connection.cursor().execute("UPDATE ordermenuitems SET customizationid = "+str(getJoinID)+" where join = "+str(getJoinID))
+                conn.connection.cursor().execute("UPDATE ordermenuitems SET customizationid = "+str(getJoinID)+" where joinid = "+str(getJoinID))
                 if len(allmenuidcustomizations[item]) > 0:
                     for cust in allmenuidcustomizations[item]:
                         conn.connection.cursor().execute("INSERT INTO CustomizationOrderMenu (customizationordermenuid,ingredientid) VALUES ("+str(getJoinID)+","+str(cust)+")")
