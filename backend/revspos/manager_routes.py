@@ -168,7 +168,7 @@ class Ingredients(Resource):
             result = conn.execution_options(stream_results=True).execute(text("select * from ingredients"))
             menuitemlist = []
             for row in result:
-                menuitemlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount,"location":row.location,"recommendedamount":row.recommendedamount,"caseamount:"row.caseamount})
+                menuitemlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount,"location":row.location,"recommendedamount":row.recommendedamount,"caseamount":row.caseamount})
         return jsonify(menuitemlist)
     
     @api.expect(AddIngredient_model, validate=True)
@@ -187,7 +187,7 @@ class Ingredients(Resource):
         if (ingredientname == "string" or count == 0 or ppu == 0 or minamount == 0 or location == 'string' or recommendedamount == 0 or caseamount == 0):
             return jsonify({"message":"failed to insert ingredient. Missing fields. All fields are required."})
         
-        insert_query = text("INSERT INTO Ingredients (Ingredientname, Count, PPU, minamount, location, recommendedamount, caseamount) VALUES ('{inputingredientname}', {inputcount}, {inputppu}, {inputminamount}, {inputlocation}, {inputrecamt}, {inputcaseamt})".format(inputingredientname=ingredientname,inputcount=count,inputppu=ppu, inputminamount=minamount,inputlocation=location,inputrecamt=recommendedamount,inputcaseamt=caseamount))
+        insert_query = text("INSERT INTO Ingredients (Ingredientname, Count, PPU, minamount, location, recommendedamount, caseamount) VALUES ('{inputingredientname}', {inputcount}, {inputppu}, {inputminamount}, '{inputlocation}', {inputrecamt}, {inputcaseamt})".format(inputingredientname=ingredientname,inputcount=count,inputppu=ppu, inputminamount=minamount,inputlocation=location,inputrecamt=recommendedamount,inputcaseamt=caseamount))
         with db.engine.connect() as conn:
             conn.execute(insert_query)
             conn.commit()
