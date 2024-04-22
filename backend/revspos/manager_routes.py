@@ -5,7 +5,7 @@ from sqlalchemy.exc import ObjectNotExecutableError
 # import os, decimal, datetime
 from .api_master import api, db
 
-AddMenuItem_model = api.model('AddMenuItem', {"catagory":fields.Integer(required=True), "itemname":fields.String(required=True, min_length=3, max_length=30), "price":fields.Float(required=True)})
+AddMenuItem_model = api.model('AddMenuItem', {"category":fields.Integer(required=True), "itemname":fields.String(required=True, min_length=3, max_length=30), "price":fields.Float(required=True)})
 UpdateMenuItem_model = api.model('UpdateMenuItem', {"menuid":fields.Integer(required=True), "itemname":fields.String(min_length=3, max_length=30), "price":fields.Float})
 DeleteMenuItem_model = api.model('DeleteMenuItem', {"menuid":fields.Integer(required=True)})
 
@@ -97,12 +97,12 @@ class MenuItems(Resource):
     def post(self): #AddMenuItem
         print("GOT HERE")
         data = request.get_json()
-        catagory = data.get("catagory")
+        category = data.get("category")
         itemname = data.get("itemname")
         price = data.get("price")
         menuid = 0
 
-        select_query = text("SELECT MENUID FROM MENUITEMS WHERE MENUID BETWEEN {lowerbound} AND {upperbound} ORDER BY MENUID DESC LIMIT 1;".format(lowerbound = catagory,upperbound = int(catagory) + 100))
+        select_query = text("SELECT MENUID FROM MENUITEMS WHERE MENUID BETWEEN {lowerbound} AND {upperbound} ORDER BY MENUID DESC LIMIT 1;".format(lowerbound = category,upperbound = int(category) + 100))
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(select_query)
             for row in result:
