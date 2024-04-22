@@ -7,7 +7,13 @@ import './Manager.css';
 import './KitchenBoard.css';
 
 function KitchenBoard() {
-    function completeOrder(){};
+    const completeOrder = async (id) =>{
+        const payload = {
+            orderid:id
+        };
+        await axios.post('http://127.0.0.1:5000/api/kitchen/completeorder', payload);
+        fetchOrders();
+    };
 
     const [orders, setOrders] = useState([]);
 

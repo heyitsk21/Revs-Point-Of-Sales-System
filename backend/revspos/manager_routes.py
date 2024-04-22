@@ -30,6 +30,20 @@ GenerateProductUsage_model = api.model('GenerateProductUsage',{"startdate": fiel
 GenerateSalesReport_model = api.model('GenerateSalesReport',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
 GenerateOrderTrend_model = api.model('GenerateOrderTrend',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
 
+CompleteOrder_model = api.model('CompleteOrder',{"orderid":fields.Integer(required=True)})
+
+@api.route('/api/kitchen/completeorder')
+class CompleteOrder(Resource):
+
+
+    @api.expect(CompleteOrder_model, validate=True)
+    def post(self):
+        data = request.get_json()
+        orderid = data.get("orderid")
+        with db.engine.connect() as conn:
+            conn.connection.cursor().execute(f"UPDATE ORDERS SET ORDERSTAT = 'completed' WHERE ORDERID = {orderid};")
+            conn.connection.commit()
+        
 
 @api.route('/api/kitchen/getinprogressorders')
 class GetInProgressOrders(Resource):
