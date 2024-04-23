@@ -50,12 +50,19 @@ const OrderHistory = () => {
         speechSynthesis.speak(utterance);
     };
 
+    /*
     useEffect(() => {
+<<<<<<< HEAD
         // Conditionally speak only when speakEnabled is true
         if (speakEnabled) {
             speakText("Login and Time, top left. Login button, top middle. Accessibility buttons like speak and toggle, top right. Order Details, Middle. All Order History below this. Trends, bottom left. Inventory, bottom left middle. Menu Items, bottom right middle. Order History, bottom right.");
         }
     }, [speakEnabled]); // Listen for changes in speakEnabled state
+=======
+        speakText("Login and Time, top left. Login button, top middle. Accessibility buttons like speak and toggle, top right. Order Details, Middle. All Order History below this. Trends, bottom left. Inventory, bottom left middle. Menu Items, bottom right middle. Order History, bottom right.");
+    }, []);
+    */
+>>>>>>> 9958fde3687734a1eaf50459099da3f4c88941b5
 
     return (
         <div className={`order-manager ${textSize === 'large' ? 'large-text' : ''}`}>
