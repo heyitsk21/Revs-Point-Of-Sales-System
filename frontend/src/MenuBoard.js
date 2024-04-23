@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './MenuBoard.css';
 import axios from 'axios';
 import revLogo from './rev.png';
+import Translate from './components/translate';
+
 
 const MenuBoard = ({ onPageChange }) => {
     const [menuGroups, setMenuGroups] = useState([]);
@@ -79,7 +81,7 @@ const MenuBoard = ({ onPageChange }) => {
                 <h1 className="menu-title">Rev's American Grill</h1>
                 {renderMenuItems()}
             </div>
-            <button onClick={handleReturnClick} className="return-button">Return</button>
+            <Translate />
         </div>
     );
 };
