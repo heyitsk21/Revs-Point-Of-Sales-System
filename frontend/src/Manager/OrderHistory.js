@@ -50,9 +50,11 @@ const OrderHistory = () => {
         speechSynthesis.speak(utterance);
     };
 
+    /*
     useEffect(() => {
         speakText("Login and Time, top left. Login button, top middle. Accessibility buttons like speak and toggle, top right. Order Details, Middle. All Order History below this. Trends, bottom left. Inventory, bottom left middle. Menu Items, bottom right middle. Order History, bottom right.");
     }, []);
+    */
 
     return (
         <div className={`order-manager ${textSize === 'large' ? 'large-text' : ''}`}>
