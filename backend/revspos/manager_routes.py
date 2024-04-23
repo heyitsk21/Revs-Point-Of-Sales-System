@@ -26,7 +26,7 @@ UpdateOrder_model = api.model('UpdateOrder', {"orderid":fields.Integer(required=
 DeleteOrder_model = api.model('DeleteOrder', {"orderid":fields.Integer(required=True)})
 
 RestockSome_model = api.model('RestockSome', {'ingredientids': fields.List(fields.Integer,required=True)})
-RestockByLocation_model = api.model('RestockByLocation', {'location':fields.String(min_length=6,max_length=7)})
+RestockByLocation_model = api.model('RestockByLocation', {'location':fields.String(min_length=6,max_length=7,required=True)})
 
 GenerateExcessReport_model = api.model('GenerateExcessReport',{"startdate": fields.Date(required=True)})
 GenerateProductUsage_model = api.model('GenerateProductUsage',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
@@ -428,11 +428,14 @@ class RestockAll(Resource):
             restocklist = []
             upIng = ''
             logIng = ''
+            if (len(result.all()) == 0):
+                return jsonify({"message": "No inventory is below recommened amount. No query executed."})
             for row in result:
-                casestobuy = int((row.recommendedamount - row.count) / row.caseamount)
+                casestobuy = int((row.recommendedamount - row.count) / row.caseamount) + 1
+                stockincrease = casestobuy*row.caseamount
                 logMessage = 'RESTOCK ALL: BOUGHT {x} CASES'.format(x=casestobuy)
-                upIng += "UPDATE Ingredients SET Count = Count + "+ str(casestobuy*row.caseamount) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
-                logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(+row.selectioncount)+", '"+logMessage+"', NOW()); "
+                upIng += "UPDATE Ingredients SET Count = Count + "+ str(stockincrease) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
+                logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(stockincrease)+", '"+logMessage+"', NOW()); "
                 restocklist.append({"ingredientid":row.ingredientid,"casesbought":casestobuy})
             conn.connection.cursor().execute(upIng)
             conn.connection.cursor().execute(logIng)
@@ -448,22 +451,26 @@ class RestockSome(Resource):
         ingr_list = request.get_json().get("ingredientids", [])
         allingredients = ""
         for id in ingr_list:
-            allingredients += "ingredientid = " + id + " or "
-        allingredients[-3]
+            allingredients += "ingredientid = " + str(id) + " or "
+        allingredients = allingredients[:-3]
+        allingredients += ")"
         # ingredientid = request.get_json().get("ingredientid") 
         with db.engine.connect() as conn:
-            get_stmt = "select * from ingredients where count < recommendedamount and {x}".format(x=allingredients)
+            get_stmt = "select * from ingredients where count < recommendedamount and ({x}".format(x=allingredients)
             result = conn.execution_options(stream_results=True).execute(text(get_stmt))
             # ingrdientlist = []
             upIng = ''
             logIng = ''
             restocklist = []
+            if (len(result.all()) == 0):
+                return jsonify({"message": "No inventory for any ingredients provided is below recommened amount. No query executed."})
             for row in result:
-                casestobuy = (row.recommendedamount - row.count) / row.caseamount
+                casestobuy = int((row.recommendedamount - row.count) / row.caseamount) + 1
+                stockincrease = casestobuy*row.caseamount
                 restocklist.append({"ingredientid":row.ingredientid, "casesbought":casestobuy})
                 logMessage = 'RESTOCK SOME: BOUGHT {x} CASES OF {y}'.format(x=casestobuy,y=row.ingredientname)
-                upIng += "UPDATE Ingredients SET Count = Count + "+ str(casestobuy*row.caseamount) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
-                logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(+row.selectioncount)+", '"+logMessage+"', NOW()); "
+                upIng += "UPDATE Ingredients SET Count = Count + "+ str(stockincrease) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
+                logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(+stockincrease)+", '"+logMessage+"', NOW()); "
             conn.connection.cursor().execute(upIng)
             conn.connection.cursor().execute(logIng)
             conn.connection.commit()
@@ -476,7 +483,8 @@ class RestockByLocation(Resource):
     @api.expect(RestockByLocation_model, validate=True)
     def put(self): #"update" restock by location
         location = request.get_json().get("location")
-        if (location != 'fridge' or location != 'freezer' or location != 'pantry'):
+        print("location: "+str(location))
+        if ((location != 'fridge') and (location != 'freezer') and (location != 'pantry')):
             return jsonify({"message": "Incorrect or no location entered. No query executed."})
         with db.engine.connect() as conn:
             get_stmt = "select * from ingredients where count < recommendedamount and location = '{x}'".format(x=location)
@@ -485,12 +493,15 @@ class RestockByLocation(Resource):
             upIng = ''
             logIng = ''
             restocklist = []
+            if (len(result.all()) == 0):
+                return jsonify({"message": "No inventory in the location {x} is below recommened amount. No query executed.".format(x=location)})
             for row in result:
-                casestobuy = (row.recommendedamount - row.count) / row.caseamount
+                casestobuy = int((row.recommendedamount - row.count) / row.caseamount) + 1
+                stockincrease = casestobuy*row.caseamount
                 restocklist.append({"ingredientid":row.ingredientid, "casesbought":casestobuy})
                 logMessage = "RESTOCK FOR {z}: BOUGHT {x} CASES OF {y}".format(z=location,x=casestobuy,y=row.ingredientname)
-                upIng += "UPDATE Ingredients SET Count = Count + "+ str(casestobuy*row.caseamount) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
-                logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(+row.selectioncount)+", '"+logMessage+"', NOW()); "
+                upIng += "UPDATE Ingredients SET Count = Count + "+ str(stockincrease) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
+                logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(+stockincrease)+", '"+logMessage+"', NOW()); "
             conn.connection.cursor().execute(upIng)
             conn.connection.cursor().execute(logIng)
             conn.connection.commit()
