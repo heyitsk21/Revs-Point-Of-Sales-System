@@ -225,7 +225,7 @@ class Ingredients(Resource):
         if (newloc != "string"):
             update_query += "location = '{inputloc}',".format(inputloc=newloc)
         if (newrecamt > 0):
-            update_query += "recommenedamount = {inputrecamt},".format(inputrecamt=newrecamt)
+            update_query += "recommendedamount = {inputrecamt},".format(inputrecamt=newrecamt)
         if (newcaseamt > 0):
             update_query += "caseamount = {inputcaseamt},".format(inputcaseamt=newcaseamt)
         
@@ -437,7 +437,7 @@ class RestockAll(Resource):
                 logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(stockincrease)+", '"+logMessage+"', NOW()); "
                 restocklist.append({"ingredientid":row.ingredientid,"casesbought":casestobuy})
             if (upIng == "" or logIng == ""):
-                return jsonify({"message": "No inventory is below recommened amount. No query executed."})
+                return jsonify({"message": "No inventory is below recommended amount. No query executed."})
             conn.connection.cursor().execute(upIng)
             conn.connection.cursor().execute(logIng)
             conn.connection.commit()
@@ -464,7 +464,7 @@ class RestockSome(Resource):
             logIng = ''
             restocklist = []
             if (len(result.all()) == 0):
-                return jsonify({"message": "No inventory for any ingredients provided is below recommened amount. No query executed."})
+                return jsonify({"message": "No inventory for any ingredients provided is below recommended amount. No query executed."})
             for row in result:
                 casestobuy = int((row.recommendedamount - row.count) / row.caseamount) + 1
                 stockincrease = casestobuy*row.caseamount
@@ -495,7 +495,7 @@ class RestockByLocation(Resource):
             logIng = ''
             restocklist = []
             if (len(result.all()) == 0):
-                return jsonify({"message": "No inventory in the location {x} is below recommened amount. No query executed.".format(x=location)})
+                return jsonify({"message": "No inventory in the location {x} is below recommended amount. No query executed.".format(x=location)})
             for row in result:
                 casestobuy = int((row.recommendedamount - row.count) / row.caseamount) + 1
                 stockincrease = casestobuy*row.caseamount
