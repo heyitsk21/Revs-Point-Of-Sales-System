@@ -53,7 +53,7 @@ const OrderHistory = () => {
 
     const handleSearch = () => {
         const searchText = searchInputRef.current.value;
-        window.find(searchText); // Initiates the search
+        window.find(searchText);
     };
 
     return (
