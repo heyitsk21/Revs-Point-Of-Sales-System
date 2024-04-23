@@ -7,7 +7,7 @@
 }
 
 .new-ingredient {
-    padding: 20px;
+    padding: 40px;
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     justify-content: center;
@@ -48,15 +48,18 @@
 }
 
 .inventory-details {
-    background-color: white;
+    background-color: clear;
     position: fixed;
     flex: 1;
-    padding-left: 20px;
+    margin-left: 20px;
+    margin-top: 30px;
 }
 
 .inventory h2 {
     font-size: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    margin-top: 45px;
+    color: black;
 }
 
 .inventory-item {
