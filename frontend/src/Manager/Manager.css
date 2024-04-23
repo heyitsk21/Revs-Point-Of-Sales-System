@@ -6,6 +6,19 @@
     height: 100%;
 }
 
+.new-ingredient {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    justify-content: center;
+    text-align: center;
+}
+
+.new-ingredient h2 {
+    margin-top: 0;
+    color: black;
+}
+
   .large-text .inventory, .large-text .inventory-details, .large-text .inventory-item, .large-text .selected-item {
     font-size: 20px;
   }
