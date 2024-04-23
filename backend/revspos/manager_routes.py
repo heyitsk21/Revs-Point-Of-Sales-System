@@ -25,6 +25,9 @@ DeleteCustomizationFromMenuItem_model = api.model('DeleteCustomizationFromMenuIt
 UpdateOrder_model = api.model('UpdateOrder', {"orderid":fields.Integer(required=True), "customername":fields.String(min_length=3, max_length=25), "baseprice":fields.Float, "employeeid":fields.Integer})
 DeleteOrder_model = api.model('DeleteOrder', {"orderid":fields.Integer(required=True)})
 
+RestockSome_model = api.model('RestockSome', {'ingredientids': fields.List(fields.Integer,required=True)})
+RestockByLocation_model = api.model('RestockByLocation', {'location':fields.String(min_length=6,max_length=7)})
+
 GenerateExcessReport_model = api.model('GenerateExcessReport',{"startdate": fields.Date(required=True)})
 GenerateProductUsage_model = api.model('GenerateProductUsage',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
 GenerateSalesReport_model = api.model('GenerateSalesReport',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
@@ -413,6 +416,89 @@ class OrderHistory(Resource):
                     return jsonify({"message":"successfully deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
             except:
                 return jsonify({"message":"failed to deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
+
+@api.route('/api/manager/restockall')
+class RestockAll(Resource):
+    # @api.expect(RestockAll_model, validate=True)
+    def put(self): #"update" restock all
+        with db.engine.connect() as conn:
+            get_stmt = "select * from ingredients where count < recommendedamount"
+            result = conn.execution_options(stream_results=True).execute(text(get_stmt))
+            # ingrdientlist = []
+            restocklist = []
+            upIng = ''
+            logIng = ''
+            for row in result:
+                casestobuy = int((row.recommendedamount - row.count) / row.caseamount)
+                logMessage = 'RESTOCK ALL: BOUGHT {x} CASES'.format(x=casestobuy)
+                upIng += "UPDATE Ingredients SET Count = Count + "+ str(casestobuy*row.caseamount) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
+                logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(+row.selectioncount)+", '"+logMessage+"', NOW()); "
+                restocklist.append({"ingredientid":row.ingredientid,"casesbought":casestobuy})
+            conn.connection.cursor().execute(upIng)
+            conn.connection.cursor().execute(logIng)
+            conn.connection.commit()
+                # ingrdientlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount,"location":row.location,"recommendedamount":row.recommendedamount, "caseamount":row.caseamount})
+        # return jsonify(ingrdientlist)
+        return jsonify(restocklist)
+
+@api.route('/api/manager/restocksome')
+class RestockSome(Resource):
+    @api.expect(RestockSome_model, validate=True)
+    def put(self): #"update" restock one
+        ingr_list = request.get_json().get("ingredientids", [])
+        allingredients = ""
+        for id in ingr_list:
+            allingredients += "ingredientid = " + id + " or "
+        allingredients[-3]
+        # ingredientid = request.get_json().get("ingredientid") 
+        with db.engine.connect() as conn:
+            get_stmt = "select * from ingredients where count < recommendedamount and {x}".format(x=allingredients)
+            result = conn.execution_options(stream_results=True).execute(text(get_stmt))
+            # ingrdientlist = []
+            upIng = ''
+            logIng = ''
+            restocklist = []
+            for row in result:
+                casestobuy = (row.recommendedamount - row.count) / row.caseamount
+                restocklist.append({"ingredientid":row.ingredientid, "casesbought":casestobuy})
+                logMessage = 'RESTOCK SOME: BOUGHT {x} CASES OF {y}'.format(x=casestobuy,y=row.ingredientname)
+                upIng += "UPDATE Ingredients SET Count = Count + "+ str(casestobuy*row.caseamount) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
+                logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(+row.selectioncount)+", '"+logMessage+"', NOW()); "
+            conn.connection.cursor().execute(upIng)
+            conn.connection.cursor().execute(logIng)
+            conn.connection.commit()
+                # ingrdientlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount,"location":row.location,"recommendedamount":row.recommendedamount, "caseamount":row.caseamount})
+        # return jsonify(ingrdientlist)
+        return jsonify(restocklist)
+
+@api.route('/api/manager/restockbylocation')
+class RestockByLocation(Resource):
+    @api.expect(RestockByLocation_model, validate=True)
+    def put(self): #"update" restock by location
+        location = request.get_json().get("location")
+        if (location != 'fridge' or location != 'freezer' or location != 'pantry'):
+            return jsonify({"message": "Incorrect or no location entered. No query executed."})
+        with db.engine.connect() as conn:
+            get_stmt = "select * from ingredients where count < recommendedamount and location = '{x}'".format(x=location)
+            result = conn.execution_options(stream_results=True).execute(text(get_stmt))
+            # ingrdientlist = []
+            upIng = ''
+            logIng = ''
+            restocklist = []
+            for row in result:
+                casestobuy = (row.recommendedamount - row.count) / row.caseamount
+                restocklist.append({"ingredientid":row.ingredientid, "casesbought":casestobuy})
+                logMessage = "RESTOCK FOR {z}: BOUGHT {x} CASES OF {y}".format(z=location,x=casestobuy,y=row.ingredientname)
+                upIng += "UPDATE Ingredients SET Count = Count + "+ str(casestobuy*row.caseamount) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
+                logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(+row.selectioncount)+", '"+logMessage+"', NOW()); "
+            conn.connection.cursor().execute(upIng)
+            conn.connection.cursor().execute(logIng)
+            conn.connection.commit()
+                # ingrdientlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount,"location":row.location,"recommendedamount":row.recommendedamount, "caseamount":row.caseamount})
+        # return jsonify(ingrdientlist)
+        return jsonify(restocklist)
+
+
 
 
 
