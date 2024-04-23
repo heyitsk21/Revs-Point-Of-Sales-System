@@ -1,6 +1,7 @@
 import React from 'react';
 import ConfirmSubmit from '../ConfirmSubmit/ConfirmSubmit';
 import ConfirmClearOrder from '../ConfirmClearOrder/ConfirmClearOrder';
+import CustomizePopup from '../CustomizePopup/CustomizePopup';
 import './Cart.css';
 import { useCart } from 'react-use-cart';
 import { useState } from 'react'
@@ -19,12 +20,17 @@ const Cart = () => {
 
     const [submitPopup, setSubmitPopup] = useState(false);
     const [clearOrderPopup, setClearOrderPopup] = useState(false);
+    const [customizationPopup, setCustomizationPopup] = useState(false);
 
     const handleConfirmSubmit = () => {
         const data = {
             items: items.map(item => ({ id: item.id, quantity: item.quantity }))
         };
         setSubmitPopup(data);
+    };
+
+    const handleCustomize = (id) => {
+        setCustomizationPopup(id);
     };
 
     return (
@@ -44,6 +50,7 @@ const Cart = () => {
                                 <th>Price</th>
                                 <th>Quantity</th>
                                 <th>Adjust</th>
+                                <th>Edit</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -60,6 +67,9 @@ const Cart = () => {
                                         <div className = "removeItem">
                                             <button className="delete" onClick={() => removeItem(item.id)}>Remove Item</button>
                                         </div>
+                                    </td>
+                                    <td className='edit'>
+                                        <button className = "edit" onClick={() => handleCustomize(item.id)}>Edit</button>
                                     </td>
                                 </tr>
                             ))}
@@ -91,6 +101,9 @@ const Cart = () => {
             <ConfirmSubmit trigger = {submitPopup} setTrigger = {setSubmitPopup} emptyCart = {emptyCart}>
                 <h3>Would you like to order now?</h3>
             </ConfirmSubmit>
+            <CustomizePopup trigger = {customizationPopup} setTrigger = {setCustomizationPopup} props = {item.id}>
+                <h3>Please select items to add, or deselect items to remove.</h3>
+            </CustomizePopup>
         </div>
     );
 };
