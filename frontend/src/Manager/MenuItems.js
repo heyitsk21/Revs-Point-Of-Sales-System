@@ -9,7 +9,7 @@ function MenuItems () {
     const [menu, setMenu] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [checkedItems, setCheckedItems] = useState([]);
-    const [newMenuItem, setNewMenuItem] = useState({ catagory: null, name: '', price: '', ingredients: [] });
+    const [newMenuItem, setNewMenuItem] = useState({ category: null, name: '', price: '', ingredients: [] });
     const [ingredients, setIngredients] = useState([]);
     const [selectedIngredient, setSelectedIngredient] = useState('');
     const [speakEnabled] = useState(false);
@@ -49,7 +49,7 @@ function MenuItems () {
     ]);
     
     const handleCategoryChange = (event) => {
-        setNewMenuItem({ ...newMenuItem, catagory: event.target.value });
+        setNewMenuItem({ ...newMenuItem, category: event.target.value });
     };
 
     const rowClicked = async (event, item) => {
@@ -102,18 +102,23 @@ function MenuItems () {
     const handleAddMenuItem = async () => {
         try {
             console.log('Name:', newMenuItem.name, 'Type:', typeof newMenuItem.name);
-            console.log('Category:', newMenuItem.catagory, 'Type:', typeof newMenuItem.catagory);
+            console.log('Category:', newMenuItem.category, 'Type:', typeof newMenuItem.category);
             console.log('Price:', newMenuItem.price, 'Type:', typeof newMenuItem.price);
             
             const itemName = newMenuItem.name.toString();
     
-            await axios.post('https://team21revsbackend.onrender.com/api/manager/menuitems', { catagory: newMenuItem.catagory, itemname: itemName, price: newMenuItem.price });
+            await axios.post('https://team21revsbackend.onrender.com/api/manager/menuitems', { category: newMenuItem.category, itemname: itemName, price: newMenuItem.price });
+    
+            alert('New menu item added successfully.');
+    
+            setNewMenuItem({ category: null, name: '', price: '', ingredients: [] });
         }
         catch (error) {
             console.error("Error adding menu item:", error);
         }
         fetchMenuItems();
     };
+    
     
     const handleIngredientChange = (event) => {
         setSelectedIngredient(event.target.value);
@@ -231,13 +236,13 @@ function MenuItems () {
                         <div>
                             <label>Category:</label>
                             <select
-                                value={newMenuItem.catagory}
+                                value={newMenuItem.category}
                                 onChange={handleCategoryChange}
                             >
                                 <option value="">Select Category</option>
-                                {categories.map(catagory => (
-                                    <option key={catagory.value} value={catagory.value}>
-                                        {catagory.label}
+                                {categories.map(category => (
+                                    <option key={category.value} value={category.value}>
+                                        {category.label}
                                     </option>
                                 ))}
                             </select>

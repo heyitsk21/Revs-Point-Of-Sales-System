@@ -2,6 +2,7 @@ import React from 'react';
 import ManagerTopBar from '../components/ManagerTopBar';
 import ManagerBottomBar from '../components/ManagerBottomBar';
 import { TextSizeProvider } from '../components/TextSizeContext';
+import Translate from '../components/translate';
 import './Manager.css'
 
 function ManagerHome() {
@@ -10,7 +11,7 @@ function ManagerHome() {
         <TextSizeProvider>
             <div >
                 <ManagerTopBar/>
-                <translate />
+                <Translate />
                     <div className='middleContent'>
                         Welcome Manager to Rev's!
                     </div>
