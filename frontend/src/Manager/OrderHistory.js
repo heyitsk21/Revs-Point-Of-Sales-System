@@ -33,11 +33,11 @@ const OrderHistory = () => {
             <div key={order.orderid} className={`order-item ${selectedOrder && selectedOrder.orderid === order.orderid ? 'selected' : ''}`} onClick={() => handleOrderClick(order)}>
                 <div>ID: {order.orderid}</div>
                 <div>Customer: {order.customername}</div>
-                <div>Price: ${parseFloat(order.baseprice) + parseFloat(order.taxprice)}</div>
+                <div>Price: ${(parseFloat(order.baseprice) + parseFloat(order.taxprice)).toFixed(2)}</div>
                 <div>Date/Time: {order.orderdatetime}</div>
             </div>
         ));
-    };
+    };    
 
     const formatDate = (dateTime) => {
         const date = new Date(dateTime);
@@ -65,9 +65,9 @@ const OrderHistory = () => {
                     <div className="selected-order">
                         <div>ID: {selectedOrder.orderid}</div>
                         <div>Customer: {selectedOrder.customername}</div>
-                        <div>Base Price: ${parseFloat(selectedOrder.baseprice)}</div>
-                        <div>Tax Price: ${parseFloat(selectedOrder.taxprice)}</div>
-                        <div>Total Price: ${(parseFloat(selectedOrder.baseprice) + parseFloat(selectedOrder.taxprice))}</div>
+                        <div>Base Price: ${parseFloat(selectedOrder.baseprice).toFixed(2)}</div>
+                        <div>Tax Price: ${parseFloat(selectedOrder.taxprice).toFixed(2)}</div>
+                        <div>Total Price: ${(parseFloat(selectedOrder.baseprice) + parseFloat(selectedOrder.taxprice)).toFixed(2)}</div>
                         <div>Date/Time: {formatDate(selectedOrder.orderdatetime)}</div>
                         <div>Employee ID: {selectedOrder.employeeid}</div>
                     </div>
