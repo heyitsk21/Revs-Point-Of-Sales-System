@@ -108,12 +108,17 @@ function MenuItems () {
             const itemName = newMenuItem.name.toString();
     
             await axios.post('https://team21revsbackend.onrender.com/api/manager/menuitems', { category: newMenuItem.category, itemname: itemName, price: newMenuItem.price });
+    
+            alert('New menu item added successfully.');
+    
+            setNewMenuItem({ category: null, name: '', price: '', ingredients: [] });
         }
         catch (error) {
             console.error("Error adding menu item:", error);
         }
         fetchMenuItems();
     };
+    
     
     const handleIngredientChange = (event) => {
         setSelectedIngredient(event.target.value);
