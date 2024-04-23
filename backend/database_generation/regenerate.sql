@@ -6,7 +6,12 @@ DROP TABLE IF EXISTS InventoryLog CASCADE;
 DROP TABLE IF EXISTS MenuItemIngredients CASCADE;
 DROP TABLE IF EXISTS OrderMenuItems CASCADE;
 DROP TABLE IF EXISTS MenuItemCustomizations CASCADE;
+DROP TABLE IF EXISTS CustomizationOrderMenu CASCADE;
 
+
+
+CREATE TYPE ORDERSTATUS AS ENUM ('completed','inprogress','deleted','canceled');
+CREATE TYPE KITCHENLOCATIONS AS ENUM ('freezer','fridge','pantry');
 
 --CREATE TABLES AND JUNCTIONTABLE BELOW
 -- Create Ingredients table
@@ -15,7 +20,10 @@ CREATE TABLE Ingredients (
     IngredientName VARCHAR(100),
     PPU NUMERIC(10, 2), -- I used NUMERIC (10,2) because it cuts us off to 2 decimal places for money
     Count INT,
-    MinAmount INT
+    MinAmount INT,
+    Location KITCHENLOCATIONS,
+    RecommendedAmount INT,
+    CaseAmount INT
 );
 
 -- Create MenuItems table
@@ -42,9 +50,11 @@ CREATE TABLE Orders (
     BasePrice NUMERIC(10, 2), 
     OrderDateTime TIMESTAMP,
     EmployeeID INT, 
+    orderstat ORDERSTATUS,
     CONSTRAINT fk_employee
         FOREIGN KEY(EmployeeID) 
         REFERENCES Employee(EmployeeID)
+
 );
 
 -- Create InventoryLog table
@@ -87,6 +97,7 @@ CREATE TABLE OrderMenuItems (
     JoinID SERIAL,
     OrderID INT,
     MenuID INT,
+    CustomizationID INT,
     PRIMARY KEY (JoinID),
     CONSTRAINT fk_menu
         FOREIGN KEY(MenuID) 
@@ -97,17 +108,26 @@ CREATE TABLE OrderMenuItems (
         ON DELETE CASCADE
 );
 
+CREATE TABLE CustomizationOrderMenu (
+    CustomizationOrderMenuID INT,
+    IngredientID INT,
+    PRIMARY KEY (CustomizationOrderMenuID, IngredientID),
+    CONSTRAINT fk_ingredient
+        FOREIGN KEY(IngredientID) 
+        REFERENCES Ingredients(IngredientID)
+);
+
 
 --COPY CHUNKS BELOW
 -- Copy data from CSV files into their corresponding tables
 
-\COPY Ingredients (IngredientName, PPU, Count, MinAmount) FROM 'database_generation/Ingredients.csv' DELIMITER ',' CSV HEADER;
+\COPY Ingredients (IngredientName, PPU, Count, MinAmount, Location, RecommendedAmount, CaseAmount) FROM 'database_generation/Ingredients.csv' DELIMITER ',' CSV HEADER;
 
 \COPY MenuItems (MenuID, ItemName, Price) FROM 'database_generation/MenuItems.csv' DELIMITER ',' CSV HEADER;
 
 \COPY MenuItemIngredients (MenuID, IngredientID) FROM 'database_generation/MenuItemsIngredients.csv' DELIMITER ',' CSV HEADER;
 
-\COPY MenuItemCustomizations (MenuID, CustomizationID) FROM 'database_generation/MenuItemsCustomizations.csv' DELIMITER ',' CSV HEADER;
+\COPY MenuItemCustomizations (MenuID, CustomizationID) FROM 'database_generation/MenuItemCustomizations.csv' DELIMITER ',' CSV HEADER;
 
 \COPY Employee (EmployeeID, EmployeeName, IsManager, Salary, Password) FROM 'database_generation/Employee.csv' DELIMITER ',' CSV HEADER;
 
@@ -115,6 +135,15 @@ CREATE TABLE OrderMenuItems (
 
 \COPY InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) FROM 'database_generation/InventoryLog.csv' DELIMITER ',' CSV HEADER;
 
-\COPY OrderMenuItems  (OrderID, MenuID) FROM 'database_generation/JunctionOrdersMenu.csv' DELIMITER ',' CSV HEADER;
+\COPY OrderMenuItems  (OrderID, MenuID,CustomizationID) FROM 'database_generation/JunctionOrdersMenu.csv' DELIMITER ',' CSV HEADER;
+
+\COPY CustomizationOrderMenu (CustomizationOrderMenuID,IngredientID ) FROM 'database_generation/CustomizationOrderMenuID_Ingredients.csv' DELIMITER ',' CSV HEADER;
+
+
+UPDATE orders SET orderstat = 'completed';
+
+
+--for testing purposes order 10 is in progress
+UPDATE orders SET orderstat = 'inprogress' where ORDERID = 10;
 
 -- For demo, Josephs path: \i C:/Users/jnucc/Desktop/CSCE/project-3-full-stack-agile-web-team-21/backend/database_generation/regenerate.sql

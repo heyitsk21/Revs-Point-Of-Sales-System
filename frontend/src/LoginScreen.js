@@ -1,17 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { UserContext } from './UserContext';
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import './LoginScreen.css'
 import { useNavigate  } from 'react-router-dom';
 
 function LoginScreen(){
-    const { user, setUser, authority, setAuthority, loggedIn, setLoggedIn } = useContext(UserContext);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        console.log("User state changed:", user);
-    }, [user]);
 
     const [employees, setEmployees] = useState([]);
 
@@ -21,7 +15,7 @@ function LoginScreen(){
 
     const fetchEmployees = async () => {
         try {
-            const response = await axios.get('/api/manager/employee');
+            const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/employee');
             setEmployees(response.data);
         } catch (error) {
             console.error('Error fetching employees:', error);
@@ -29,11 +23,25 @@ function LoginScreen(){
     };
 
     const getAuthority = (userData) => {
-        const employee = employees.find(emp => emp.employeename === userData.name);
+        const employee = employees.find(emp => emp.employeename === userData.email);
+        console.log("authority: ", employee);
         if (employee) {
             return employee.ismanager ? 3 : 2;
         } else {
             return 1;
+        }
+    };
+
+    const redirect = () => {
+        if (localStorage.getItem('authority') >= 3){
+            console.log("Manager logged in");
+            navigate('/manager');
+        } else if (localStorage.getItem('authority') >= 2){
+            console.log("Employee logged in");
+            navigate('/employee');
+        } else if (localStorage.getItem('authority') >= 1){
+            console.log("Rando logged in");
+            navigate('/customer');
         }
     };
     
@@ -48,28 +56,21 @@ function LoginScreen(){
                         },
                     }
                 );
-                setUser(res.data);
                 const authority = getAuthority(res.data);
-                setAuthority(authority);
-                setLoggedIn(true);
+                localStorage.setItem('authority', authority);
                 localStorage.setItem('isLoggedIn', true);
+                localStorage.setItem('userInfo', res.data);
+                localStorage.setItem('username', res.data.given_name)
                 console.log("Now logged in:", res.data);
+                setTimeout(redirect, 100);
             } catch (err) {
                 console.log(err);
             }
         },
     });
 
-    if (loggedIn){
-        if (authority >= 3){
-            navigate('/manager');
-        } else if (authority >= 2){
-            console.log("Employee would be here");
-            navigate('/employee');
-        } else {
-            console.log("Rando logged in");
-            navigate('/customer');
-        }
+    if (localStorage.getItem('isLoggedIn' == true)){
+        redirect();
     }else{
         return (
             <div class="LoginScreen">

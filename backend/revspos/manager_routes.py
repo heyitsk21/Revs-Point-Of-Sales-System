@@ -5,26 +5,76 @@ from sqlalchemy.exc import ObjectNotExecutableError
 # import os, decimal, datetime
 from .api_master import api, db
 
-AddMenuItem_model = api.model('AddMenuItem', {"catagory":fields.Integer(required=True), "itemname":fields.String(required=True, min_length=3, max_length=30), "price":fields.Float(required=True)})
+AddMenuItem_model = api.model('AddMenuItem', {"category":fields.Integer(required=True), "itemname":fields.String(required=True, min_length=3, max_length=30), "price":fields.Float(required=True)})
 UpdateMenuItem_model = api.model('UpdateMenuItem', {"menuid":fields.Integer(required=True), "itemname":fields.String(min_length=3, max_length=30), "price":fields.Float})
 DeleteMenuItem_model = api.model('DeleteMenuItem', {"menuid":fields.Integer(required=True)})
 
-AddIngredient_model = api.model('AddIngredient', { "ingredientname":fields.String(min_length=3,max_length=30,required=True), "count":fields.Integer(required=True), "ppu":fields.Float(required=True), "minamount":fields.Integer(required=True)})
-UpdateIngredient_model = api.model('UpdateIngredient', {"ingredientid":fields.Integer(required=True), "ingredientname":fields.String(min_length=3,max_length=30), "count":fields.Integer, "ppu":fields.Float, "minamount":fields.Integer})
+AddIngredient_model = api.model('AddIngredient', { "ingredientname":fields.String(min_length=3,max_length=30,required=True), "count":fields.Integer(required=True), "ppu":fields.Float(required=True), "minamount":fields.Integer(required=True), "location":fields.String(required=True,min_length=6,max_length=7),"recommendedamount":fields.Integer(required=True),"caseamount":fields.Integer(required=True)})
+UpdateIngredient_model = api.model('UpdateIngredient', {"ingredientid":fields.Integer(required=True), "ingredientname":fields.String(min_length=3,max_length=30), "count":fields.Integer, "ppu":fields.Float, "minamount":fields.Integer, "location":fields.String(min_length=6,max_length=7),"recommendedamount":fields.Integer,"caseamount":fields.Integer})
 DeleteIngredient_model = api.model('DeleteIngredient', {"ingredientid":fields.Integer(required=True), "count":fields.Integer(required=True)})
 
 GetIngredientsFromMenuItem_model = api.model('GetIngredientsFromMenuItem', {"menuitemid":fields.Integer(required=True)})
 AddIngredientToMenuItem_model = api.model('AddIngredientToMenuItem', {"menuitemid":fields.Integer(required=True), "ingredientid":fields.Integer(required=True)})
 DeleteIngredientFromMenuItem_model = api.model('DeleteIngredientFromMenuItem', {"menuitemid":fields.Integer(required=True), "ingredientid":fields.Integer(required=True)})
 
+GetCustomizationsFromMenuItem_model = api.model('GetCustomizationsFromMenuItem', {"menuitemid":fields.Integer(required=True)})
+AddCustomizationToMenuItem_model = api.model('AddCustomizationToMenuItem', {"menuitemid":fields.Integer(required=True), "customizationid":fields.Integer(required=True)})
+DeleteCustomizationFromMenuItem_model = api.model('DeleteCustomizationFromMenuItem', {"menuitemid":fields.Integer(required=True), "customizationid":fields.Integer(required=True)})
+
 # GetOrder_model = api.model('GetOrder', {"orderid":fields.Integer, "numberOfOutputs":fields.Integer})
 UpdateOrder_model = api.model('UpdateOrder', {"orderid":fields.Integer(required=True), "customername":fields.String(min_length=3, max_length=25), "baseprice":fields.Float, "employeeid":fields.Integer})
 DeleteOrder_model = api.model('DeleteOrder', {"orderid":fields.Integer(required=True)})
+
+RestockSome_model = api.model('RestockSome', {'ingredientids': fields.List(fields.Integer,required=True)})
+RestockByLocation_model = api.model('RestockByLocation', {'location':fields.String(min_length=6,max_length=7,required=True)})
 
 GenerateExcessReport_model = api.model('GenerateExcessReport',{"startdate": fields.Date(required=True)})
 GenerateProductUsage_model = api.model('GenerateProductUsage',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
 GenerateSalesReport_model = api.model('GenerateSalesReport',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
 GenerateOrderTrend_model = api.model('GenerateOrderTrend',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
+
+CompleteOrder_model = api.model('CompleteOrder',{"orderid":fields.Integer(required=True)})
+
+@api.route('/api/kitchen/completeorder')
+class CompleteOrder(Resource):
+
+
+    @api.expect(CompleteOrder_model, validate=True)
+    def post(self):
+        data = request.get_json()
+        orderid = data.get("orderid")
+        with db.engine.connect() as conn:
+            conn.connection.cursor().execute(f"UPDATE ORDERS SET ORDERSTAT = 'completed' WHERE ORDERID = {orderid};")
+            conn.connection.commit()
+        
+
+@api.route('/api/kitchen/getinprogressorders')
+class GetInProgressOrders(Resource):
+    def get(self):
+        with db.engine.connect() as conn:
+            result = conn.execution_options(stream_results=True).execute(text("SELECT * FROM ORDERS WHERE ORDERSTAT = 'inprogress' ORDER BY ORDERID;"))
+            orderlist = []
+            for row in result:
+                order = {}
+                order['orderid'] = row.orderid
+                order['customername'] = row.customername
+                orderlist.append(order)
+                menuitems = []
+                menuresult = conn.execution_options(stream_results=True).execute(text(f"SELECT menuitems.itemname, customizationID FROM orders JOIN ordermenuitems ON ordermenuitems.orderID = orders.orderID JOIN menuitems ON ordermenuitems.menuID = menuitems.menuID where orders.orderID = {row.orderid};"))
+                for row2 in menuresult:
+                    menuitem = {}
+                    menuitem['menuitemname'] = row2.itemname   
+                    if(row2.customizationid != None):
+                        custresult = conn.execution_options(stream_results=True).execute(text(f"SELECT customizationID,ingredients.ingredientname AS WantedCustimzation FROM ordermenuitems JOIN customizationordermenu ON ordermenuitems.customizationID = customizationordermenu.customizationordermenuID JOIN ingredients ON customizationordermenu.ingredientID = ingredients.ingredientID JOIN menuitems ON ordermenuitems.menuID = menuitems.menuID WHERE customizationid = {row2.customizationid};"))
+                        custs = []
+                        for row3 in custresult:
+                            custs.append(row3.wantedcustimzation)
+                        menuitem['customizations'] = custs
+                    menuitems.append(menuitem)
+                order['menuitems'] = menuitems
+            return jsonify(orderlist)
+        
+
 
 @api.route('/api/manager/employee')
 class Employee(Resource):
@@ -50,12 +100,12 @@ class MenuItems(Resource):
     def post(self): #AddMenuItem
         print("GOT HERE")
         data = request.get_json()
-        catagory = data.get("catagory")
+        category = data.get("category")
         itemname = data.get("itemname")
         price = data.get("price")
         menuid = 0
 
-        select_query = text("SELECT MENUID FROM MENUITEMS WHERE MENUID BETWEEN {lowerbound} AND {upperbound} ORDER BY MENUID DESC LIMIT 1;".format(lowerbound = catagory,upperbound = int(catagory) + 100))
+        select_query = text("SELECT MENUID FROM MENUITEMS WHERE MENUID BETWEEN {lowerbound} AND {upperbound} ORDER BY MENUID DESC LIMIT 1;".format(lowerbound = category,upperbound = int(category) + 100))
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(select_query)
             for row in result:
@@ -121,7 +171,7 @@ class Ingredients(Resource):
             result = conn.execution_options(stream_results=True).execute(text("select * from ingredients"))
             menuitemlist = []
             for row in result:
-                menuitemlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount})
+                menuitemlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount,"location":row.location,"recommendedamount":row.recommendedamount,"caseamount":row.caseamount})
         return jsonify(menuitemlist)
     
     @api.expect(AddIngredient_model, validate=True)
@@ -132,11 +182,15 @@ class Ingredients(Resource):
         count = data.get("count")
         ppu = data.get("ppu")
         minamount = data.get("minamount")
+        location = data.get("location")
+        recommendedamount = data.get("recommendedamount")
+        caseamount = data.get("caseamount")
+
         
-        if (ingredientname == "string" or count == 0 or ppu == 0 or minamount == 0):
+        if (ingredientname == "string" or count == 0 or ppu == 0 or minamount == 0 or location == 'string' or recommendedamount == 0 or caseamount == 0):
             return jsonify({"message":"failed to insert ingredient. Missing fields. All fields are required."})
         
-        insert_query = text("INSERT INTO Ingredients (Ingredientname, Count, PPU, minamount) VALUES ('{inputingredientname}', {inputcount}, {inputppu}, {inputminamount})".format(inputingredientname=ingredientname,inputcount=count,inputppu=ppu, inputminamount=minamount))
+        insert_query = text("INSERT INTO Ingredients (Ingredientname, Count, PPU, minamount, location, recommendedamount, caseamount) VALUES ('{inputingredientname}', {inputcount}, {inputppu}, {inputminamount}, '{inputlocation}', {inputrecamt}, {inputcaseamt})".format(inputingredientname=ingredientname,inputcount=count,inputppu=ppu, inputminamount=minamount,inputlocation=location,inputrecamt=recommendedamount,inputcaseamt=caseamount))
         with db.engine.connect() as conn:
             conn.execute(insert_query)
             conn.commit()
@@ -150,10 +204,13 @@ class Ingredients(Resource):
         newcount = data.get("count")
         newppu = data.get("ppu")
         newminamount = data.get("minamount")
+        newloc = data.get("location")
+        newrecamt = data.get("recommendedamount")
+        newcaseamt = data.get("caseamount")
         
         if (ingredientid == 0):
-            return jsonify({"message": "No orderid entered. No query executed."})
-        elif (newname == "string" and newcount == 0 and newppu == 0 and newminamount == 0):
+            return jsonify({"message": "No ingredientid entered. No query executed."})
+        elif (newname == "string" and newcount == 0 and newppu == 0 and newminamount == 0 and newloc == "string" and newrecamt == 0 and newcaseamt == 0):
             return jsonify({"message": "No inputs entered. No query executed."})
 
         update_query = "UPDATE ingredients SET "
@@ -165,6 +222,12 @@ class Ingredients(Resource):
             update_query += "ppu = {inputnewppu},".format(inputnewppu=newppu)
         if (newminamount > 0):
             update_query += "minamount = {inputnewminamount},".format(inputnewminamount=newminamount)
+        if (newloc != "string"):
+            update_query += "location = '{inputloc}',".format(inputloc=newloc)
+        if (newrecamt > 0):
+            update_query += "recommenedamount = {inputrecamt},".format(inputrecamt=newrecamt)
+        if (newcaseamt > 0):
+            update_query += "caseamount = {inputcaseamt},".format(inputcaseamt=newcaseamt)
         
         update_query = update_query[:-1]
         update_query += " WHERE IngredientID = {inputingredientid}".format(inputingredientid=ingredientid)
@@ -249,6 +312,51 @@ class MenuItemIngredients(Resource):
             conn.connection.commit()
             return jsonify({"message":"successfully deleted order with menuid = {inputmenuitemid} and ingredient = {inputingredientid}".format(inputmenuitemid = menuitemid, inputingredientid = ingredientid)})
 
+@api.route('/api/manager/menuitemcustomizations')
+class MenuItemCustomizations(Resource):
+    @api.expect(GetCustomizationsFromMenuItem_model, validate=True)
+    def put(self): #GetCustomizationsFromMenuItem
+        with db.engine.connect() as conn:
+            menuitemid = request.get_json().get("menuitemid") 
+            result = conn.execution_options(stream_results=True).execute(text("SELECT Ingredients.IngredientID, Ingredients.IngredientName " +
+                "FROM menuitems JOIN menuitemcustomizations ON menuitems.MenuID = menuitemcustomizations.MenuID " +
+                "JOIN Ingredients ON menuitemcustomizations.CustomizationID = Ingredients.IngredientID " +
+                "WHERE menuitems.MenuID = {inputmenuitemid}".format(inputmenuitemid = menuitemid)))
+            menuitemingredientslist = []
+            for row in result:
+                menuitemingredientslist.append({"ingredientname":row.ingredientname, "ingredientid":row.ingredientid})
+        return jsonify(menuitemingredientslist)
+    
+    @api.expect(AddCustomizationToMenuItem_model, validate=True)
+    def post(self): #AddCustomizationToMenuItem
+        menuitemid = request.get_json().get("menuitemid") 
+        customizationid = request.get_json().get("customizationid") 
+
+        add_customization_query = "INSERT INTO menuitemCustomizations (MenuID, CustomizationID) values ({inputmenuitemid},{inputcustomizationid})".format(inputmenuitemid = menuitemid, inputcustomizationid = customizationid)
+                   
+        with db.engine.connect() as conn:
+            result = conn.execute(text(add_customization_query)) #execution_options(stream_results=True).
+            conn.commit()
+
+            select_add_customization_query = "SELECT * FROM menuitemcustomizations WHERE menuid = {inputmenuitemid}".format(inputmenuitemid = menuitemid)
+            resultselect = conn.execution_options(stream_results=True).execute(text(select_add_customization_query))
+            menuitemcustomizationslist = []
+            for row in resultselect:
+                menuitemcustomizationslist.append({"menuid":row.menuid,"customizationid":row.customizationid})
+        return jsonify(menuitemcustomizationslist)
+    
+    @api.expect(DeleteCustomizationFromMenuItem_model, validate=True)
+    def delete(self): #DeleteCustomizationFromMenuItem
+        menuitemid = request.get_json().get("menuitemid") 
+        customizationid = request.get_json().get("customizationid") 
+
+        delete_customization_query = "DELETE FROM menuitemCustomizations WHERE MenuID={inputmenuitemid} AND customizationID={inputcustomizationid}".format(inputmenuitemid = menuitemid, inputcustomizationid = customizationid)
+
+        with db.engine.connect() as conn:
+            conn.connection.cursor().execute(delete_customization_query)
+            conn.connection.commit()
+            return jsonify({"message":"successfully deleted order with menuid = {inputmenuitemid} and customizationid = {inputcustomizationid}".format(inputmenuitemid = menuitemid, inputcustomizationid = customizationid)})
+
 @api.route('/api/manager/orderhistory')
 class OrderHistory(Resource):
     def get(self):
@@ -308,6 +416,101 @@ class OrderHistory(Resource):
                     return jsonify({"message":"successfully deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
             except:
                 return jsonify({"message":"failed to deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
+
+@api.route('/api/manager/restockall')
+class RestockAll(Resource):
+    # @api.expect(RestockAll_model, validate=True)
+    def put(self): #"update" restock all
+        with db.engine.connect() as conn:
+            get_stmt = "select * from ingredients where count < recommendedamount"
+            result = conn.execution_options(stream_results=True).execute(text(get_stmt))
+            # ingrdientlist = []
+            restocklist = []
+            upIng = ''
+            logIng = ''
+            for row in result:
+                # print(str(row))
+                casestobuy = int((row.recommendedamount - row.count) / row.caseamount) + 1
+                stockincrease = casestobuy*row.caseamount
+                logMessage = 'RESTOCK ALL: BOUGHT {x} CASES FOR INGREDIENTID = {y}'.format(x=casestobuy,y=row.ingredientid)
+                upIng += "UPDATE Ingredients SET Count = Count + "+ str(stockincrease) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
+                logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(stockincrease)+", '"+logMessage+"', NOW()); "
+                restocklist.append({"ingredientid":row.ingredientid,"casesbought":casestobuy})
+            if (upIng == "" or logIng == ""):
+                return jsonify({"message": "No inventory is below recommened amount. No query executed."})
+            conn.connection.cursor().execute(upIng)
+            conn.connection.cursor().execute(logIng)
+            conn.connection.commit()
+                # ingrdientlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount,"location":row.location,"recommendedamount":row.recommendedamount, "caseamount":row.caseamount})
+        # return jsonify(ingrdientlist)
+        return jsonify(restocklist)
+
+@api.route('/api/manager/restocksome')
+class RestockSome(Resource):
+    @api.expect(RestockSome_model, validate=True)
+    def put(self): #"update" restock one
+        ingr_list = request.get_json().get("ingredientids", [])
+        allingredients = ""
+        for id in ingr_list:
+            allingredients += "ingredientid = " + str(id) + " or "
+        allingredients = allingredients[:-3]
+        allingredients += ")"
+        # ingredientid = request.get_json().get("ingredientid") 
+        with db.engine.connect() as conn:
+            get_stmt = "select * from ingredients where count < recommendedamount and ({x}".format(x=allingredients)
+            result = conn.execution_options(stream_results=True).execute(text(get_stmt))
+            # ingrdientlist = []
+            upIng = ''
+            logIng = ''
+            restocklist = []
+            if (len(result.all()) == 0):
+                return jsonify({"message": "No inventory for any ingredients provided is below recommened amount. No query executed."})
+            for row in result:
+                casestobuy = int((row.recommendedamount - row.count) / row.caseamount) + 1
+                stockincrease = casestobuy*row.caseamount
+                restocklist.append({"ingredientid":row.ingredientid, "casesbought":casestobuy})
+                logMessage = 'RESTOCK SOME: BOUGHT {x} CASES OF {y}'.format(x=casestobuy,y=row.ingredientname)
+                upIng += "UPDATE Ingredients SET Count = Count + "+ str(stockincrease) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
+                logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(+stockincrease)+", '"+logMessage+"', NOW()); "
+            conn.connection.cursor().execute(upIng)
+            conn.connection.cursor().execute(logIng)
+            conn.connection.commit()
+                # ingrdientlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount,"location":row.location,"recommendedamount":row.recommendedamount, "caseamount":row.caseamount})
+        # return jsonify(ingrdientlist)
+        return jsonify(restocklist)
+
+@api.route('/api/manager/restockbylocation')
+class RestockByLocation(Resource):
+    @api.expect(RestockByLocation_model, validate=True)
+    def put(self): #"update" restock by location
+        location = request.get_json().get("location")
+        print("location: "+str(location))
+        if ((location != 'fridge') and (location != 'freezer') and (location != 'pantry')):
+            return jsonify({"message": "Incorrect or no location entered. No query executed."})
+        with db.engine.connect() as conn:
+            get_stmt = "select * from ingredients where count < recommendedamount and location = '{x}'".format(x=location)
+            result = conn.execution_options(stream_results=True).execute(text(get_stmt))
+            # ingrdientlist = []
+            upIng = ''
+            logIng = ''
+            restocklist = []
+            if (len(result.all()) == 0):
+                return jsonify({"message": "No inventory in the location {x} is below recommened amount. No query executed.".format(x=location)})
+            for row in result:
+                casestobuy = int((row.recommendedamount - row.count) / row.caseamount) + 1
+                stockincrease = casestobuy*row.caseamount
+                restocklist.append({"ingredientid":row.ingredientid, "casesbought":casestobuy})
+                logMessage = "RESTOCK FOR {z}: BOUGHT {x} CASES OF {y}".format(z=location,x=casestobuy,y=row.ingredientname)
+                upIng += "UPDATE Ingredients SET Count = Count + "+ str(stockincrease) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
+                logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(+stockincrease)+", '"+logMessage+"', NOW()); "
+            conn.connection.cursor().execute(upIng)
+            conn.connection.cursor().execute(logIng)
+            conn.connection.commit()
+                # ingrdientlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount,"location":row.location,"recommendedamount":row.recommendedamount, "caseamount":row.caseamount})
+        # return jsonify(ingrdientlist)
+        return jsonify(restocklist)
+
+
 
 
 

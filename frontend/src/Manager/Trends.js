@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Trends.css';
+import './Manager.css';
 import { useTextSize } from '../components/TextSizeContext';
 import ManagerTopBar from '../components/ManagerTopBar';
 import ManagerBottomBar from '../components/ManagerBottomBar';

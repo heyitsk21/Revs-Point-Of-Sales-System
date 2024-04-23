@@ -3,13 +3,16 @@ import './EmpCust.css';
 import Ordering from '../components/Ordering/Ordering';
 import EmpHeader from '../components/EmpHeader/EmpHeader'
 import { useTextSize } from '../../components/TextSizeContext';
+import { CartProvider } from 'react-use-cart';
 const Employee = ({ onCatChange }) => {
     const { textSize, toggleTextSize } = useTextSize();
     
     return (
         <div className={`employee ${textSize === 'large' ? 'large-text' : ''}`}>
-            <EmpHeader/>
-            <Ordering/>
+            <CartProvider>
+                <EmpHeader/>
+                <Ordering/>
+            </CartProvider>
         </div>
     );
 };

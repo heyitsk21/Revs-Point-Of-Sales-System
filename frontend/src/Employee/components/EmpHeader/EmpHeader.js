@@ -1,21 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './EmpHeader.css';
 import { useTextSize } from '../../../components/TextSizeContext';
+import { useNavigate } from 'react-router-dom';
+
 const EmpHeader = ({ onCatChange }) => {
+    const navigate = useNavigate();
     const { textSize, toggleTextSize } = useTextSize();
     const [loggedIn, setLoggedIn] = useState(false);
     const [username, setUsername] = useState('');
     const [currentTime, setCurrentTime] = useState('');
 
-    const handleLoginLogout = () => {
-        if (loggedIn) {
-            setLoggedIn(false);
-            setUsername('');
-        } else {
-            const fakeUsername = 'JohnDoe';
-            setLoggedIn(true);
-            setUsername(fakeUsername);
-        }
+    const handleLogout = () => {
+        console.log('Button clicked!');
+        localStorage.setItem('authority', 0);
+        localStorage.setItem('isLoggedIn', false);
+        localStorage.setItem('userInfo', null);
+        navigate('/');
     };
 
     const updateTime = () => {
@@ -25,6 +25,7 @@ const EmpHeader = ({ onCatChange }) => {
     };
 
     useEffect(() => {
+        setUsername(localStorage.getItem('userInfo').name)
         const interval = setInterval(updateTime, 1000);
         return () => clearInterval(interval);
     }, []);
@@ -38,10 +39,10 @@ const EmpHeader = ({ onCatChange }) => {
     return (
         <div className="top-bar">
             <div className="user-info">
-                <span>{loggedIn ? `Welcome, ${username}` : 'Please log in'}</span>
+                <span>{`Welcome, ${localStorage.getItem('username')}`}</span>
                 <span>{currentTime}</span>
             </div>
-            <button onClick={handleLoginLogout}>{loggedIn ? 'Logout' : 'Login'}</button>
+            <button onClick={handleLogout}>Logout</button>
             <button onClick={() => speakText("Employee... Sandwiches... Sides... Drinks... Limited Time")}>Speak</button>
             <button onClick={toggleTextSize}>Toggle Text Size</button>
             <button> Work Hours </button>

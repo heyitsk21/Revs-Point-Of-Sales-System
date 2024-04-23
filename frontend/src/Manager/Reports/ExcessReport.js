@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './ExcessReport.css';
+import './Report.css';
 import { useTextSize } from '../../components/TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
 import { useNavigate  } from 'react-router-dom';
