@@ -45,11 +45,10 @@ function Inventory() {
                 location: selectedItem.location,
                 recommendedamount: selectedItem.recommendedamount,
                 caseamount: selectedItem.caseamount
-
             };
-
+    
             await axios.put('https://team21revsbackend.onrender.com/api/manager/ingredients', payload);
-
+            alert('Ingredient edited successfully:');
             fetchInventory();
         } catch (error) {
             console.error('Error updating ingredient:', error);
@@ -66,10 +65,20 @@ function Inventory() {
                 recommendedamount: parseInt(newIngredient.recommendedamount),
                 caseamount: parseInt(newIngredient.caseamount)
             };
-
+    
             const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/ingredients', newIngredientData);
-            console.log('Ingredient added successfully:', response.data);
+            alert('Ingredient added successfully:');
             fetchInventory();
+            setNewIngredient({
+                ingredientid: 0,
+                ingredientname: "",
+                count: 0,
+                ppu: 0,
+                minamount: 0,
+                location: "",
+                recommendedamount: 0,
+                caseamount: 0
+            });
         } catch (error) {
             console.error('Error adding ingredient:', error);
         }
