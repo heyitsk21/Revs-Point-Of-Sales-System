@@ -428,17 +428,16 @@ class RestockAll(Resource):
             restocklist = []
             upIng = ''
             logIng = ''
-            print(str(len(result.all())))
-            if (len(result.all()) == 0):
-                return jsonify({"message": "No inventory is below recommened amount. No query executed."})
             for row in result:
-                print(str(row))
+                # print(str(row))
                 casestobuy = int((row.recommendedamount - row.count) / row.caseamount) + 1
                 stockincrease = casestobuy*row.caseamount
                 logMessage = 'RESTOCK ALL: BOUGHT {x} CASES FOR INGREDIENTID = {y}'.format(x=casestobuy,y=row.ingredientid)
                 upIng += "UPDATE Ingredients SET Count = Count + "+ str(stockincrease) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
                 logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(stockincrease)+", '"+logMessage+"', NOW()); "
                 restocklist.append({"ingredientid":row.ingredientid,"casesbought":casestobuy})
+            if (upIng == "" or logIng == ""):
+                return jsonify({"message": "No inventory is below recommened amount. No query executed."})
             conn.connection.cursor().execute(upIng)
             conn.connection.cursor().execute(logIng)
             conn.connection.commit()
