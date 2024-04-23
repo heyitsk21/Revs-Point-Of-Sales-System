@@ -8,7 +8,7 @@ import ManagerBottomBar from '../components/ManagerBottomBar';
 const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null);
-    const [speakEnabled, setSpeakEnabled] = useState(false); // State to track if Speak is clicked
+    const [speakEnabled] = useState(false);
     const { textSize } = useTextSize();
 
     const fetchOrderHistory = async () => {
@@ -43,7 +43,7 @@ const OrderHistory = () => {
         const date = new Date(dateTime);
         return date.toLocaleString();
     };
-
+    
     const speakText = (text) => {
         const speechSynthesis = window.speechSynthesis;
         const utterance = new SpeechSynthesisUtterance(text);
@@ -52,21 +52,13 @@ const OrderHistory = () => {
 
     /*
     useEffect(() => {
-<<<<<<< HEAD
-        // Conditionally speak only when speakEnabled is true
-        if (speakEnabled) {
-            speakText("Login and Time, top left. Login button, top middle. Accessibility buttons like speak and toggle, top right. Order Details, Middle. All Order History below this. Trends, bottom left. Inventory, bottom left middle. Menu Items, bottom right middle. Order History, bottom right.");
-        }
-    }, [speakEnabled]); // Listen for changes in speakEnabled state
-=======
         speakText("Login and Time, top left. Login button, top middle. Accessibility buttons like speak and toggle, top right. Order Details, Middle. All Order History below this. Trends, bottom left. Inventory, bottom left middle. Menu Items, bottom right middle. Order History, bottom right.");
     }, []);
     */
->>>>>>> 9958fde3687734a1eaf50459099da3f4c88941b5
 
     return (
         <div className={`order-manager ${textSize === 'large' ? 'large-text' : ''}`}>
-            <ManagerTopBar onSpeakClick={() => setSpeakEnabled(true)} /> {/* Pass onSpeakClick callback */}
+            <ManagerTopBar/>
             <div className="order-details">
                 <h2>{selectedOrder ? `Order Details: ${selectedOrder.orderid}` : 'Select an Order to View Details'}</h2>
                 {selectedOrder && (
