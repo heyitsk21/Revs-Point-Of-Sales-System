@@ -4,7 +4,7 @@ import '../ConfirmPopup.css'
 import { Checkbox, useCheckboxState } from 'pretty-checkbox-react/dist-src/index';
 import '@djthoms/pretty-checkbox';
 
-function Customize({props}) {
+function Customize(props) {
   //using the item id, get the potential customization options
   const [options, setOptions] = useState([]);
   const checkbox = useCheckboxState({ state: [] });
@@ -28,8 +28,8 @@ function Customize({props}) {
   }
 
   useEffect(() => {
-    fetchOptions({props});
-  }, []);
+    fetchOptions(props.trigger);
+  }, [props.trigger]);
 
   return (props.trigger) ? (
     <div className = 'popup'>

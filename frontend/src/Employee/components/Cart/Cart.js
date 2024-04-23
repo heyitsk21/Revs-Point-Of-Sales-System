@@ -30,6 +30,7 @@ const Cart = () => {
     };
 
     const handleCustomize = (id) => {
+        console.log(id);
         setCustomizationPopup(id);
     };
 
@@ -101,7 +102,7 @@ const Cart = () => {
             <ConfirmSubmit trigger = {submitPopup} setTrigger = {setSubmitPopup} emptyCart = {emptyCart}>
                 <h3>Would you like to order now?</h3>
             </ConfirmSubmit>
-            <CustomizePopup trigger = {customizationPopup} setTrigger = {setCustomizationPopup} props = {item.id}>
+            <CustomizePopup trigger = {customizationPopup} setTrigger = {setCustomizationPopup}>
                 <h3>Please select items to add, or deselect items to remove.</h3>
             </CustomizePopup>
         </div>
