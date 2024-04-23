@@ -1,0 +1,95 @@
+.inventory {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.new-ingredient {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    justify-content: center;
+    text-align: center;
+}
+
+.new-ingredient h2 {
+    margin-top: 0;
+}
+
+  .large-text .inventory, .large-text .inventory-details, .large-text .inventory-item, .large-text .selected-item {
+    font-size: 20px;
+  }
+
+.toggle-button-container {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.toggle-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.inventory-list {
+    flex: 1;
+    display: grid;
+    padding-right: 20px;
+    padding-bottom: 50px;
+}
+
+.inventory-details {
+    background-color: white;
+    position: fixed;
+    flex: 1;
+    padding-left: 20px;
+}
+
+.inventory h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.inventory-item {
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.inventory-item:hover {
+    background-color: #f0f0f0;
+}
+
+.inventory-item span {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.selected-item {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+.selected-item h3 {
+    margin-bottom: 10px;
+}
+
+.selected-item div {
+    margin-bottom: 10px;
+}
+
+.selected-item label {
+    font-weight: bold;
+    margin-right: 10px;
+}

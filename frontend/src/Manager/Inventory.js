@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Manager.css';
+import './Inventory.css';
 import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
