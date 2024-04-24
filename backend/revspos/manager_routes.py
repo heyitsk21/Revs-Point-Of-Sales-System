@@ -419,6 +419,23 @@ class OrderHistory(Resource):
 
 @api.route('/api/manager/restockall')
 class RestockAll(Resource):
+    def get(self): #get all that needs to be restocked
+        with db.engine.connect() as conn:
+            get_stmt = "select * from ingredients where count < recommendedamount"
+            result = conn.execution_options(stream_results=True).execute(text(get_stmt))
+            # ingrdientlist = []
+            restocklist = []
+            for row in result:
+                # print(str(row))
+                casestobuy = int((row.recommendedamount - row.count) / row.caseamount) + 1
+                stockincrease = casestobuy*row.caseamount
+                restocklist.append({"ingredientid":row.ingredientid,"casesbought":casestobuy})
+            conn.connection.commit()
+            if (len(restocklist) == 0):
+                return jsonify({"message": "No inventory is below recommended amount."})
+                # ingrdientlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount,"location":row.location,"recommendedamount":row.recommendedamount, "caseamount":row.caseamount})
+        # return jsonify(ingrdientlist)
+        return jsonify(restocklist)
     # @api.expect(RestockAll_model, validate=True)
     def put(self): #"update" restock all
         with db.engine.connect() as conn:
