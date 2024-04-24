@@ -117,11 +117,11 @@ function LoginScreen(){
                     required
                 />
                 </div>
-                
+                <div class="loginButton">
+                    <button type="submit">Sign in</button>
+                </div>
             </form>
-            <div class="loginButton">
-                <button type="submit">Sign in</button>
-            </div>
+            
             <div class="googleLoginButton">
                 <button onClick={() => googleLogin()}>
                     Sign in with Google
