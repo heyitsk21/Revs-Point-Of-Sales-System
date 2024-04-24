@@ -43,11 +43,12 @@ const Cart = () => {
                 <div className ='emptyMessage'>Your Cart is Empty</div>
             ) : (
                 <div>
-                <SimpleBar style={{ height: 400, width: 500}}>
+                <SimpleBar style={{ height: 400, width: '100%'}}>
                     <table className="table">
                         <thead>
                             <tr>
                                 <th>Item</th>
+                                <th>Custom</th>
                                 <th>Price</th>
                                 <th>Quantity</th>
                                 <th>Adjust</th>
@@ -58,6 +59,7 @@ const Cart = () => {
                             {items.map((item, index)=> (
                                 <tr key={index}>
                                     <td>{item.name}</td>
+                                    <td>customizations</td>
                                     <td>${(item.quantity * item.price).toFixed(2)}</td>
                                     <td className='quantity'>{item.quantity}</td>
                                     <td className='adjust'>
@@ -77,7 +79,7 @@ const Cart = () => {
                         </tbody>
                     </table>
                 </SimpleBar>
-                    <table>
+                    <table className='cartFooter'>
                         <tfoot>
                             <tr>
                                 <td colSpan="2">Total Price:</td>

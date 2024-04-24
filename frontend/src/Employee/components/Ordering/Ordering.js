@@ -130,7 +130,7 @@ const Ordering = ({ onCatChange }) => {
                         <div className='categoryName'>
                             {category}
                         </div>
-                        <SimpleBar style={{ height: 600, width: 990}}>
+                        <SimpleBar style={{ height: 600, width: 750}}>
                             <div className='items'>
                                 {renderMenuSection()}
                             </div>

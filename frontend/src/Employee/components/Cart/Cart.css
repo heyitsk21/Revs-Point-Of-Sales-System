@@ -1,6 +1,6 @@
 table {
-    border-collapse: collapse; /* Collapse border spacing */
-    width: 100%; /* Set the table width */
+    border-collapse: collapse; 
+    width: 100%; 
 }
 
 td {
@@ -47,4 +47,9 @@ th {
 
 .tfoot .td{
     font-weight: 1000 !important;
+}
+
+.cartFooter {
+    align-items: end;
+    width: 100%;
 }
