@@ -21,7 +21,9 @@ const EmpHeader = ({ onCatChange }) => {
 
     const updateTime = () => {
         const date = new Date();
-        const timeString = date.toLocaleTimeString();
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const timeString = `${hours}:${minutes}`;
         setCurrentTime(timeString);
     };
 

@@ -12,7 +12,9 @@ const EmpHeader = ({ onCatChange }) => {
 
     const updateTime = () => {
         const date = new Date();
-        const timeString = date.toLocaleTimeString();
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const timeString = `${hours}:${minutes}`;
         setCurrentTime(timeString);
     };
 
@@ -39,6 +41,7 @@ const EmpHeader = ({ onCatChange }) => {
         <div className="top-bar">
             <div className="user-info">
                 <span>Welcome to Rev's!</span>
+                <span>{currentTime}</span>
             </div>
             <button onClick={handleLogout}>Logout</button>
             <button onClick={toggleTextSize}>Toggle Text Size</button>
