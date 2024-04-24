@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './CustHeader.css';
 import { useTextSize } from '../../../components/TextSizeContext';
 import { useNavigate } from 'react-router-dom';
+import Translate from '../../../components/translate'
 
 
 const EmpHeader = ({ onCatChange }) => {
@@ -40,9 +41,8 @@ const EmpHeader = ({ onCatChange }) => {
                 <span>Welcome to Rev's!</span>
             </div>
             <button onClick={handleLogout}>Logout</button>
-            <button onClick={() => speakText("Employee... Sandwiches... Sides... Drinks... Limited Time")}>Speak</button>
             <button onClick={toggleTextSize}>Toggle Text Size</button>
-            <button> Work Hours </button>
+            <Translate />
         </div>
     );
 };
