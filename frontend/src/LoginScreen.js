@@ -9,6 +9,10 @@ function LoginScreen(){
 
     const [employees, setEmployees] = useState([]);
 
+    useEffect(() => {
+        fetchEmployees();
+    }, []);
+
     const fetchEmployees = async () => {
         try {
             const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/employee');
@@ -19,7 +23,6 @@ function LoginScreen(){
     };
 
     const getAuthority = (userData) => {
-        fetchEmployees();
         const employee = employees.find(emp => emp.employeename === userData.email);
         console.log("authority: ", employee);
         if (employee) {
@@ -42,10 +45,6 @@ function LoginScreen(){
         }
     };
 
-    const standardLogin = () => {
-
-    }
-    
     const googleLogin = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
