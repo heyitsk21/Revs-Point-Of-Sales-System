@@ -44,8 +44,8 @@ function LoginScreen(){
             navigate('/customer');
         }
     };
-    
-    const login = useGoogleLogin({
+
+    const googleLogin = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
                 const res = await axios.get(
@@ -62,29 +62,73 @@ function LoginScreen(){
                 localStorage.setItem('userInfo', res.data);
                 localStorage.setItem('username', res.data.given_name)
                 console.log("Now logged in:", res.data);
-                setTimeout(redirect, 100);
+                setTimeout(redirect, 200);
             } catch (err) {
                 console.log(err);
             }
         },
     });
 
-    if (localStorage.getItem('isLoggedIn' == true)){
-        redirect();
-    }else{
-        return (
-            <div class="LoginScreen">
-                <div class="LoginTitle">
-                    Rev's Grill - By Team 21
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value);
+    };
+
+    const handlePasswordChange = (event) => {
+        setPassword(event.target.value);
+    };
+    
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        console.log(`Email: ${email}, Password: ${password}`);
+        // login logic
+        localStorage.setItem('username', email)
+        localStorage.setItem('authority', 1);
+        localStorage.setItem('isLoggedIn', true);
+        console.log("Now logged in");
+        setTimeout(redirect, 200);
+    };
+
+    return (
+        <div class="LoginScreen">
+            <div class="LoginTitle">
+                Rev's Grill - By Team 21
+            </div>
+            <form onSubmit={handleSubmit}>
+                <div className="userinput">
+                <label htmlFor="email">Email:</label>
+                <input
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={handleEmailChange}
+                    required
+                />
                 </div>
-                <div class="LoginButton">
-                    <button onClick={() => login()}>
-                        Sign In
-                    </button>
+                <div className="userinput">
+                <label htmlFor="password">Password:</label>
+                <input
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    required
+                />
                 </div>
-            </div> 
-        );
-    }
+                <div class="loginButton">
+                    <button type="submit">Sign in</button>
+                </div>
+            </form>
+            
+            <div class="googleLoginButton">
+                <button onClick={() => googleLogin()}>
+                    Sign in with Google
+                </button>
+            </div>
+        </div> 
+    );
 }
 
 export default LoginScreen;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import './EmpCust.css';
+import './Employee.css';
 import Ordering from '../components/Ordering/Ordering';
 import EmpHeader from '../components/EmpHeader/EmpHeader'
 import { useTextSize } from '../../components/TextSizeContext';

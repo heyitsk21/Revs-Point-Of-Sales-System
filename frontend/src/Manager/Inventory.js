@@ -6,7 +6,7 @@ import ManagerTopBar from '../components/ManagerTopBar';
 import ManagerBottomBar from '../components/ManagerBottomBar';
 import Restock from './Restock.js';
 
-function Inventory () {
+function Inventory() {
     const [inventory, setInventory] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [newIngredient, setNewIngredient] = useState({
@@ -46,11 +46,10 @@ function Inventory () {
                 location: selectedItem.location,
                 recommendedamount: selectedItem.recommendedamount,
                 caseamount: selectedItem.caseamount
-
             };
-
+    
             await axios.put('https://team21revsbackend.onrender.com/api/manager/ingredients', payload);
-            
+            alert('Ingredient edited successfully:');
             fetchInventory();
         } catch (error) {
             console.error('Error updating ingredient:', error);
@@ -67,23 +66,34 @@ function Inventory () {
                 recommendedamount: parseInt(newIngredient.recommendedamount),
                 caseamount: parseInt(newIngredient.caseamount)
             };
-
+    
             const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/ingredients', newIngredientData);
-            console.log('Ingredient added successfully:', response.data);
+            alert('Ingredient added successfully:');
             fetchInventory();
+            setNewIngredient({
+                ingredientid: 0,
+                ingredientname: "",
+                count: 0,
+                ppu: 0,
+                minamount: 0,
+                location: "",
+                recommendedamount: 0,
+                caseamount: 0
+            });
         } catch (error) {
             console.error('Error adding ingredient:', error);
-            // Handle error and provide feedback to the user
         }
     };
 
-    const handleIngredientDelete = async (itemId,deleteCount) => {
-        try {
-            const response = await axios.delete('https://team21revsbackend.onrender.com/api/manager/ingredients', { data: { ingredientid: itemId ,count:deleteCount} });
-            console.log('Item deleted successfully:', response.data);
-            fetchInventory();
-        } catch (error) {
-            console.error('Error deleting item:', error);
+    const handleIngredientDelete = async (itemId, deleteCount) => {
+        if (window.confirm("Are you sure you want to delete this ingredient?")) {
+            try {
+                const response = await axios.delete('https://team21revsbackend.onrender.com/api/manager/ingredients', { data: { ingredientid: itemId, count: deleteCount } });
+                alert('Item deleted successfully:');
+                fetchInventory();
+            } catch (error) {
+                console.error('Error deleting item:', error);
+            }
         }
     };
 
@@ -131,7 +141,7 @@ function Inventory () {
             }
             speakText(hoveredElementText);
         }
-    }, 1000); 
+    }, 1000);
 
     const renderInventoryItems = () => {
         return inventory.map(item => (
@@ -143,7 +153,6 @@ function Inventory () {
                 <span>Location: {item.location}</span>
                 <span>Recommended Amount: {item.recommendedamount}</span>
                 <span>Case Amount: {item.caseamount}</span>
-                <button onClick={(e) => { e.stopPropagation(); handleIngredientDelete(item.ingredientid,item.count); }}>Delete</button>
             </div>
         ));
     };
@@ -210,6 +219,7 @@ function Inventory () {
                             />
                         </div>
                         <button onClick={handleItemUpdate}>Submit</button>
+                        <button onClick={() => handleIngredientDelete(selectedItem.ingredientid, selectedItem.count)}>Delete</button>
                     </div>
                 )}
             </div>
@@ -278,7 +288,7 @@ function Inventory () {
                 <h2>Inventory Items</h2>
                 {renderInventoryItems()}
             </div>
-            <ManagerBottomBar/>
+            <ManagerBottomBar />
         </div>
     );
 };

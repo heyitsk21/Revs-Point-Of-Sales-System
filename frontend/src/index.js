@@ -21,7 +21,6 @@ root.render(
         <UserProvider>
           <TextSizeProvider>
             {/* Render LoginScreen if user is not logged in */}
-            {!isLoggedIn && <LoginScreen />}
             <AppRoutes />
           </TextSizeProvider>
         </UserProvider>
