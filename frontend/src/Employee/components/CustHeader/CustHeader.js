@@ -42,7 +42,7 @@ const EmpHeader = ({ onCatChange }) => {
             </div>
             <button onClick={handleLogout}>Logout</button>
             <button onClick={toggleTextSize}>Toggle Text Size</button>
-            <Translate />
+            <div className='translate'><Translate /></div>
         </div>
     );
 };
