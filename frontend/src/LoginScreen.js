@@ -9,10 +9,6 @@ function LoginScreen(){
 
     const [employees, setEmployees] = useState([]);
 
-    useEffect(() => {
-        fetchEmployees();
-    }, []);
-
     const fetchEmployees = async () => {
         try {
             const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/employee');
@@ -23,6 +19,7 @@ function LoginScreen(){
     };
 
     const getAuthority = (userData) => {
+        fetchEmployees();
         const employee = employees.find(emp => emp.employeename === userData.email);
         console.log("authority: ", employee);
         if (employee) {
@@ -95,47 +92,44 @@ function LoginScreen(){
         setTimeout(redirect, 200);
     };
 
-    if (localStorage.getItem('isLoggedIn') === true){
-        redirect();
-    }else{
-        return (
-            <div class="LoginScreen">
-                <div class="LoginTitle">
-                    Rev's Grill - By Team 21
+    return (
+        <div class="LoginScreen">
+            <div class="LoginTitle">
+                Rev's Grill - By Team 21
+            </div>
+            <form onSubmit={handleSubmit}>
+                <div className="userinput">
+                <label htmlFor="email">Email:</label>
+                <input
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={handleEmailChange}
+                    required
+                />
                 </div>
-                <form onSubmit={handleSubmit}>
-                    <div className="userinput">
-                    <label htmlFor="email">Email:</label>
-                    <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={handleEmailChange}
-                        required
-                    />
-                    </div>
-                    <div className="userinput">
-                    <label htmlFor="password">Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={handlePasswordChange}
-                        required
-                    />
-                    </div>
-                    <div class="loginButton">
-                        <button type="submit">Sign in</button>
-                    </div>
-                </form>
-                <div class="googleLoginButton">
-                    <button onClick={() => googleLogin()}>
-                        Sign in with Google
-                    </button>
+                <div className="userinput">
+                <label htmlFor="password">Password:</label>
+                <input
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    required
+                />
                 </div>
-            </div> 
-        );
-    }
+                
+            </form>
+            <div class="loginButton">
+                <button type="submit">Sign in</button>
+            </div>
+            <div class="googleLoginButton">
+                <button onClick={() => googleLogin()}>
+                    Sign in with Google
+                </button>
+            </div>
+        </div> 
+    );
 }
 
 export default LoginScreen;
