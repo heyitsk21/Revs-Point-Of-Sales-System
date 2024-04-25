@@ -42,7 +42,6 @@ const Cart = () => {
                         <thead>
                             <tr>
                                 <th>Item</th>
-                                <th>Custom</th>
                                 <th>Price</th>
                                 <th>Quantity</th>
                                 <th>Adjust</th>
@@ -52,7 +51,6 @@ const Cart = () => {
                             {items.map((item, index)=> (
                                 <tr key={index}>
                                     <td>{item.name}</td>
-                                    <td>customizations</td>
                                     <td>${(item.quantity * item.price).toFixed(2)}</td>
                                     <td className='quantity'>{item.quantity}</td>
                                     <td className='adjust'>
