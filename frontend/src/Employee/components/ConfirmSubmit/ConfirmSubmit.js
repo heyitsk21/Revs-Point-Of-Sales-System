@@ -61,7 +61,7 @@ function ConfirmSubmit(props) {
             <h3>Please select items to add, or deselect items to remove.</h3>
             <SimpleBar style={{ height: 400, width: 600}}>
               {props.trigger.items.map((item, index)=> (
-                  <tr key={index}>
+                  <div key={index}>
                       <div>{item.name}</div>
                       <div>${(item.quantity * item.price).toFixed(2)}</div>
                       <div className='quantity'>{item.quantity}</div>
@@ -76,7 +76,7 @@ function ConfirmSubmit(props) {
                         return null;
                       })}
                       <p>Selected items: {checkbox.state.join(', ')}</p>
-                  </tr>
+                  </div>
               ))}
             </SimpleBar>
 
