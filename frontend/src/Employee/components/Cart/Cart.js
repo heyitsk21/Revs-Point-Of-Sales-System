@@ -1,7 +1,6 @@
 import React from 'react';
 import ConfirmSubmit from '../ConfirmSubmit/ConfirmSubmit';
 import ConfirmClearOrder from '../ConfirmClearOrder/ConfirmClearOrder';
-import CustomizePopup from '../CustomizePopup/CustomizePopup';
 import './Cart.css';
 import { useCart } from 'react-use-cart';
 import { useState } from 'react'
@@ -29,11 +28,6 @@ const Cart = () => {
         setSubmitPopup(data);
     };
 
-    const handleCustomize = (id) => {
-        console.log(id);
-        setCustomizationPopup(id);
-    };
-
     return (
         <div className='cart'>
             <div className='cartTitle'>
@@ -52,7 +46,6 @@ const Cart = () => {
                                 <th>Price</th>
                                 <th>Quantity</th>
                                 <th>Adjust</th>
-                                <th>Edit</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -71,9 +64,6 @@ const Cart = () => {
                                             <button className="delete" onClick={() => removeItem(item.id)}>Remove Item</button>
                                         </div>
                                     </td>
-                                    <td className='edit'>
-                                        <button className = "edit" onClick={() => handleCustomize(item.id)}>Edit</button>
-                                    </td>
                                 </tr>
                             ))}
                         </tbody>
@@ -90,7 +80,7 @@ const Cart = () => {
                                     <button onClick={() => setClearOrderPopup(true)}>Clear Order</button>
                                 </td>
                                 <td colSpan="2">
-                                    <button onClick={handleConfirmSubmit}>Buy Now</button>
+                                    <button onClick={handleConfirmSubmit}>Customize & Buy Now</button>
                                 </td>
                             </tr>
                         </tfoot>
@@ -102,11 +92,7 @@ const Cart = () => {
                 <h3>Are you sure you want to cancel your order?</h3>
             </ConfirmClearOrder>
             <ConfirmSubmit trigger = {submitPopup} setTrigger = {setSubmitPopup} emptyCart = {emptyCart}>
-                <h3>Would you like to order now?</h3>
             </ConfirmSubmit>
-            <CustomizePopup trigger = {customizationPopup} setTrigger = {setCustomizationPopup}>
-                <h3>Please select items to add, or deselect items to remove.</h3>
-            </CustomizePopup>
         </div>
     );
 };
