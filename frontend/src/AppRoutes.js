@@ -13,7 +13,6 @@ import ProdUsage from './Manager/Reports/ProdUsage';
 import ExcessReport from './Manager/Reports/ExcessReport';
 import RestockReport from './Manager/Reports/RestockReport';
 import OrderTrend from './Manager/Reports/OrderTrend';
-import ManagerHome from './Manager/ManagerHome'
 import MenuBoard from './MenuBoard';
 import KitchenBoard from './Manager/KitchenBoard'
 
@@ -27,12 +26,13 @@ function AppRoutes() {
         path="/manager"
         element={
           localStorage.getItem('authority') >= 3 ? (
-            <ManagerHome />
+            <Navigate to="/manager/trends" replace />
           ) : (
             <Navigate to="/unauthorized" replace />
           )
         }
       />
+
       <Route
         path="/manager/inventory"
         element={

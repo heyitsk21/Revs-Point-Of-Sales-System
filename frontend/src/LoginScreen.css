@@ -4,8 +4,8 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-color: #f0f0f0;
-    background-image: url('Images/loginBackground.jpg');
+    background-color: rgb(79, 0, 0);
+    background-image: url('loginBackground.jpg');
     background-size: cover;
 }
 
