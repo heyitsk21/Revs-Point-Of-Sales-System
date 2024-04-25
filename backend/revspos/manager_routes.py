@@ -429,7 +429,7 @@ class RestockAll(Resource):
                 # print(str(row))
                 casestobuy = int((row.recommendedamount - row.count) / row.caseamount) + 1
                 stockincrease = casestobuy*row.caseamount
-                restocklist.append({"ingredientid":row.ingredientid, "casesbought":casestobuy,"stockincrease":stockincrease,"message":"Inventory not affected. No restock occurred."})
+                restocklist.append({"message":"Need "+str(casestobuy)+" cases for "+str(stockincrease)+" total units of ingredient "+str(row.ingredientname)+". Inventory not affected. No restock occurred."})
             conn.connection.commit()
             if (len(restocklist) == 0):
                 return jsonify({"message": "No inventory is below recommended amount."})
@@ -452,7 +452,8 @@ class RestockAll(Resource):
                 logMessage = 'RESTOCK ALL: BOUGHT {x} CASES FOR INGREDIENTID = {y}'.format(x=casestobuy,y=row.ingredientid)
                 upIng += "UPDATE Ingredients SET Count = Count + "+ str(stockincrease) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
                 logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(stockincrease)+", '"+logMessage+"', NOW()); "
-                restocklist.append({"ingredientid":row.ingredientid, "casesbought":casestobuy,"stockincrease":stockincrease,"message":"Inventory changed. Restock successfull."})
+                # restocklist.append({"ingredientid":row.ingredientid, "casesbought":casestobuy,"stockincrease":stockincrease,"message":"Inventory changed. Restock successfull."})
+                restocklist.append({"message":"Ordered "+str(casestobuy)+" cases for "+str(stockincrease)+" total units of ingredient "+str(row.ingredientname)+". Inventory changed. Restock successfull."})
             if (upIng == "" or logIng == ""):
                 return jsonify({"message": "No inventory is below recommended amount. No query executed."})
             conn.connection.cursor().execute(upIng)
@@ -480,7 +481,8 @@ class RestockSome(Resource):
             for row in result:
                 casestobuy = int((row.recommendedamount - row.count) / row.caseamount) + 1
                 stockincrease = casestobuy*row.caseamount
-                restocklist.append({"ingredientid":row.ingredientid, "casesbought":casestobuy,"stockincrease":stockincrease,"message":"Inventory not affected. No restock occurred."})
+                # restocklist.append({"ingredientid":row.ingredientid, "casesbought":casestobuy,"stockincrease":stockincrease,"message":"Inventory not affected. No restock occurred."})
+                restocklist.append({"message":"Need "+str(casestobuy)+" cases for "+str(stockincrease)+" total units of ingredient "+str(row.ingredientname)+". Inventory not affected. No restock occurred."})
             if (len(restocklist) == 0):
                 return jsonify({"message": "No inventory for any ingredients provided is below recommended amount. No query executed."})
                 # ingrdientlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount,"location":row.location,"recommendedamount":row.recommendedamount, "caseamount":row.caseamount})
@@ -506,7 +508,8 @@ class RestockSome(Resource):
             for row in result:
                 casestobuy = int((row.recommendedamount - row.count) / row.caseamount) + 1
                 stockincrease = casestobuy*row.caseamount
-                restocklist.append({"ingredientid":row.ingredientid, "casesbought":casestobuy,"stockincrease":stockincrease,"message":"Inventory changed. Restock successfull."})
+                # restocklist.append({"ingredientid":row.ingredientid, "casesbought":casestobuy,"stockincrease":stockincrease,"message":"Inventory changed. Restock successfull."})
+                restocklist.append({"message":"Ordered "+str(casestobuy)+" cases for "+str(stockincrease)+" total units of ingredient "+str(row.ingredientname)+". Inventory changed. Restock successfull."})
                 logMessage = 'RESTOCK SOME: BOUGHT {x} CASES OF {y}'.format(x=casestobuy,y=row.ingredientname)
                 upIng += "UPDATE Ingredients SET Count = Count + "+ str(stockincrease) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
                 logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(+stockincrease)+", '"+logMessage+"', NOW()); "
@@ -535,7 +538,8 @@ class RestockByLocation(Resource):
             for row in result:
                 casestobuy = int((row.recommendedamount - row.count) / row.caseamount) + 1
                 stockincrease = casestobuy*row.caseamount
-                restocklist.append({"ingredientid":row.ingredientid, "casesbought":casestobuy,"stockincrease":stockincrease,"message":"Inventory not affected. No restock occurred."})
+                # restocklist.append({"ingredientid":row.ingredientid, "casesbought":casestobuy,"stockincrease":stockincrease,"message":"Inventory not affected. No restock occurred."})
+                restocklist.append({"message":"Need "+str(casestobuy)+" cases for "+str(stockincrease)+" total units of ingredient "+str(row.ingredientname)+". Inventory not affected. No restock occurred."})
             if (len(restocklist) == 0):
                 return jsonify({"message": "No inventory in the location {x} is below recommended amount. No query executed.".format(x=location)})
         return jsonify(restocklist)
@@ -557,7 +561,8 @@ class RestockByLocation(Resource):
             for row in result:
                 casestobuy = int((row.recommendedamount - row.count) / row.caseamount) + 1
                 stockincrease = casestobuy*row.caseamount
-                restocklist.append({"ingredientid":row.ingredientid, "casesbought":casestobuy,"stockincrease":stockincrease,"message":"Inventory changed. Restock successfull."})
+                # restocklist.append({"ingredientid":row.ingredientid, "casesbought":casestobuy,"stockincrease":stockincrease,"message":"Inventory changed. Restock successfull."})
+                restocklist.append({"message":"Ordered "+str(casestobuy)+" cases for "+str(stockincrease)+" total units of ingredient "+str(row.ingredientname)+". Inventory changed. Restock successfull."})
                 logMessage = "RESTOCK FOR {z}: BOUGHT {x} CASES OF {y}".format(z=location,x=casestobuy,y=row.ingredientname)
                 upIng += "UPDATE Ingredients SET Count = Count + "+ str(stockincrease) + " WHERE IngredientID = " + str(row.ingredientid) + "; "
                 logIng += "INSERT INTO InventoryLog (IngredientID, AmountChanged, LogMessage, LogDateTime) VALUES ("+ str(row.ingredientid)+", "+str(+stockincrease)+", '"+logMessage+"', NOW()); "
