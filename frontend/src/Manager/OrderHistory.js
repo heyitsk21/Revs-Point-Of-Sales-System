@@ -76,7 +76,7 @@ const OrderHistory = () => {
             <div className='order-history'>
                 <div className="search-bar">
                     <input className='order-history-input' type="text" placeholder="Search..." ref={searchInputRef} />
-                    <button onClick={handleSearch}>Search</button>
+                    <button className='order-history-button' onClick={handleSearch}>Search</button>
                 </div>
                 <div className="order-list">
                     <h2>Order History</h2>
