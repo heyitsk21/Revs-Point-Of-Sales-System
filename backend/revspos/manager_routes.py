@@ -25,6 +25,8 @@ DeleteCustomizationFromMenuItem_model = api.model('DeleteCustomizationFromMenuIt
 UpdateOrder_model = api.model('UpdateOrder', {"orderid":fields.Integer(required=True), "customername":fields.String(min_length=3, max_length=25), "baseprice":fields.Float, "employeeid":fields.Integer})
 DeleteOrder_model = api.model('DeleteOrder', {"orderid":fields.Integer(required=True)})
 
+OrderStatus_model = api.model('OrderStatusComplete', {"orderid":fields.Integer(required=True)})
+
 RestockSome_model = api.model('RestockSome', {'ingredientids': fields.List(fields.Integer,required=True)})
 RestockByLocation_model = api.model('RestockByLocation', {'location':fields.String(min_length=6,max_length=7,required=True)})
 
@@ -389,7 +391,6 @@ class OrderHistory(Resource):
             update_order_query += "baseprice = {inputbaseprice}, taxprice = {inputtaxprice},".format(inputbaseprice=baseprice, inputtaxprice=taxprice)
         if (employeeid > 0):
             update_order_query += "employeeID = {inputemployeeid},".format(inputemployeeid=employeeid)
-        
         update_order_query = update_order_query[:-1]
         update_order_query += " WHERE orderid = {inputorderid}".format(inputorderid=orderid)
 
@@ -416,6 +417,70 @@ class OrderHistory(Resource):
                     return jsonify({"message":"successfully deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
             except:
                 return jsonify({"message":"failed to deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
+
+@api.route('/api/manager/orderstatuscompleted')
+class OrderStatusCompleted(Resource):
+    @api.expect(OrderStatus_model, validate=True)
+    def put(self): 
+        orderid = request.get_json().get("orderid") 
+
+        if (orderid == 0):
+            return jsonify({"message": "No orderid entered. No query executed."})
+        
+        update_order_query = "UPDATE orders SET orderstat = 'completed' where orderid = {inputorderid}".format(inputorderid=orderid)
+        
+        with db.engine.connect() as conn:
+            conn.execute(text(update_order_query)) 
+            conn.commit()
+        return jsonify({"message": "Set order status to COMPLETED for orderid = {inputorderid}.".format(inputorderid=orderid)})
+
+@api.route('/api/manager/orderstatusinprogress')
+class OrderStatusInprogress(Resource):
+    @api.expect(OrderStatus_model, validate=True)
+    def put(self): 
+        orderid = request.get_json().get("orderid") 
+
+        if (orderid == 0):
+            return jsonify({"message": "No orderid entered. No query executed."})
+        
+        update_order_query = "UPDATE orders SET orderstat = 'inprogress' where orderid = {inputorderid}".format(inputorderid=orderid)
+        
+        with db.engine.connect() as conn:
+            conn.execute(text(update_order_query)) 
+            conn.commit()
+        return jsonify({"message": "Set order status to INPROGRESS for orderid = {inputorderid}.".format(inputorderid=orderid)})
+
+@api.route('/api/manager/orderstatusdeleted')
+class OrderStatusDeleted(Resource):
+    @api.expect(OrderStatus_model, validate=True)
+    def put(self): 
+        orderid = request.get_json().get("orderid") 
+
+        if (orderid == 0):
+            return jsonify({"message": "No orderid entered. No query executed."})
+        
+        update_order_query = "UPDATE orders SET orderstat = 'deleted' where orderid = {inputorderid}".format(inputorderid=orderid)
+        
+        with db.engine.connect() as conn:
+            conn.execute(text(update_order_query)) 
+            conn.commit()
+        return jsonify({"message": "Set order status to DELETED for orderid = {inputorderid}.".format(inputorderid=orderid)})
+
+@api.route('/api/manager/orderstatuscanceled')
+class OrderStatusCanceled(Resource):
+    @api.expect(OrderStatus_model, validate=True)
+    def put(self): 
+        orderid = request.get_json().get("orderid") 
+
+        if (orderid == 0):
+            return jsonify({"message": "No orderid entered. No query executed."})
+        
+        update_order_query = "UPDATE orders SET orderstat = 'canceled' where orderid = {inputorderid}".format(inputorderid=orderid)
+        
+        with db.engine.connect() as conn:
+            conn.execute(text(update_order_query)) 
+            conn.commit()
+        return jsonify({"message": "Set order status to CANCELED for orderid = {inputorderid}.".format(inputorderid=orderid)})
 
 @api.route('/api/manager/restockall')
 class RestockAll(Resource):
