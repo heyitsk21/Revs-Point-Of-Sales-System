@@ -3,6 +3,7 @@ import './Report.css';
 import { useTextSize } from '../../components/TextSizeContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import ManagerTopBar from '../../components/ManagerTopBar';
 
 function RestockReport () {
     const navigate = useNavigate();
@@ -71,25 +72,24 @@ function RestockReport () {
 
     return (
         <div className={`restock-report ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
-            <div className="toggle-button-container">
-                <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
-                <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
-            </div>
-            <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
-            <h2 onMouseOver={handleMouseOver}>Restock Report</h2>
-            <div className="report-list">
-                <div className="report-header">
-                    <span className="header-item">Ingredient</span>
-                    <span className="header-item">Current Amount</span>
-                    <span className="header-item">Minimum Amount</span>
-                </div>
-                {reportData.map((item, index) => (
-                    <div key={index} className="report-item">
-                        <span className="report-item" onMouseOver={handleMouseOver}>{item.ingredientname}</span>
-                        <span className="report-item" onMouseOver={handleMouseOver}>{item.count}</span>
-                        <span className="report-item" onMouseOver={handleMouseOver}>{item.minamount}</span>
+            <ManagerTopBar/>
+            <div className='report-body'>
+                <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
+                <h2 onMouseOver={handleMouseOver}>Restock Report</h2>
+                <div className="report-list">
+                    <div className="report-header">
+                        <span className="header-item">Ingredient</span>
+                        <span className="header-item">Current Amount</span>
+                        <span className="header-item">Minimum Amount</span>
                     </div>
-                ))}
+                    {reportData.map((item, index) => (
+                        <div key={index} className="report-item">
+                            <span className="report-item" onMouseOver={handleMouseOver}>{item.ingredientname}</span>
+                            <span className="report-item" onMouseOver={handleMouseOver}>{item.count}</span>
+                            <span className="report-item" onMouseOver={handleMouseOver}>{item.minamount}</span>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );
