@@ -1,4 +1,4 @@
-.manager-menu {
+.order-manager {
     position: fixed;
     font-family: "Chakra Petch", sans-serif;
     padding: 20px;
@@ -11,26 +11,18 @@
     flex-direction: column;
 }
 
-.add-item-section {
+.order-details {
     background-color: #ffffff;
-    padding: 15px;
+    padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     position: fixed;
     left: 55%;
     width: 18%;
+    padding: 10px;
 }
 
-.add-item-object {
-    margin: 10px;
-}
-
-.menu-item-input {
-    width: 98%;
-    font-size: 20px;
-}
-
-.edit-item-section {
+.search-bar {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
@@ -41,7 +33,7 @@
     width: 18%;
 }
 
-.item-list {
+.order-list {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
@@ -51,7 +43,25 @@
     flex-direction: column;
 }
 
-.menu-item-button {
+.order-item {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid black;
+    border-radius: 1rem;
+    margin: 5px;
+    padding: 7px;
+}
+
+.order-history-input {
+    font-size: 16px;
+    width: 95%;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    margin: 5px 0px;
+}
+
+.order-history-button {
     font-size: 20px;
     padding: 10px 20px;
     background-color: #077a8e;
@@ -62,8 +72,4 @@
     transition: background-color 0.3s ease;
     margin: 5px 10px;
     font-family: "Chakra Petch", sans-serif;
-}
-
-.menu-item-button:hover {
-    background-color: #0056b3;
 }
