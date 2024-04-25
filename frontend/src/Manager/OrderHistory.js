@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './Manager.css';
+import './OrderHistory.css';
 import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
@@ -75,7 +75,7 @@ const OrderHistory = () => {
             </div>
             <div className='order-history'>
                 <div className="search-bar">
-                    <input type="text" placeholder="Search..." ref={searchInputRef} />
+                    <input className='order-history-input' type="text" placeholder="Search..." ref={searchInputRef} />
                     <button onClick={handleSearch}>Search</button>
                 </div>
                 <div className="order-list">

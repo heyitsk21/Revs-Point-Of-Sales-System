@@ -215,26 +215,26 @@ function MenuItems () {
             <div><ManagerTopBar/></div>
             <div className='manager-menu-items'>
                 <div className="add-item-section">
-                    <h2 onMouseOver={handleMouseOver}>Add New MenuItem</h2>
-                    <div>
+                    <h2 onMouseOver={handleMouseOver}>Add New Menu Item</h2>
+                    <div className='add-item-object'>
                         <label>Item Name:</label>
-                        <input
+                        <input className='menu-item-input'
                             type="text"
                             value={newMenuItem.name}
                             onChange={(e) => setNewMenuItem({ ...newMenuItem, name: e.target.value })}
                         />
                     </div>
-                    <div>
+                    <div className='add-item-object'>
                         <label>Price:</label>
-                        <input
+                        <input className='menu-item-input'
                             type="number"
                             value={newMenuItem.price}
                             onChange={(e) => setNewMenuItem({ ...newMenuItem, price: e.target.value })}
                         />
                     </div>
-                    <div>
+                    <div className='add-item-object'>
                         <label>Category:</label>
-                        <select
+                        <select className='menu-item-input'
                             value={newMenuItem.category}
                             onChange={handleCategoryChange}
                         >
