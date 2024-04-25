@@ -3,6 +3,7 @@ import './Report.css';
 import { useTextSize } from '../../components/TextSizeContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import ManagerTopBar from '../../components/ManagerTopBar';
 
 function SalesReport () {
     const navigate = useNavigate();
@@ -83,42 +84,42 @@ function SalesReport () {
 
     return (
         <div className={`sales-report ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
-            <div className="toggle-button-container">
-                <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
-                <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
-            </div>
-            <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
-            <h2 onMouseOver={handleMouseOver}>Sales Report</h2>
-            <div className="date-fields">
-                <label onMouseOver={handleMouseOver}>Start Date:</label>
-                <input
-                    type="text"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    placeholder="YYYY-MM-DD"
-                />
-                <label onMouseOver={handleMouseOver}>End Date:</label>
-                <input
-                    type="text"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    placeholder="YYYY-MM-DD"
-                />
-            </div>
-            <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Sales Report</button>
-            <div className="report-list">
-                {reportData.length > 0 ? (
-                    reportData.map((item, index) => (
-                        <div key={index} className="report-item">
-                            <span onMouseOver={handleMouseOver}>Menu ID: {item.menuid}</span>
-                            <span onMouseOver={handleMouseOver}>Item Name: {item.itemname}</span>
-                            <span onMouseOver={handleMouseOver}>Sales: ${parseFloat(item.totalsales).toFixed(2)}</span>
-                            <span onMouseOver={handleMouseOver}>Amount Sold: {item.ordercount}</span>
-                        </div>
-                    ))
-                ) : (
-                    <p onMouseOver={handleMouseOver}>No data to display</p>
-                )}
+            <ManagerTopBar/>
+            <div className='report-body'>
+
+                <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
+                <h2 onMouseOver={handleMouseOver}>Sales Report</h2>
+                <div className="date-fields">
+                    <label onMouseOver={handleMouseOver}>Start Date:</label>
+                    <input
+                        type="text"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        placeholder="YYYY-MM-DD"
+                    />
+                    <label onMouseOver={handleMouseOver}>End Date:</label>
+                    <input
+                        type="text"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        placeholder="YYYY-MM-DD"
+                    />
+                </div>
+                <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Sales Report</button>
+                <div className="report-list">
+                    {reportData.length > 0 ? (
+                        reportData.map((item, index) => (
+                            <div key={index} className="report-item">
+                                <span onMouseOver={handleMouseOver}>Menu ID: {item.menuid}</span>
+                                <span onMouseOver={handleMouseOver}>Item Name: {item.itemname}</span>
+                                <span onMouseOver={handleMouseOver}>Sales: ${parseFloat(item.totalsales).toFixed(2)}</span>
+                                <span onMouseOver={handleMouseOver}>Amount Sold: {item.ordercount}</span>
+                            </div>
+                        ))
+                    ) : (
+                        <p onMouseOver={handleMouseOver}>No data to display</p>
+                    )}
+                </div>
             </div>
         </div>
     );

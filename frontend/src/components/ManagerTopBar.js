@@ -60,21 +60,22 @@ function ManagerTopBar() {
     };
 
     return (
-        <div className="top-bar">
-            <div className="user-info">
+        <div className="manager-top-bar">
+            <div className="manager-user-info">
                 <span>{`Welcome, ${localStorage.getItem('username')}`}</span>
                 <span>{currentTime}</span>
             </div>
 
-            <button onClick={handleLogout}>Logout</button>
+            <button onClick={handleLogout} className = "manager-top-bar-button">Logout</button>
 
-            <div className="dropdown-container">
-                <button className={`dropdown-toggle ${dropdownVisible ? 'active' : ''}`} onClick={toggleDropdown}>
+            <div className="manager-dropdown-container">
+                <button className={`manager-dropdown-toggle ${dropdownVisible ? 'active' : ''}`} onClick={toggleDropdown}>
+                    <img src="/Images/accessibilityIcon.png" alt="Accessibility" className="manager-dropdown-icon" />
                     <i className="fa fa-cog"></i>
                 </button>
                 {dropdownVisible && (
-                    <div className="dropdown-menu">
-                        <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak} onMouseOver={() => handleMouseOver('Speak button')}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
+                    <div className="manager-dropdown-menu">
+                        <button className={`manager-speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak} onMouseOver={() => handleMouseOver('Speak button')}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
                         <button onClick={toggleTextSize} onMouseOver={() => handleMouseOver('Toggle Text Size button')}>Toggle Text Size</button>
                     </div>
                 )}

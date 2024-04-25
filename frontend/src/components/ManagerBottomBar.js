@@ -74,11 +74,11 @@ function ManagerBottomBar() {
     };
 
     return(            
-        <div className="bottom-nav">
-            <button className="bottom-bar-button" onClick={() => handleButtonClick('trends')}>Trends</button>
-            <button className="bottom-bar-button" onClick={() => handleButtonClick('inventory')}>Inventory</button>
-            <button className="bottom-bar-button" onClick={() => handleButtonClick('menuItems')}>Menu Items</button>
-            <button className="bottom-bar-button" onClick={() => handleButtonClick('orderHistory')}>Order History</button>
+        <div className="manager-bottom-nav">
+            <button className="manager-bottom-bar-button" onClick={() => handleButtonClick('trends')}>Trends</button>
+            <button className="manager-bottom-bar-button" onClick={() => handleButtonClick('inventory')}>Inventory</button>
+            <button className="manager-bottom-bar-button" onClick={() => handleButtonClick('menuItems')}>Menu Items</button>
+            <button className="manager-bottom-bar-button" onClick={() => handleButtonClick('orderHistory')}>Order History</button>
         </div>
     );
 };

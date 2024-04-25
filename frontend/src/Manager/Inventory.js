@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Manager.css';
+import './Inventory.css';
 import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
@@ -145,7 +145,7 @@ function Inventory() {
     const renderInventoryItems = () => {
         return inventory.map(item => (
             <div key={item.ingredientid} className="inventory-item" onClick={() => handleItemSelected(item)}>
-                <span>{item.ingredientname}</span>
+                <div className='ingredient-name'><span>{item.ingredientname}</span></div>
                 <span>Price Per Unit: ${item.ppu}</span>
                 <span>Count: {item.count}</span>
                 <span>Min Amount: {item.minamount}</span>
@@ -201,7 +201,7 @@ function Inventory() {
                             />
                         </div>
                         <div>
-                            <label>recommendedamount:</label>
+                            <label>Recommended Amount:</label>
                             <input
                                 type="number"
                                 value={selectedItem.recommendedamount}
@@ -209,21 +209,21 @@ function Inventory() {
                             />
                         </div>
                         <div>
-                            <label>caseamount:</label>
+                            <label>Case Amount:</label>
                             <input
                                 type="number"
                                 value={selectedItem.caseamount}
                                 onChange={(e) => handleInputChange(e, 'caseamount')}
                             />
                         </div>
-                        <button onClick={handleItemUpdate}>Submit</button>
-                        <button onClick={() => handleIngredientDelete(selectedItem.ingredientid, selectedItem.count)}>Delete</button>
+                        <button className='ingredient-button' onClick={handleItemUpdate}>Submit</button>
+                        <button className='ingredient-button' onClick={() => handleIngredientDelete(selectedItem.ingredientid, selectedItem.count)}>Delete</button>
                     </div>
                 )}
             </div>
             <div className="new-ingredient">
                 <h2>Add New Ingredient</h2>
-                <div>
+                <div className='new-ingredient-user'>
                     <label>Ingredient Name:</label>
                     <input
                         type="text"
@@ -231,7 +231,7 @@ function Inventory() {
                         onChange={(e) => setNewIngredient({ ...newIngredient, ingredientname: e.target.value })}
                     />
                 </div>
-                <div>
+                <div className='new-ingredient-user'>
                     <label>Price Per Unit:</label>
                     <input
                         type="number"
@@ -239,7 +239,7 @@ function Inventory() {
                         onChange={(e) => setNewIngredient({ ...newIngredient, ppu: e.target.value })}
                     />
                 </div>
-                <div>
+                <div className='new-ingredient-user'>
                     <label>Count:</label>
                     <input
                         type="number"
@@ -247,7 +247,7 @@ function Inventory() {
                         onChange={(e) => setNewIngredient({ ...newIngredient, count: e.target.value })}
                     />
                 </div>
-                <div>
+                <div className='new-ingredient-user'>
                     <label>Min Amount:</label>
                     <input
                         type="number"
@@ -255,31 +255,31 @@ function Inventory() {
                         onChange={(e) => setNewIngredient({ ...newIngredient, minamount: e.target.value })}
                     />
                 </div>
-                <div>
-                    <label>location:</label>
+                <div className='new-ingredient-user'>
+                    <label>Location:</label>
                     <input
                         type="text"
                         value={newIngredient.location}
                         onChange={(e) => setNewIngredient({ ...newIngredient, location: e.target.value })}
                     />
                 </div>
-                <div>
-                    <label>recommendedamount:</label>
+                <div className='new-ingredient-user'>
+                    <label>Recommended Amount:</label>
                     <input
                         type="number"
                         value={newIngredient.recommendedamount}
                         onChange={(e) => setNewIngredient({ ...newIngredient, recommendedamount: e.target.value })}
                     />
                 </div>
-                <div>
-                    <label>caseamount:</label>
+                <div className='new-ingredient-user'>
+                    <label>Case Amount:</label>
                     <input
                         type="number"
                         value={newIngredient.caseamount}
                         onChange={(e) => setNewIngredient({ ...newIngredient, caseamount: e.target.value })}
                     />
                 </div>
-                <button onClick={handleIngredientSubmit}>Submit</button>
+                <button className='ingredient-button' onClick={handleIngredientSubmit}>Submit</button>
             </div>
 
             <div className="inventory-list">

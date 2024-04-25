@@ -4,6 +4,7 @@ import { useTextSize } from '../../components/TextSizeContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import * as d3 from 'd3';
+import ManagerTopBar from '../../components/ManagerTopBar';
 
 function ProdUsage() {
     const navigate = useNavigate();
@@ -158,30 +159,29 @@ function ProdUsage() {
 
     return (
         <div className={`prod-usage ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
-            <div className="toggle-button-container">
-                <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
-                <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
+            <ManagerTopBar/>
+            <div className='report-body'>
+                <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
+                <h1 onMouseOver={handleMouseOver}>Produce Usage (negative)</h1>
+                <div className="date-fields">
+                    <label onMouseOver={handleMouseOver}>Start Date:</label>
+                    <input
+                        type="text"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        placeholder="YYYY-MM-DD"
+                    />
+                    <label onMouseOver={handleMouseOver}>End Date:</label>
+                    <input
+                        type="text"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        placeholder="YYYY-MM-DD"
+                    />
+                </div>
+                <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Product Usage</button>
+                <div className="chart"></div>
             </div>
-            <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
-            <h1 onMouseOver={handleMouseOver}>Produce Usage (negative)</h1>
-            <div className="date-fields">
-                <label onMouseOver={handleMouseOver}>Start Date:</label>
-                <input
-                    type="text"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    placeholder="YYYY-MM-DD"
-                />
-                <label onMouseOver={handleMouseOver}>End Date:</label>
-                <input
-                    type="text"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    placeholder="YYYY-MM-DD"
-                />
-            </div>
-            <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Product Usage</button>
-            <div className="chart"></div>
         </div>
     );
 };
