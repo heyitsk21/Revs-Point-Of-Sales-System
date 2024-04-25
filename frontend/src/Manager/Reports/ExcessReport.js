@@ -3,6 +3,7 @@ import './Report.css';
 import { useTextSize } from '../../components/TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
 import { useNavigate  } from 'react-router-dom';
+import ManagerTopBar from '../../components/ManagerTopBar';
 
 function ExcessReport () {
     const navigate = useNavigate();
@@ -82,35 +83,34 @@ function ExcessReport () {
 
     return (
         <div className={`excess-report ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
-            <div className="toggle-button-container">
-                <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
-                <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
-            </div>
-            <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
-            <h2 onMouseOver={handleMouseOver}>Excess Report</h2>
-            <div className="date-fields">
-                <label onMouseOver={handleMouseOver}>Start Date:</label>
-                <input
-                    type="text"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    placeholder="YYYY-MM-DD"
-                    onMouseOver={handleMouseOver}
-                />
-            </div>
-            <div className="report-table">
-                <div className="report-row header">
-                    <div className="report-cell">Ingredient ID</div>
-                    <div className="report-cell">Ingredient Name</div>
+            <ManagerTopBar/>
+            <div className='report-body'>
+                <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
+                <h2 onMouseOver={handleMouseOver}>Excess Report</h2>
+                <div className="date-fields">
+                    <label onMouseOver={handleMouseOver}>Start Date:</label>
+                    <input
+                        type="text"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        placeholder="YYYY-MM-DD"
+                        onMouseOver={handleMouseOver}
+                    />
                 </div>
-                {reportData.map((item, index) => (
-                    <div key={index} className="report-row">
-                        <div className="report-cell" onMouseOver={handleMouseOver}>{item.menuid}</div>
-                        <div className="report-cell" onMouseOver={handleMouseOver}>{item.itemname}</div>
+                <div className="report-table">
+                    <div className="report-row header">
+                        <div className="report-cell">Ingredient ID</div>
+                        <div className="report-cell">Ingredient Name</div>
                     </div>
-                ))}
+                    {reportData.map((item, index) => (
+                        <div key={index} className="report-row">
+                            <div className="report-cell" onMouseOver={handleMouseOver}>{item.menuid}</div>
+                            <div className="report-cell" onMouseOver={handleMouseOver}>{item.itemname}</div>
+                        </div>
+                    ))}
+                </div>
+                <button onClick={handleGenerateExcessReport} onMouseOver={handleMouseOver}>Generate Excess Report</button>
             </div>
-            <button onClick={handleGenerateExcessReport} onMouseOver={handleMouseOver}>Generate Excess Report</button>
         </div>
     );
 };

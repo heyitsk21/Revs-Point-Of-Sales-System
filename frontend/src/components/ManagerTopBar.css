@@ -1,35 +1,113 @@
 @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
 
-.top-bar {
-    font-family: "Chakra Petch", sans-serif;
-    background-color: #121212; /* Darker background color */
-    color: #ffffff; /* White text color */
-    padding: 15px 25px; /* Increased padding for better spacing */
+.manager-top-bar {
+  font-family: "Chakra Petch", sans-serif;
+    position: fixed;
+    width: 98%;
+    height: 3%;
+    top: 0;
+    left: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #444; /* Bottom border for separation */
-}
+    background: rgba(0, 0, 0, 0.8);
+    padding: 1.5% 1.5%;
+    z-index: 1000;
+  }
 
-.top-bar-button {
+  .manager-top-bar-button {
     font-family: "Chakra Petch", sans-serif;
-    background-color: #1e88e5; /* Darker blue button color */
-    color: #ffffff; /* White text color */
+    background-color: transparent;
     border: none;
-    border-radius: 25px; /* Rounded corners */
-    padding: 10px 20px; /* Increased padding */
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 5px 10px;
     cursor: pointer;
-    transition: background-color 0.3s ease; /* Smooth transition */
-    margin: 0 auto;
-}
+    transition: color 0.3s ease;
+  }
 
-.user-info {
-    width: 200px; /* Fixed width */
+  .manager-top-bar-button:hover {
+    color: #00bfff;
+  }
+  
+  .manager-user-info {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-}
+    gap: 10px;
+  }
+  
+  .manager-user-info span {
+    color: #ffffff;
+    font-size: 20px;
+  }
 
-.top-bar-button:hover {
-    background-color: #1565c0; /* Darker hover color */
+  button:hover {
+    color: #00bfff;
+  }
+  
+  .manager-dropdown-container {
+    position: relative;
+  }
+  
+  .manager-dropdown-toggle {
+    background-color: #ffffff;
+    border: none;
+    color: #843838;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .manager-dropdown-toggle.active {
+    color: #00bfff;
+  }
+  
+  .manager-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #1a1a1a;
+    border-radius: 4px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .manager-dropdown-menu button {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    background-color: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 14px;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .manager-dropdown-menu button:hover {
+    background-color: #00bfff;
+  }
+  
+  .manager-speak-button {
+    background-color: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .manager-speak-button.speak-on {
+    color: #00bfff;
+  }
+  
+  .manager-speak-button.speak-off:hover {
+    color: #00bfff;
+  }
+  
+.manager-dropdown-icon {
+    width: 40px; /* Adjust width */
+    height: 40px; /* Adjust height */
+    padding: 0px;
 }

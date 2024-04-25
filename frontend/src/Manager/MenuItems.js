@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Manager.css';
+import './MenuItems.css';
 import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
@@ -214,43 +214,41 @@ function MenuItems () {
         <div className={`manager-menu ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
             <div><ManagerTopBar/></div>
             <div className='manager-menu-items'>
-                <div className="left-panel">
-                    <div className="add-item-section">
-                        <h2 onMouseOver={handleMouseOver}>Add New MenuItem</h2>
-                        <div>
-                            <label>Item Name:</label>
-                            <input
-                                type="text"
-                                value={newMenuItem.name}
-                                onChange={(e) => setNewMenuItem({ ...newMenuItem, name: e.target.value })}
-                            />
-                        </div>
-                        <div>
-                            <label>Price:</label>
-                            <input
-                                type="number"
-                                value={newMenuItem.price}
-                                onChange={(e) => setNewMenuItem({ ...newMenuItem, price: e.target.value })}
-                            />
-                        </div>
-                        <div>
-                            <label>Category:</label>
-                            <select
-                                value={newMenuItem.category}
-                                onChange={handleCategoryChange}
-                            >
-                                <option value="">Select Category</option>
-                                {categories.map(category => (
-                                    <option key={category.value} value={category.value}>
-                                        {category.label}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <button onClick={handleAddMenuItem} onMouseOver={handleMouseOver}>Submit</button>
+                <div className="add-item-section">
+                    <h2 onMouseOver={handleMouseOver}>Add New Menu Item</h2>
+                    <div className='add-item-object'>
+                        <label>Item Name:</label>
+                        <input className='menu-item-input'
+                            type="text"
+                            value={newMenuItem.name}
+                            onChange={(e) => setNewMenuItem({ ...newMenuItem, name: e.target.value })}
+                        />
                     </div>
+                    <div className='add-item-object'>
+                        <label>Price:</label>
+                        <input className='menu-item-input'
+                            type="number"
+                            value={newMenuItem.price}
+                            onChange={(e) => setNewMenuItem({ ...newMenuItem, price: e.target.value })}
+                        />
+                    </div>
+                    <div className='add-item-object'>
+                        <label>Category:</label>
+                        <select className='menu-item-input'
+                            value={newMenuItem.category}
+                            onChange={handleCategoryChange}
+                        >
+                            <option value="">Select Category</option>
+                            {categories.map(category => (
+                                <option key={category.value} value={category.value}>
+                                    {category.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <button className='menu-item-button' onClick={handleAddMenuItem} onMouseOver={handleMouseOver}>Submit</button>
                 </div>
-                <div className="right-panel">
+                <div className="edit-item-section">
                     <h2 onMouseOver={handleMouseOver}>{selectedItem ? `Edit Menu Item ${selectedItem.menuid}` : 'Select a Menu Item to Edit'}</h2>
                     {selectedItem && (
                         <>
@@ -258,13 +256,13 @@ function MenuItems () {
                             <input type="text" id="editName" name="itemname" value={selectedItem.itemname} onChange={handleInputChange} />
                             <label htmlFor="editPrice" onMouseOver={handleMouseOver}>Price:</label>
                             <input type="text" id="editPrice" name="price" value={selectedItem.price} onChange={handleInputChange} onMouseOver={handleMouseOver} />
-                            <button onClick={handleUpdateMenuItem}>Update</button>
+                            <button className='menu-item-button' onClick={handleUpdateMenuItem}>Update</button>
                             <h3 onMouseOver={handleMouseOver}>Ingredients:</h3>
                             <ul>
                                 {checkedItems.map((ingredient, index) => (
                                     <li key={index} onMouseOver={handleMouseOver}>
                                         {ingredient.ingredientname}
-                                        <button onClick={() => handleDeleteIngredient(ingredient.ingredientid)}>Delete</button>
+                                        <button className='menu-item-button' onClick={() => handleDeleteIngredient(ingredient.ingredientid)}>Delete</button>
                                     </li>
                                 ))}
                             </ul>
@@ -274,26 +272,28 @@ function MenuItems () {
                                     <option value="">Select Ingredient</option>
                                     {renderIngredientOptions()}
                                 </select>
-                                <button onClick={handleAddIngredient} onMouseOver={handleMouseOver}>Add</button>
+                                <button className='menu-item-button' onClick={handleAddIngredient} onMouseOver={handleMouseOver}>Add</button>
                             </div>
                         </>
                     )}
                 </div>
-                <h2 onMouseOver={handleMouseOver}>Menu Items</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th onMouseOver={handleMouseOver}>ID</th>
-                            <th onMouseOver={handleMouseOver}>Name</th>
-                            <th onMouseOver={handleMouseOver}>Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {renderMenuItems()}
-                    </tbody>
-                </table>
+                <div className='item-list'>
+                    <h2 onMouseOver={handleMouseOver}>Menu Items</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th onMouseOver={handleMouseOver}>ID</th>
+                                <th onMouseOver={handleMouseOver}>Name</th>
+                                <th onMouseOver={handleMouseOver}>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {renderMenuItems()}
+                        </tbody>
+                    </table>
+                </div>
                 <div className="button-panel">
-                    <button onClick={handleDeleteButtonClick} disabled={!selectedItem} onMouseOver={handleMouseOver}>Delete</button>
+                    <button className='menu-item-button' onClick={handleDeleteButtonClick} disabled={!selectedItem} onMouseOver={handleMouseOver}>Delete</button>
                 </div>
             </div>
             <ManagerBottomBar/>

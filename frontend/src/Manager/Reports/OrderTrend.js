@@ -3,6 +3,7 @@ import './Report.css';
 import { useTextSize } from '../../components/TextSizeContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import ManagerTopBar from '../../components/ManagerTopBar';
 
 function OrderTrend () {
     const navigate = useNavigate();
@@ -78,44 +79,43 @@ function OrderTrend () {
 
     return (
         <div className={`order-trend ${textSize === 'large' ? 'large-text' : ''}`}>
-            <div className="toggle-button-container">
-                <button className={`speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
-                <button className="toggle-button" onClick={toggleTextSize}>Toggle Text Size</button>
-            </div>
-            <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
-            <h2 onMouseOver={handleMouseOver}>Order Trend Report</h2>
-            <div className="date-fields">
-                <label>Start Date:</label>
-                <input
-                    type="text"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    placeholder="YYYY-MM-DD"
-                    onMouseOver={handleMouseOver}
-                />
-                <label>End Date:</label>
-                <input
-                    type="text"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    placeholder="YYYY-MM-DD"
-                    onMouseOver={handleMouseOver}
-                />
-            </div>
-            <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Trend Report</button>
-            <div className="report-list" onMouseOver={handleMouseOver}>
-                <div className="report-header">
-                    <span className="header-item">Menu Item 1</span>
-                    <span className="header-item">Menu Item 2</span>
-                    <span className="header-item">Pair Count</span>
+            <ManagerTopBar/>
+            <div className='report-body'>
+                <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
+                <h2 onMouseOver={handleMouseOver}>Order Trend Report</h2>
+                <div className="date-fields">
+                    <label>Start Date:</label>
+                    <input
+                        type="text"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        placeholder="YYYY-MM-DD"
+                        onMouseOver={handleMouseOver}
+                    />
+                    <label>End Date:</label>
+                    <input
+                        type="text"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        placeholder="YYYY-MM-DD"
+                        onMouseOver={handleMouseOver}
+                    />
                 </div>
-                {menuData.map((item, index) => (
-                    <div key={index} className="report-item">
-                        <span className="report-item">{item.menuid1}</span>
-                        <span className="report-item">{item.menuid2}</span>
-                        <span className="report-item">{item.count}</span>
+                <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Trend Report</button>
+                <div className="report-list" onMouseOver={handleMouseOver}>
+                    <div className="report-header">
+                        <span className="header-item">Menu Item 1</span>
+                        <span className="header-item">Menu Item 2</span>
+                        <span className="header-item">Pair Count</span>
                     </div>
-                ))}
+                    {menuData.map((item, index) => (
+                        <div key={index} className="report-item">
+                            <span className="report-item">{item.menuid1}</span>
+                            <span className="report-item">{item.menuid2}</span>
+                            <span className="report-item">{item.count}</span>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );
