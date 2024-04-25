@@ -145,7 +145,7 @@ function Inventory() {
     const renderInventoryItems = () => {
         return inventory.map(item => (
             <div key={item.ingredientid} className="inventory-item" onClick={() => handleItemSelected(item)}>
-                <span>{item.ingredientname}</span>
+                <div className='ingredient-name'><span>{item.ingredientname}</span></div>
                 <span>Price Per Unit: ${item.ppu}</span>
                 <span>Count: {item.count}</span>
                 <span>Min Amount: {item.minamount}</span>
@@ -216,8 +216,8 @@ function Inventory() {
                                 onChange={(e) => handleInputChange(e, 'caseamount')}
                             />
                         </div>
-                        <button onClick={handleItemUpdate}>Submit</button>
-                        <button onClick={() => handleIngredientDelete(selectedItem.ingredientid, selectedItem.count)}>Delete</button>
+                        <button className='ingredient-button' onClick={handleItemUpdate}>Submit</button>
+                        <button className='ingredient-button' onClick={() => handleIngredientDelete(selectedItem.ingredientid, selectedItem.count)}>Delete</button>
                     </div>
                 )}
             </div>
@@ -279,7 +279,7 @@ function Inventory() {
                         onChange={(e) => setNewIngredient({ ...newIngredient, caseamount: e.target.value })}
                     />
                 </div>
-                <button onClick={handleIngredientSubmit}>Submit</button>
+                <button className='ingredient-button' onClick={handleIngredientSubmit}>Submit</button>
             </div>
 
             <div className="inventory-list">
