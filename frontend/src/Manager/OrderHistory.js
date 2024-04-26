@@ -59,28 +59,30 @@ const OrderHistory = () => {
     return (
         <div className={`order-manager ${textSize === 'large' ? 'large-text' : ''}`}>
             <ManagerTopBar/>
-            <div className="order-details">
-                <h2>{selectedOrder ? `Order Details: ${selectedOrder.orderid}` : 'Select an Order to View Details'}</h2>
-                {selectedOrder && (
-                    <div className="selected-order">
-                        <div>ID: {selectedOrder.orderid}</div>
-                        <div>Customer: {selectedOrder.customername}</div>
-                        <div>Base Price: ${parseFloat(selectedOrder.baseprice).toFixed(2)}</div>
-                        <div>Tax Price: ${parseFloat(selectedOrder.taxprice).toFixed(2)}</div>
-                        <div>Total Price: ${(parseFloat(selectedOrder.baseprice) + parseFloat(selectedOrder.taxprice)).toFixed(2)}</div>
-                        <div>Date/Time: {formatDate(selectedOrder.orderdatetime)}</div>
-                        <div>Employee ID: {selectedOrder.employeeid}</div>
-                    </div>
-                )}
-            </div>
-            <div className='order-history'>
-                <div className="search-bar">
-                    <input className='order-history-input' type="text" placeholder="Search..." ref={searchInputRef} />
-                    <button className='order-history-button' onClick={handleSearch}>Search</button>
+            <div className='manager-order-history'>
+                <div className="order-details">
+                    <h2>{selectedOrder ? `Order Details: ${selectedOrder.orderid}` : 'Select an Order to View Details'}</h2>
+                    {selectedOrder && (
+                        <div className="selected-order">
+                            <div>ID: {selectedOrder.orderid}</div>
+                            <div>Customer: {selectedOrder.customername}</div>
+                            <div>Base Price: ${parseFloat(selectedOrder.baseprice).toFixed(2)}</div>
+                            <div>Tax Price: ${parseFloat(selectedOrder.taxprice).toFixed(2)}</div>
+                            <div>Total Price: ${(parseFloat(selectedOrder.baseprice) + parseFloat(selectedOrder.taxprice)).toFixed(2)}</div>
+                            <div>Date/Time: {formatDate(selectedOrder.orderdatetime)}</div>
+                            <div>Employee ID: {selectedOrder.employeeid}</div>
+                        </div>
+                    )}
                 </div>
-                <div className="order-list">
-                    <h2>Order History</h2>
-                    {renderOrderItems()}
+                <div className='order-history'>
+                    <div className="search-bar">
+                        <input className='order-history-input' type="text" placeholder="Search..." ref={searchInputRef} />
+                        <button className='order-history-button' onClick={handleSearch}>Search</button>
+                    </div>
+                    <div className="order-list">
+                        <h2>Order History</h2>
+                        {renderOrderItems()}
+                    </div>
                 </div>
             </div>
             <ManagerBottomBar />

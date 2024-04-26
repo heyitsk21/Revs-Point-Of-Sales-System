@@ -212,7 +212,7 @@ function MenuItems () {
 
     return (
         <div className={`manager-menu ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
-            <div><ManagerTopBar/></div>
+            <ManagerTopBar/>
             <div className='manager-menu-items'>
                 <div className="add-item-section">
                     <h2 onMouseOver={handleMouseOver}>Add New Menu Item</h2>
@@ -262,7 +262,7 @@ function MenuItems () {
                                 {checkedItems.map((ingredient, index) => (
                                     <li key={index} onMouseOver={handleMouseOver}>
                                         {ingredient.ingredientname}
-                                        <button className='menu-item-button' onClick={() => handleDeleteIngredient(ingredient.ingredientid)}>Delete</button>
+                                        <button className='menu-item-button-delete' onClick={() => handleDeleteIngredient(ingredient.ingredientid)}><img src="/Images/deleteIcon.png" alt="Delete" className="delete-icon" /></button>
                                     </li>
                                 ))}
                             </ul>
@@ -272,7 +272,7 @@ function MenuItems () {
                                     <option value="">Select Ingredient</option>
                                     {renderIngredientOptions()}
                                 </select>
-                                <button className='menu-item-button' onClick={handleAddIngredient} onMouseOver={handleMouseOver}>Add</button>
+                                <button className='menu-item-button-delete' onClick={handleAddIngredient} onMouseOver={handleMouseOver}><img src="/Images/addIcon.png" alt="Add" className="delete-icon" /></button>
                             </div>
                         </>
                     )}

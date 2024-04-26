@@ -163,128 +163,130 @@ function Inventory() {
     return (
         <div className={`inventory ${textSize === 'large' ? 'large-text' : ''}`}>
             <ManagerTopBar />
-            <div className="inventory-details">
-                <h2>Selected Item Details</h2>
-                {selectedItem && (
-                    <div className="selected-item">
-                        <h3>{selectedItem.ingredientname}</h3>
-                        <div>
-                            <label>Price Per Unit:</label>
-                            <input
-                                type="number"
-                                value={selectedItem.ppu}
-                                onChange={(e) => handleInputChange(e, 'ppu')}
-                            />
+            <div className='manager-inventory'>
+                <div className="inventory-details">
+                    <h2>Selected Item Details</h2>
+                    {selectedItem && (
+                        <div className="selected-item">
+                            <h3>{selectedItem.ingredientname}</h3>
+                            <div>
+                                <label>Price Per Unit:</label>
+                                <input
+                                    type="number"
+                                    value={selectedItem.ppu}
+                                    onChange={(e) => handleInputChange(e, 'ppu')}
+                                />
+                            </div>
+                            <div>
+                                <label>Count:</label>
+                                <input
+                                    type="number"
+                                    value={selectedItem.count}
+                                    onChange={(e) => handleInputChange(e, 'count')}
+                                />
+                            </div>
+                            <div>
+                                <label>Min Amount:</label>
+                                <input
+                                    type="number"
+                                    value={selectedItem.minamount}
+                                    onChange={(e) => handleInputChange(e, 'minamount')}
+                                />
+                            </div>
+                            <div>
+                                <label>location:</label>
+                                <input
+                                    type="text"
+                                    value={selectedItem.location}
+                                    onChange={(e) => handleInputChange(e, 'location')}
+                                />
+                            </div>
+                            <div>
+                                <label>Recommended Amount:</label>
+                                <input
+                                    type="number"
+                                    value={selectedItem.recommendedamount}
+                                    onChange={(e) => handleInputChange(e, 'recommendedamount')}
+                                />
+                            </div>
+                            <div>
+                                <label>Case Amount:</label>
+                                <input
+                                    type="number"
+                                    value={selectedItem.caseamount}
+                                    onChange={(e) => handleInputChange(e, 'caseamount')}
+                                />
+                            </div>
+                            <button className='ingredient-button' onClick={handleItemUpdate}>Submit</button>
+                            <button className='ingredient-button' onClick={() => handleIngredientDelete(selectedItem.ingredientid, selectedItem.count)}>Delete</button>
                         </div>
-                        <div>
-                            <label>Count:</label>
-                            <input
-                                type="number"
-                                value={selectedItem.count}
-                                onChange={(e) => handleInputChange(e, 'count')}
-                            />
-                        </div>
-                        <div>
-                            <label>Min Amount:</label>
-                            <input
-                                type="number"
-                                value={selectedItem.minamount}
-                                onChange={(e) => handleInputChange(e, 'minamount')}
-                            />
-                        </div>
-                        <div>
-                            <label>location:</label>
-                            <input
-                                type="text"
-                                value={selectedItem.location}
-                                onChange={(e) => handleInputChange(e, 'location')}
-                            />
-                        </div>
-                        <div>
-                            <label>Recommended Amount:</label>
-                            <input
-                                type="number"
-                                value={selectedItem.recommendedamount}
-                                onChange={(e) => handleInputChange(e, 'recommendedamount')}
-                            />
-                        </div>
-                        <div>
-                            <label>Case Amount:</label>
-                            <input
-                                type="number"
-                                value={selectedItem.caseamount}
-                                onChange={(e) => handleInputChange(e, 'caseamount')}
-                            />
-                        </div>
-                        <button className='ingredient-button' onClick={handleItemUpdate}>Submit</button>
-                        <button className='ingredient-button' onClick={() => handleIngredientDelete(selectedItem.ingredientid, selectedItem.count)}>Delete</button>
+                    )}
+                </div>
+                <div className="new-ingredient">
+                    <h2>Add New Ingredient</h2>
+                    <div className='new-ingredient-user'>
+                        <label>Ingredient Name:</label>
+                        <input
+                            type="text"
+                            value={newIngredient.ingredientname}
+                            onChange={(e) => setNewIngredient({ ...newIngredient, ingredientname: e.target.value })}
+                        />
                     </div>
-                )}
-            </div>
-            <div className="new-ingredient">
-                <h2>Add New Ingredient</h2>
-                <div className='new-ingredient-user'>
-                    <label>Ingredient Name:</label>
-                    <input
-                        type="text"
-                        value={newIngredient.ingredientname}
-                        onChange={(e) => setNewIngredient({ ...newIngredient, ingredientname: e.target.value })}
-                    />
+                    <div className='new-ingredient-user'>
+                        <label>Price Per Unit:</label>
+                        <input
+                            type="number"
+                            value={newIngredient.ppu}
+                            onChange={(e) => setNewIngredient({ ...newIngredient, ppu: e.target.value })}
+                        />
+                    </div>
+                    <div className='new-ingredient-user'>
+                        <label>Count:</label>
+                        <input
+                            type="number"
+                            value={newIngredient.count}
+                            onChange={(e) => setNewIngredient({ ...newIngredient, count: e.target.value })}
+                        />
+                    </div>
+                    <div className='new-ingredient-user'>
+                        <label>Min Amount:</label>
+                        <input
+                            type="number"
+                            value={newIngredient.minamount}
+                            onChange={(e) => setNewIngredient({ ...newIngredient, minamount: e.target.value })}
+                        />
+                    </div>
+                    <div className='new-ingredient-user'>
+                        <label>Location:</label>
+                        <input
+                            type="text"
+                            value={newIngredient.location}
+                            onChange={(e) => setNewIngredient({ ...newIngredient, location: e.target.value })}
+                        />
+                    </div>
+                    <div className='new-ingredient-user'>
+                        <label>Recommended Amount:</label>
+                        <input
+                            type="number"
+                            value={newIngredient.recommendedamount}
+                            onChange={(e) => setNewIngredient({ ...newIngredient, recommendedamount: e.target.value })}
+                        />
+                    </div>
+                    <div className='new-ingredient-user'>
+                        <label>Case Amount:</label>
+                        <input
+                            type="number"
+                            value={newIngredient.caseamount}
+                            onChange={(e) => setNewIngredient({ ...newIngredient, caseamount: e.target.value })}
+                        />
+                    </div>
+                    <button className='ingredient-button' onClick={handleIngredientSubmit}>Submit</button>
                 </div>
-                <div className='new-ingredient-user'>
-                    <label>Price Per Unit:</label>
-                    <input
-                        type="number"
-                        value={newIngredient.ppu}
-                        onChange={(e) => setNewIngredient({ ...newIngredient, ppu: e.target.value })}
-                    />
-                </div>
-                <div className='new-ingredient-user'>
-                    <label>Count:</label>
-                    <input
-                        type="number"
-                        value={newIngredient.count}
-                        onChange={(e) => setNewIngredient({ ...newIngredient, count: e.target.value })}
-                    />
-                </div>
-                <div className='new-ingredient-user'>
-                    <label>Min Amount:</label>
-                    <input
-                        type="number"
-                        value={newIngredient.minamount}
-                        onChange={(e) => setNewIngredient({ ...newIngredient, minamount: e.target.value })}
-                    />
-                </div>
-                <div className='new-ingredient-user'>
-                    <label>Location:</label>
-                    <input
-                        type="text"
-                        value={newIngredient.location}
-                        onChange={(e) => setNewIngredient({ ...newIngredient, location: e.target.value })}
-                    />
-                </div>
-                <div className='new-ingredient-user'>
-                    <label>Recommended Amount:</label>
-                    <input
-                        type="number"
-                        value={newIngredient.recommendedamount}
-                        onChange={(e) => setNewIngredient({ ...newIngredient, recommendedamount: e.target.value })}
-                    />
-                </div>
-                <div className='new-ingredient-user'>
-                    <label>Case Amount:</label>
-                    <input
-                        type="number"
-                        value={newIngredient.caseamount}
-                        onChange={(e) => setNewIngredient({ ...newIngredient, caseamount: e.target.value })}
-                    />
-                </div>
-                <button className='ingredient-button' onClick={handleIngredientSubmit}>Submit</button>
-            </div>
 
-            <div className="inventory-list">
-                <h2>Inventory Items</h2>
-                {renderInventoryItems()}
+                <div className="inventory-list">
+                    <h2>Inventory Items</h2>
+                    {renderInventoryItems()}
+                </div>
             </div>
             <ManagerBottomBar />
         </div>

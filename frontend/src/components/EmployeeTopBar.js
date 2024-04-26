@@ -4,7 +4,7 @@ import './ManagerTopBar.css';
 import './../Common.css';
 import { useNavigate } from 'react-router-dom';
 
-function ManagerTopBar() {
+function EmployeeTopBar() {
     const navigate = useNavigate();
     const { toggleTextSize } = useTextSize();
     const [loggedIn, setLoggedIn] = useState(false);
@@ -85,4 +85,4 @@ function ManagerTopBar() {
     );
 }
 
-export default ManagerTopBar;
+export default EmployeeTopBar;

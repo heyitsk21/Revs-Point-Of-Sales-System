@@ -1,14 +1,14 @@
-.manager-menu {
+.manager-menu-items {
     position: fixed;
     font-family: "Chakra Petch", sans-serif;
-    padding: 20px;
     color: #000000;
     top: 10%;
     overflow-y: auto;
-    height: 78%;
-    width: 98%;
+    height: 82%;
+    width: calc(100% - 40px);
     display: flex;
     flex-direction: column;
+    padding: 0 20px;
 }
 
 .add-item-section {
@@ -25,12 +25,25 @@
     margin: 10px;
 }
 
+.menu-item-button-delete {
+    width: auto;
+    height: auto;
+    background-color: transparent;
+}
+
+.delete-icon {
+    width: 15px; /* Adjust width */
+    height: 15px; /* Adjust height */
+}
+
 .menu-item-input {
     width: 98%;
     font-size: 20px;
 }
 
 .edit-item-section {
+    display: flex;
+    flex-direction: column;
     background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
