@@ -4,13 +4,14 @@ import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
 import ManagerBottomBar from '../components/ManagerBottomBar';
+import RevThankYou from '../components/RevThankYou';
 
 const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null);
-    const [speakEnabled] = useState(false);
+    const [showRevThankYou, setShowRevThankYou] = useState(false);
     const { textSize } = useTextSize();
-    const searchInputRef = useRef(null); // Reference for the search input field
+    const searchInputRef = useRef(null);
 
     const fetchOrderHistory = async () => {
         try {
@@ -38,17 +39,11 @@ const OrderHistory = () => {
                 <div>Date/Time: {order.orderdatetime}</div>
             </div>
         ));
-    };    
+    };
 
     const formatDate = (dateTime) => {
         const date = new Date(dateTime);
         return date.toLocaleString();
-    };
-    
-    const speakText = (text) => {
-        const speechSynthesis = window.speechSynthesis;
-        const utterance = new SpeechSynthesisUtterance(text);
-        speechSynthesis.speak(utterance);
     };
 
     const handleSearch = () => {
@@ -56,11 +51,16 @@ const OrderHistory = () => {
         window.find(searchText);
     };
 
+    const handleShowRevThankYou = () => {
+        setShowRevThankYou(true);
+    };
+
     return (
         <div className={`order-manager ${textSize === 'large' ? 'large-text' : ''}`}>
-            <ManagerTopBar/>
+            <ManagerTopBar />
             <div className='manager-order-history'>
                 <div className="order-details">
+                <button onClick={handleShowRevThankYou}>SUBMIT ORDER</button>
                     <h2>{selectedOrder ? `Order Details: ${selectedOrder.orderid}` : 'Select an Order to View Details'}</h2>
                     {selectedOrder && (
                         <div className="selected-order">
@@ -86,6 +86,7 @@ const OrderHistory = () => {
                 </div>
             </div>
             <ManagerBottomBar />
+            {showRevThankYou && <RevThankYou onAnimationEnd={() => setShowRevThankYou(false)} />} {/* Pass onAnimationEnd event to handle reset */}
         </div>
     );
 };

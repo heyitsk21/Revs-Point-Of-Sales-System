@@ -12,6 +12,7 @@ function MenuItems () {
     const [newMenuItem, setNewMenuItem] = useState({ category: null, name: '', price: '', ingredients: [] });
     const [ingredients, setIngredients] = useState([]);
     const [selectedIngredient, setSelectedIngredient] = useState('');
+    const [customizations, setCustomizations] = useState([]);
     const [speakEnabled] = useState(false);
     const { textSize } = useTextSize();
 
@@ -38,6 +39,17 @@ function MenuItems () {
         }
     };
 
+    const fetchCustomizations = async () => {
+        try {
+            if (selectedItem) {
+                const response = await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitemcustomizations', { menuitemid: selectedItem.menuid });
+                setCustomizations(response.data);
+            }
+        } catch (error) {
+            console.error('Error fetching customizations:', error);
+        }
+    };
+
     const [categories] = useState([
         { value: 100, label: 'Burgers' },
         { value: 200, label: 'Sandwiches' },
@@ -57,6 +69,7 @@ function MenuItems () {
         try {
             const response = await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', { menuitemid: item.menuid });
             setCheckedItems(response.data);
+            fetchCustomizations();
         } catch (error) {
             console.error('Error fetching ingredients:', error);
         }
@@ -156,6 +169,29 @@ function MenuItems () {
         }
     };
 
+    const handleAddCustomization = async (customizationId) => {
+        try {
+            const payload = { menuitemid: selectedItem.menuid, customizationid: Number(customizationId) };
+            // console.log('Payload:', payload);
+            await axios.post('https://team21revsbackend.onrender.com/api/manager/menuitemcustomizations', payload);
+            fetchCustomizations();
+        } catch (error) {
+            console.error('Error adding customization:', error);
+        }
+    };
+
+    const handleDeleteCustomization = async (customizationId) => {
+        try {
+            console.log('Customization ID:', customizationId); // Logging the value before passing it in
+            const payload = { menuitemid: selectedItem.menuid, customizationid: Number(customizationId) };
+            console.log('Delete Payload:', payload); // Logging the payload
+            await axios.delete(`https://team21revsbackend.onrender.com/api/manager/menuitemcustomizations`, { data: payload });
+            fetchCustomizations();
+        } catch (error) {
+            console.error('Error deleting customization:', error);
+        }
+    };
+
     const renderMenuItems = () => {
         return menu.map(item => (
             <tr key={item.menuid} onClick={(event) => rowClicked(event, item)} className={selectedItem && selectedItem.menuid === item.menuid ? 'selected' : ''}>
@@ -169,6 +205,15 @@ function MenuItems () {
     const renderIngredientOptions = () => {
         return ingredients.map(ingredient => (
             <option key={ingredient.ingredientid} value={ingredient.ingredientid}>{ingredient.ingredientname}</option>
+        ));
+    };
+
+    const renderCustomizations = () => {
+        return customizations.map(customization => (
+            <div key={customization.customizationid}>
+                {customization.customizationname} - {customization.ingredientname}
+                <button className='menu-item-button' onClick={() => handleDeleteCustomization(customization.customizationid)}>Delete</button>
+            </div>
         ));
     };
 
@@ -273,6 +318,18 @@ function MenuItems () {
                                     {renderIngredientOptions()}
                                 </select>
                                 <button className='menu-item-button-delete' onClick={handleAddIngredient} onMouseOver={handleMouseOver}><img src="/Images/addIcon.png" alt="Add" className="delete-icon" /></button>
+                            </div>
+                            <h3 onMouseOver={handleMouseOver}>Customizations:</h3>
+                            <div>
+                                {renderCustomizations()}
+                            </div>
+                            <div>
+                                <h3 htmlFor="customizationSelect" onMouseOver={handleMouseOver}>Add Customization:</h3>
+                                <select id="customizationSelect" value={selectedIngredient} onChange={handleIngredientChange} onMouseOver={handleMouseOver}>
+                                    <option value="">Select Customization</option>
+                                    {renderIngredientOptions()}
+                                </select>
+                                <button className='menu-item-button' onClick={() => handleAddCustomization(selectedIngredient)} onMouseOver={handleMouseOver}>Add</button>
                             </div>
                         </>
                     )}

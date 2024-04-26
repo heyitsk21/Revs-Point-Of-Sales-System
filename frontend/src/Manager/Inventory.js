@@ -4,6 +4,7 @@ import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
 import ManagerBottomBar from '../components/ManagerBottomBar';
+import Restock from './Restock.js';
 
 function Inventory() {
     const [inventory, setInventory] = useState([]);
@@ -163,6 +164,7 @@ function Inventory() {
     return (
         <div className={`inventory ${textSize === 'large' ? 'large-text' : ''}`}>
             <ManagerTopBar />
+            <Restock/>
             <div className='manager-inventory'>
                 <div className="inventory-details">
                     <h2>Selected Item Details</h2>
