@@ -1,0 +1,10 @@
+@media (min-height: 1440px) {
+body {
+        font-size: 1.3rem;
+    }
+}
+@media (min-height: 720px) {
+body {
+        font-size: 1.1rem;
+    }
+}

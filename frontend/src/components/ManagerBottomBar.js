@@ -2,6 +2,7 @@
 import React, {useState}from 'react';
 import { useNavigate  } from 'react-router-dom';
 import './ManagerBottomBar.css';
+import './../Common.css'
 
 function ManagerBottomBar() {
     const navigate = useNavigate();

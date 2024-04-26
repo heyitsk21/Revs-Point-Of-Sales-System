@@ -4,7 +4,7 @@ import './ManagerTopBar.css';
 import './../Common.css';
 import { useNavigate } from 'react-router-dom';
 
-function ManagerTopBar() {
+function EmployeeTopBar() {
     const navigate = useNavigate();
     const { toggleTextSize } = useTextSize();
     const [loggedIn, setLoggedIn] = useState(false);
@@ -17,8 +17,8 @@ function ManagerTopBar() {
         const date = new Date();
         const hours = date.getHours().toString().padStart(2, '0');
         const minutes = date.getMinutes().toString().padStart(2, '0');
-        // const seconds = date.getSeconds().toString().padStart(2, '0');
-        const timeString = `${hours}:${minutes}`;
+        const seconds = date.getSeconds().toString().padStart(2, '0');
+        const timeString = `${hours}:${minutes}:${seconds}`;
         setCurrentTime(timeString);
     };
 
@@ -85,4 +85,4 @@ function ManagerTopBar() {
     );
 }
 
-export default ManagerTopBar;
+export default EmployeeTopBar;

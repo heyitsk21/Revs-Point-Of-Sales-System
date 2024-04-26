@@ -28,16 +28,15 @@ const Cart = () => {
     };
 
     return (
-        <div className='cart'>
-            <div className='cartTitle'>
+        <div className='employee-cart'>
+            <div className='employee-cartTitle'>
                 Cart 
             </div>
             {isEmpty ? (
                 <div className ='emptyMessage'>Your Cart is Empty</div>
             ) : (
                 <div>
-                <SimpleBar style={{ height: 400, width: 500}}>
-                    <table className="table">
+                    <table className="employee-table">
                         <thead>
                             <tr>
                                 <th>Item</th>
@@ -51,22 +50,21 @@ const Cart = () => {
                                 <tr key={index}>
                                     <td>{item.name}</td>
                                     <td>${(item.quantity * item.price).toFixed(2)}</td>
-                                    <td className='quantity'>{item.quantity}</td>
+                                    <td>{item.quantity}</td>
                                     <td className='adjust'>
                                         <div className = "changeQuantity">
-                                            <button className="minus" onClick={() => updateItemQuantity(item.id, item.quantity - 1)}>-</button>
-                                            <button className="plus" onClick={() => updateItemQuantity(item.id, item.quantity + 1)}>+</button>
+                                            <button className="cart-button" onClick={() => updateItemQuantity(item.id, item.quantity - 1)}>-</button>
+                                            <button className="cart-button" onClick={() => updateItemQuantity(item.id, item.quantity + 1)}>+</button>
                                         </div>
                                         <div className = "removeItem">
-                                            <button className="delete" onClick={() => removeItem(item.id)}>Remove Item</button>
+                                            <button className="cart-button" onClick={() => removeItem(item.id)}>Remove Item</button>
                                         </div>
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
-                </SimpleBar>
-                    <table>
+                    <table className='employee-table'>
                         <tfoot>
                             <tr>
                                 <td colSpan="2">Total Price:</td>
@@ -74,10 +72,10 @@ const Cart = () => {
                             </tr>
                             <tr>
                                 <td colSpan="2">
-                                    <button onClick={() => setClearOrderPopup(true)}>Clear Order</button>
+                                    <button className="cart-button" onClick={() => setClearOrderPopup(true)}>Clear Order</button>
                                 </td>
                                 <td colSpan="2">
-                                    <button onClick={handleConfirmSubmit}>Buy Now</button>
+                                    <button className="cart-button" onClick={handleConfirmSubmit}>Buy Now</button>
                                 </td>
                             </tr>
                         </tfoot>
