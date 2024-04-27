@@ -23,8 +23,9 @@ const Cart = () => {
 
     const handleConfirmSubmit = () => {
         const data = {
-            items: items.map(item => ({ id: item.id, quantity: item.quantity }))
+            items: items.map(item => ({ id: item.id, quantity: item.quantity, name: item.name, price: item.price }))
         };
+        console.log('Data passed to ConfirmSubmit: ', data);
         setSubmitPopup(data);
     };
 

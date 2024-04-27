@@ -39,6 +39,7 @@ function ConfirmSubmit(props) {
   };
 
   useEffect(() => {
+    console.log('Trigger items:', props.trigger.items);
     if (props.trigger && props.trigger.items.length > 0) {
       props.trigger.items.forEach(item => {
         fetchOptions(item.id);
