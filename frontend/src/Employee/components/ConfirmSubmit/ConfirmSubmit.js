@@ -8,7 +8,6 @@ import 'simplebar-react/dist/simplebar.min.css';
 
 function ConfirmSubmit(props) {
   const [options, setOptions] = useState([]);
-  const checkbox = useCheckboxState({ state: [] });
   const [checkboxState, setCheckboxState] = useState({});
 
   const sendToDatabase = async (name) => {
@@ -80,18 +79,21 @@ function ConfirmSubmit(props) {
             <h3>Please select items to add, or deselect items to remove.</h3>
             <SimpleBar style={{ height: 400, width: 600}}>
               {props.trigger.items.map((item, index)=> (
-                  <div key={index}>
+                <div key={index}>
+                  {[...Array(item.quantity)].map((_, i) => (
+                    <div key={i}>
                       <div>{item.name}</div>
                       <div>${(item.quantity * item.price).toFixed(2)}</div>
-                      <div className='quantity'>{item.quantity}</div>
+                      <div className='quantity'>{item.quantity}</div> 
                       {options.map(option => {
                         if (option.id === item.id) {
                           return option.options.map((customization, idx) => (
                             <div key={idx} className="customization">
-                              <Checkbox 
-                                  color="primary" 
-                                  checked={checkboxState[item.id]?.[customization.ingredientname] || false} 
-                                  onChange={() => handleCheckboxChange(item.id, customization.ingredientname)}>
+                              <Checkbox
+                                color="primary"
+                                checked={checkboxState[item.id]?.[customization.ingredientname] || false}
+                                onChange={() => handleCheckboxChange(item.id, customization.ingredientname)}
+                              >
                                 {customization.ingredientname}
                               </Checkbox>
                             </div>
@@ -100,7 +102,9 @@ function ConfirmSubmit(props) {
                         return null;
                       })}
                       <p>Selected items: {Object.keys(checkboxState[item.id] || {}).filter(option => checkboxState[item.id][option]).join(', ')}</p>
-                  </div>
+                    </div>
+                  ))}
+                </div>
               ))}
             </SimpleBar>
 
