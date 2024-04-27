@@ -10,6 +10,8 @@ function ConfirmSubmit(props) {
   const [options, setOptions] = useState([]);
   const [checkboxState, setCheckboxState] = useState({});
 
+  const generateUniqueId = (item, index) => `${item.id}_${index}`;
+
   const sendToDatabase = async (name) => {
     try {
       const orderData = {
@@ -62,12 +64,12 @@ function ConfirmSubmit(props) {
     sendToDatabase(name);
   }
 
-  function handleCheckboxChange(itemId, optionName) {
+  function handleCheckboxChange(uniqueID, optionName) {
     setCheckboxState(prevState => ({
       ...prevState,
-      [itemId]: {
-        ...prevState[itemId],
-        [optionName]: !prevState[itemId]?.[optionName]
+      [uniqueID]: {
+        ...prevState[uniqueID],
+        [optionName]: !prevState[uniqueID]?.[optionName]
       }
     }));
   }
@@ -76,23 +78,22 @@ function ConfirmSubmit(props) {
     <div className = 'popup'>
         <div className= 'popup-inner'>
             <button className='close' onClick={() => props.setTrigger(false)}>Not Yet</button>
-            <h3>Please select items to add, or deselect items to remove.</h3>
+            <h3>Please select any add-ons you would like.</h3>
             <SimpleBar style={{ height: 400, width: 600}}>
-              {props.trigger.items.map((item, index)=> (
-                <div key={index}>
+              {props.trigger.items.map(item => (
+                <div key={item.uniqueID}>
                   {[...Array(item.quantity)].map((_, i) => (
-                    <div key={i}>
+                    <div key={generateUniqueId(item, props.trigger.items.indexOf(item))}>
                       <div>{item.name}</div>
-                      <div>${(item.quantity * item.price).toFixed(2)}</div>
-                      <div className='quantity'>{item.quantity}</div> 
+                      <div>${(1 * item.price).toFixed(2)}</div>
                       {options.map(option => {
                         if (option.id === item.id) {
                           return option.options.map((customization, idx) => (
                             <div key={idx} className="customization">
                               <Checkbox
                                 color="primary"
-                                checked={checkboxState[item.id]?.[customization.ingredientname] || false}
-                                onChange={() => handleCheckboxChange(item.id, customization.ingredientname)}
+                                checked={checkboxState[`${generateUniqueId(item, props.trigger.items.indexOf(item))}_${i}`]?.[customization.ingredientname] || false}
+                                onChange={() => handleCheckboxChange(`${generateUniqueId(item, props.trigger.items.indexOf(item))}_${i}`, customization.ingredientname)}
                               >
                                 {customization.ingredientname}
                               </Checkbox>
@@ -101,7 +102,10 @@ function ConfirmSubmit(props) {
                         }
                         return null;
                       })}
-                      <p>Selected items: {Object.keys(checkboxState[item.id] || {}).filter(option => checkboxState[item.id][option]).join(', ')}</p>
+                      {options.some(option => option.id === item.id && option.options.length > 0) && (
+                        <p>Selected items: {Object.keys(checkboxState[`${generateUniqueId(item, props.trigger.items.indexOf(item))}_${i}`] || {}).filter(option => checkboxState[`${generateUniqueId(item, props.trigger.items.indexOf(item))}_${i}`][option]).join(', ')}</p>
+                      )}
+                      <p> - - - </p>
                     </div>
                   ))}
                 </div>

@@ -19,11 +19,15 @@ const Cart = () => {
 
     const [submitPopup, setSubmitPopup] = useState(false);
     const [clearOrderPopup, setClearOrderPopup] = useState(false);
-    const [customizationPopup, setCustomizationPopup] = useState(false);
 
     const handleConfirmSubmit = () => {
         const data = {
-            items: items.map(item => ({ id: item.id, quantity: item.quantity, name: item.name, price: item.price }))
+            items: items.map((item, index) => ({ 
+                id: item.id, 
+                quantity: item.quantity, 
+                name: item.name, 
+                price: item.price
+            }))
         };
         console.log('Data passed to ConfirmSubmit: ', data);
         setSubmitPopup(data);
