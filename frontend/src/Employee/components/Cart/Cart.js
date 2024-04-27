@@ -1,11 +1,20 @@
 import React from 'react';
 import ConfirmSubmit from '../ConfirmSubmit/ConfirmSubmit';
 import ConfirmClearOrder from '../ConfirmClearOrder/ConfirmClearOrder';
-import './Cart.css';
+// import './Cart.css';
+// import './CustCart.css';
 import { useCart } from 'react-use-cart';
 import { useState } from 'react'
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
+
+let curr_url = window.location.href;
+console.log(curr_url);
+if (curr_url == 'https://project-3-full-stack-agile-web-team-21-2.onrender.com/customer' || curr_url == 'http://localhost:3000/customer') {
+    import('./CustCart.css');
+} else if (curr_url == 'https://project-3-full-stack-agile-web-team-21-2.onrender.com/employee' || curr_url == 'http://localhost:3000/employee') {
+    import('./Cart.css');
+}
 
 const Cart = () => {
     const { 
