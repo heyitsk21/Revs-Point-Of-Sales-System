@@ -1,6 +1,8 @@
 import React ,{useEffect,useState}from 'react';
 import axios from 'axios';
 import Popup from 'reactjs-popup';
+import './Restock.css';
+
 
 
 export default function Restock() {
@@ -74,15 +76,19 @@ export default function Restock() {
 	return (
 		<div>
 			<Popup trigger=
-				{<button> Restock</button>} 
+				{<button className = 'restock-open-button'> Restock</button>} 
 				modal nested>
 				{
 					close => (
-						<div className='modal'>
-							<div className='content'>
+						<div className='restock-button'>
+							<div className='restock-content'>
 
-							<button onClick={() => RestockAll()}> Restock All</button>
 
+							<h3>Restock All</h3>
+
+							<button className='restock-button' onClick={() => RestockAll()}> Restock All</button>
+
+							<h3>Restock By Location</h3>
 							<select id="locationSelect"  value={selectedLocation} onChange={handleLocationChange} >
                                     <option value="">Select Location</option>
 									<option value="freezer">freezer</option>
@@ -90,16 +96,18 @@ export default function Restock() {
 									<option value="pantry">pantry</option>
                                 </select>
 
-							<button onClick={() => RestockByLocation()}> Restock By Location</button>
+							<button  className='restock-button' onClick={() => RestockByLocation()}> Restock By Location</button>
 
+
+							<h3>Restock By Ingredient</h3>
 							<select id="ingredientSelect"  value={selectedIngredient} onChange={handleIngredientChange} >
                                     <option value="">Select Ingredient</option>
                                     {renderIngredientOptions()}
                                 </select>
-								<button onClick={() => RestockByItem()}> Restock Single Ingredient</button>
+								<button className='restock-button' onClick={() => RestockByItem()}> Restock Single Ingredient</button>
 							</div>
 							<div>
-								<button onClick=
+								<button className='restock-button' onClick=
 									{() => close()}>
 										Close
 								</button>
