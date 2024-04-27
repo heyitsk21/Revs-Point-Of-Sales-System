@@ -9,13 +9,20 @@ import 'simplebar-react/dist/simplebar.min.css';
 function ConfirmSubmit(props) {
   const [options, setOptions] = useState([]);
   const checkbox = useCheckboxState({ state: [] });
+  const [checkboxState, setCheckboxState] = useState({});
 
   const sendToDatabase = async (name) => {
     try {
       const orderData = {
-        menuitems: props.trigger.items.map(item => item.id), // 
+        menuitems: props.trigger.items.map(item => ({
+          id: item.id,
+          quantity: item.quantity,
+          name: item.name,
+          price: item.price,
+          customizations: Object.keys(checkboxState[item.id] || {}).filter(option => checkboxState[item.id][option])
+        })),
         customername: name,
-        employeeid: 1 
+        employeeid: 1 //TODO change to whichever employee is logged in
       };
 
       const response = await axios.post('https://team21revsbackend.onrender.com/api/employee/placeorder', orderData);
@@ -56,6 +63,16 @@ function ConfirmSubmit(props) {
     sendToDatabase(name);
   }
 
+  function handleCheckboxChange(itemId, optionName) {
+    setCheckboxState(prevState => ({
+      ...prevState,
+      [itemId]: {
+        ...prevState[itemId],
+        [optionName]: !prevState[itemId]?.[optionName]
+      }
+    }));
+  }
+
   return (props.trigger) ? (
     <div className = 'popup'>
         <div className= 'popup-inner'>
@@ -71,13 +88,18 @@ function ConfirmSubmit(props) {
                         if (option.id === item.id) {
                           return option.options.map((customization, idx) => (
                             <div key={idx} className="customization">
-                              <Checkbox color="primary" value={customization.ingredientname} {...checkbox}>{customization.ingredientname}</Checkbox>
+                              <Checkbox 
+                                  color="primary" 
+                                  checked={checkboxState[item.id]?.[customization.ingredientname] || false} 
+                                  onChange={() => handleCheckboxChange(item.id, customization.ingredientname)}>
+                                {customization.ingredientname}
+                              </Checkbox>
                             </div>
                           ));
                         }
                         return null;
                       })}
-                      <p>Selected items: {checkbox.state.join(', ')}</p>
+                      <p>Selected items: {Object.keys(checkboxState[item.id] || {}).filter(option => checkboxState[item.id][option]).join(', ')}</p>
                   </div>
               ))}
             </SimpleBar>
