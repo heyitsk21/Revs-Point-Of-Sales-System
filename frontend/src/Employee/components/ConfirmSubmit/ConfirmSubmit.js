@@ -32,7 +32,8 @@ function ConfirmSubmit(props) {
     try {
         console.log(id);
         const response = await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitemcustomizations', payload);
-        setOptions(prevOptions => [...prevOptions, {id: id, options: response.data}]);
+        const filteredOptions = options.filter(option => option.id !== id);
+        setOptions(prevOptions => [...filteredOptions, { id: id, options: response.data }]);
     } catch (error) {
         console.error('Error fetching customization options:', error);
     }
