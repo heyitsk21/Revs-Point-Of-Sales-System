@@ -104,8 +104,11 @@ const Cart = () => {
             </div>
         );
     } else {
+        console.log(window.location.pathname);
         return (
             <section>
+
+                <img src='CustomerImages/logo192.png' alt='asdf'/>
                 <h1>Your Cart</h1>
                 <div className='employee-cart'>
                     <div className='employee-cartTitle'></div>
@@ -136,8 +139,8 @@ const Cart = () => {
                             ))}
                         </>
                     )}
-                    <td colSpan="2">Total Price: </td>
-                    <td colSpan="2">${cartTotal.toFixed(2)}</td>
+                    <div colSpan="2">Total Price: </div>
+                    <div colSpan="2">${cartTotal.toFixed(2)}</div>
                     <button className="cart-button" onClick={() => setClearOrderPopup(true)} disabled={cartTotal === 0}>Clear Order</button>
                     <button className="cart-button" onClick={handleConfirmSubmit} disabled={cartTotal === 0}>Buy Now</button>
                 </div>

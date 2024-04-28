@@ -84,6 +84,12 @@ h2 {
 	}
 }
 
+.emptyMessage {
+	margin-top: 1em;
+	margin-bottom: 2em;
+	margin-left: 1em;
+}
+
 
 
 summary {

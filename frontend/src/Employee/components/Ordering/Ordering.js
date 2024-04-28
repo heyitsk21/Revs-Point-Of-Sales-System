@@ -6,11 +6,12 @@ import axios from 'axios'; // Import Axios for making API requests
 import Cart from '../Cart/Cart'
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
+import CustomerImages from './CustomerImages/menu-items/';
 
 let cust_is_open = false;
 let curr_url = window.location.href;
-console.log(curr_url.substring(0,70));
-console.log(curr_url.substring(0,30));
+// console.log(curr_url.substring(0,70));
+// console.log(curr_url.substring(0,30));
 if (curr_url.substring(0,70) === 'https://project-3-full-stack-agile-web-team-21-2.onrender.com/customer' || curr_url.substring(0,30) === 'http://localhost:3000/customer') {
     import('./CustOrdering.css');
     cust_is_open = true;
@@ -123,12 +124,23 @@ const Ordering = ({ onCatChange }) => {
             // return <div>
             //     <img src='..\\..\\public\\Images\\CustomerImages\\menu-items\\Burgers\\Bacon-Cheeseburger.jpg' alt="asdf"/>
             //     </div>
+            // function importAll(r) {
+            // let images = {};
+            // r.keys().map((item, index) => { images[item.replace('./', '')] = r(item); });
+            // return images;
+            // }
+            // const images = require.context('./CustomerImages/menu-items', false, /\.(png|jpe?g|svg)$/);
+
+            const images = require.context('./CustomerImages/menu-items', false, /\.(png|jpe?g|svg|webp)$/);
+            const imagePaths = images.keys().map(images);
+            
+        
             return selectedList.map(menuitem => (
                 <React.Fragment key={menuitem.menuid}>
                     <button className='employee-item-button' onClick={() => { console.log('Adding item:', menuitem); addItem({ id: menuitem.menuid, name: menuitem.itemname, price: menuitem.price, picturepath: menuitem.picturepath });}}>
                         {cust_is_open && (
                             <div>
-                                <img src={menuitem.picturepath} alt={menuitem.itemname} />
+                                <img src={images[menuitem.picturepath]} alt={menuitem.itemname} />
                             </div>
                         )}
                         <div>{menuitem.itemname}</div>

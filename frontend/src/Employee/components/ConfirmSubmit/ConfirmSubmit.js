@@ -22,9 +22,9 @@ function ConfirmSubmit(props) {
   function handleSubmit(event) {
     event.preventDefault();
     props.setTrigger(false);
-    props.emptyCart();
     const name = event.target.name.value;
     sendToDatabase(name);
+    props.emptyCart();
   }
 
   return (props.trigger) ? (
