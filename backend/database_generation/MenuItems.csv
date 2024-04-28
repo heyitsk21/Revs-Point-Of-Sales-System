@@ -1,31 +1,31 @@
-MenuID,ItemName,Price
-101,Bacon Cheeseburger,8.29
-102,Black Bean Burger,8.38
-103,Cheeseburger,6.89
-104,Gig Em Patty Melt,7.59
-105,Classic Hamburger,6.89
-201,Aggie Chicken Club,8.39
-202,Revs Grilled Chicken Sandwich,8.39
-203,Spicy Chicken Sandwich,8.39
-301,Chicken Caesar Salad,8.99
-401,Aggie Shake OREO COOKIE,4.49
-402,Aggie Shake CHOCOLATE,4.49
-403,Aggie Shake STRAWBERRY,4.49
-404,Aggie Shake VANILLA,4.49
-405,Double Scoop Ice Cream Cup,4.69
-406,Cookie Ice Cream Sundae,4.69
-407,Root Beer Float,5.49
-408,Double Scoop Ice Cream Cup,4.69
-409,Cookie Ice Cream Sundae,4.69
-410,Root Beer Float,5.49
-501,French Fries,1.99
-502,Aquafina 16 OZ,1.79
-503,Aquafina 20 OZ,2.19
-504,Pepsi Fountain 20 OZ,1.99
-601,2 Corn Dog Value Meal,4.99
-602,2 Hot Dog Value Meal,4.99
-603,3 Tender Entree,4.99
-701,Chicken Wraps,6
-702,Yell BBQ Rib Sandwich,7.99
-703,Fish Sandwich,7.99
-704,Tuna Melt,7.99
+MenuID,ItemName,Price,PicturePath
+101,Bacon Cheeseburger,8.29,
+102,Black Bean Burger,8.38,
+103,Cheeseburger,6.89,
+104,Gig Em Patty Melt,7.59,
+105,Classic Hamburger,6.89,
+201,Aggie Chicken Club,8.39,
+202,Revs Grilled Chicken Sandwich,8.39,
+203,Spicy Chicken Sandwich,8.39,
+301,Chicken Caesar Salad,8.99,
+401,Aggie Shake OREO COOKIE,4.49,
+402,Aggie Shake CHOCOLATE,4.49,
+403,Aggie Shake STRAWBERRY,4.49,
+404,Aggie Shake VANILLA,4.49,
+405,Double Scoop Ice Cream Cup,4.69,
+406,Cookie Ice Cream Sundae,4.69,
+407,Root Beer Float,5.49,
+408,Double Scoop Ice Cream Cup,4.69,
+409,Cookie Ice Cream Sundae,4.69,
+410,Root Beer Float,5.49,
+501,French Fries,1.99,
+502,Aquafina 16 OZ,1.79,
+503,Aquafina 20 OZ,2.19,
+504,Pepsi Fountain 20 OZ,1.99,
+601,2 Corn Dog Value Meal,4.99,
+602,2 Hot Dog Value Meal,4.99,
+603,3 Tender Entree,4.99,
+701,Chicken Wraps,6,
+702,Yell BBQ Rib Sandwich,7.99,
+703,Fish Sandwich,7.99,
+704,Tuna Melt,7.99,

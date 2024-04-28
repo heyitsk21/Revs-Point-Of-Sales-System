@@ -26,7 +26,7 @@ class GetMenuItems(Resource):
             menuitemlist = []
             for row in result:
                 if(row.menuid > menugroup and row.menuid < menugroup + 100):
-                    menuitemlist.append({"menuid":row.menuid, "itemname":row.itemname, "price":row.price})
+                    menuitemlist.append({"menuid":row.menuid, "itemname":row.itemname, "price":row.price, "picturepath":row.picturepath})
         return jsonify(menuitemlist)
 
 @api.route('/api/employee/placeorder')
