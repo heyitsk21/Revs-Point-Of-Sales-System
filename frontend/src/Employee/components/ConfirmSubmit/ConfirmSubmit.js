@@ -22,9 +22,9 @@ function ConfirmSubmit(props) {
   function handleSubmit(event) {
     event.preventDefault();
     props.setTrigger(false);
-    props.emptyCart();
     const name = event.target.name.value;
     sendToDatabase(name);
+    props.emptyCart();
   }
 
   return (props.trigger) ? (
@@ -35,7 +35,7 @@ function ConfirmSubmit(props) {
             <form>
               <label className='label'>
                 <div className='prompt'>
-                  Name:
+                  Name: 
                   <input type="text" name="name" />
                 </div>
               </label>
