@@ -6,7 +6,8 @@ import axios from 'axios'; // Import Axios for making API requests
 import Cart from '../Cart/Cart'
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
-import CustomerImages from './CustomerImages/menu-items/';
+// import CustomerImages from './CustomerImages/menu-items/';
+// import imagefolder from './CustomerImages/menu-items';
 
 let cust_is_open = false;
 let curr_url = window.location.href;
@@ -130,9 +131,11 @@ const Ordering = ({ onCatChange }) => {
             // return images;
             // }
             // const images = require.context('./CustomerImages/menu-items', false, /\.(png|jpe?g|svg)$/);
-
-            const images = require.context('./CustomerImages/menu-items', false, /\.(png|jpe?g|svg|webp)$/);
-            const imagePaths = images.keys().map(images);
+            
+            
+            // let dirpath = '/CustomerImages/menu-items/' + category
+            // const images = require.context(dirpath, false, /\.(png|jpe?g|svg|webp)$/);
+            // const imagePaths = images.keys().map(images);
             
         
             return selectedList.map(menuitem => (
@@ -140,7 +143,9 @@ const Ordering = ({ onCatChange }) => {
                     <button className='employee-item-button' onClick={() => { console.log('Adding item:', menuitem); addItem({ id: menuitem.menuid, name: menuitem.itemname, price: menuitem.price, picturepath: menuitem.picturepath });}}>
                         {cust_is_open && (
                             <div>
-                                <img src={images[menuitem.picturepath]} alt={menuitem.itemname} />
+                                <img src={menuitem.picturepath} alt={menuitem.itemname} />
+                                {/* menuitem.itemname+'.jpg'
+                                <img src={images[menuitem.picturepath]} alt={menuitem.itemname} /> */}
                             </div>
                         )}
                         <div>{menuitem.itemname}</div>
