@@ -109,12 +109,10 @@ const Ordering = ({ onCatChange }) => {
 
         if (selectedList) { 
             return selectedList.map(menuitem => (
-                <div key={menuitem.menuid} className={`itemname ${selectedMenuSection && selectedMenuSection.menuid === menuitem.menuid ? 'selected' : ''}`}>
-                    <button onClick={() => { console.log('Adding item:', menuitem); addItem({ id: menuitem.menuid, name: menuitem.itemname, price: menuitem.price });}}>
-                        <div>{menuitem.itemname}</div>
-                        <div>${menuitem.price}</div>
-                    </button>
-                </div>
+                <button className='employee-item-button' onClick={() => { console.log('Adding item:', menuitem); addItem({ id: menuitem.menuid, name: menuitem.itemname, price: menuitem.price });}}>
+                    <div>{menuitem.itemname}</div>
+                    <div>${menuitem.price}</div>
+                </button>
             ));
         }
         else {
@@ -124,32 +122,28 @@ const Ordering = ({ onCatChange }) => {
 
     return (
         <div className={`Ordering ${textSize === 'large' ? 'large-text' : ''}`}>
-            <div className="middle-content">
-                <section className="layout">
-                    <div className="leftSide">
-                        <div className='categoryName'>
-                            {category}
-                        </div>
-                        <SimpleBar style={{ height: 600, width: 750}}>
-                            <div className='items'>
-                                {renderMenuSection()}
-                            </div>
-                        </SimpleBar>
+            <div className="employee-middle-content">
+                <div className="employee-leftSide">
+                    <div className='employee-categoryName'>
+                        {category}
                     </div>
-                    <div className="rightSide">
-                        <Cart />
-                    </div>                    
-                </section>
+                    <div className='employee-items'>
+                        {renderMenuSection()}
+                    </div>
+                </div>
+                <div className="employee-rightSide">
+                    <Cart />
+                </div>                    
             </div>
 
-            <div className="bottom-nav">
-                <button onClick={() => handleCategories('Value Meals')}>Value Meals</button>
-                <button onClick={() => handleCategories('Burgers')}>Burgers</button>
-                <button onClick={() => handleCategories('Sandwiches')}>Sandwiches</button>
-                <button onClick={() => handleCategories('Salads')}>Salads</button>
-                <button onClick={() => handleCategories('Desserts')}>Desserts</button>
-                <button onClick={() => handleCategories('Drinks & Fries')}>Drinks & Fries</button>
-                <button onClick={() => handleCategories('Limited Time')}>Limited Time</button>
+            <div className="employee-bottom-nav">
+                <button className='employee-category-button' onClick={() => handleCategories('Value Meals')}>Value Meals</button>
+                <button className='employee-category-button' onClick={() => handleCategories('Burgers')}>Burgers</button>
+                <button className='employee-category-button' onClick={() => handleCategories('Sandwiches')}>Sandwiches</button>
+                <button className='employee-category-button' onClick={() => handleCategories('Salads')}>Salads</button>
+                <button className='employee-category-button' onClick={() => handleCategories('Desserts')}>Desserts</button>
+                <button className='employee-category-button' onClick={() => handleCategories('Drinks & Fries')}>Drinks & Fries</button>
+                <button className='employee-category-button' onClick={() => handleCategories('Limited Time')}>Limited Time</button>
             </div>
         </div>
     );

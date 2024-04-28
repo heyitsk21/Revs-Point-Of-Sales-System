@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';
-import './index.css';
 import LoginScreen from './LoginScreen';
 import { UserProvider } from './UserContext';
 import reportWebVitals from './reportWebVitals';
@@ -21,7 +20,6 @@ root.render(
         <UserProvider>
           <TextSizeProvider>
             {/* Render LoginScreen if user is not logged in */}
-            {!isLoggedIn && <LoginScreen />}
             <AppRoutes />
           </TextSizeProvider>
         </UserProvider>

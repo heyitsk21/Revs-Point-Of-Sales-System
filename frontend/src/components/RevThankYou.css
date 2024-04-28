@@ -1,0 +1,49 @@
+/* RevThankYou.css */
+@keyframes dogAnimation {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.animated-dogs {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    animation: dogAnimation 3s linear 1 forwards;
+}
+
+.dog-image-rev {
+    max-width: 200px;
+    transform: scaleX(-1);
+}
+
+.flipped {
+    transform: scaleX(1);
+}
+
+.thank-you-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    margin: 0 -100px;
+    padding-bottom: 400;
+}
+
+.thank-you {
+    font-size: 128px;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    font-style: italic;
+    color: maroon;
+}
+
+.rev-container {
+    display: flex;
+    align-items: center;
+    margin-right: 850px;
+}

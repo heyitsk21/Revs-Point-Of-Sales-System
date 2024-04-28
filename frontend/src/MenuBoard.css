@@ -1,61 +1,93 @@
 .menu-board {
-    background-color: #f4f4f4;
-    padding: 20px;
-    font-family: 'Roboto', sans-serif;
+  background-color: #500000;
+  color: #fff;
+  padding: 40px;
+  font-family: 'Arial', sans-serif;
 }
 
 .menu-title {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 32px;
-    color: #333;
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 48px;
+  color: #fff;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
-.h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 20px;
-    color: #333;
+.menu-group {
+  width: 33%;
+  float: left;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
 
 .menu-items-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+  display: block;
 }
 
 .menu-item {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    margin: 10px;
-    width: 250px;
-    text-align: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 10px 15px;
+  margin-bottom: 10px;
 }
 
 .item-name {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
+  font-size: 20px;
+  font-weight: normal;
+  color: #fff;
+  text-align: left;
 }
 
 .item-price {
-    font-size: 20px;
-    color: #777;
+  margin-top: -22.5px;
+  font-size: 20px;
+  color: #FEDD00;
+  text-align: right;
+  float: right;
+}
+
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
 }
 
 .return-button {
-    background-color: #333;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    margin-bottom: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  background-color: #f4f4f4;
+  color: #7B2C32;
+  border: 2px solid #fff;
 }
 
-.return-button:hover {
-    background-color: #555;
+.marquee {
+  background-color: #fff;
+  overflow: hidden;
+  padding: 10px;
+  white-space: nowrap;
+  box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+}
+
+.marquee-content {
+  display: inline-block;
+  animation: marquee 15s linear infinite;
+  font-size: 40px;
+  color: #800000;
+  font-weight: bold;
+  min-width: 100%;
+  white-space: nowrap;
+}
+
+.marquee-image {
+  background-color: #500000;
+  border-color: #500000;
+  margin-top: 5px;
+  height: 40px;
+  margin-left: 20px;
+}
+
+@keyframes marquee {
+  from { transform: translateX(100%); }
+  to { transform: translateX(-100%); }
 }

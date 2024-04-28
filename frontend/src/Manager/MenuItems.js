@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Manager.css';
+import './MenuItems.css';
 import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
@@ -9,9 +9,10 @@ function MenuItems () {
     const [menu, setMenu] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [checkedItems, setCheckedItems] = useState([]);
-    const [newMenuItem, setNewMenuItem] = useState({ catagory: null, name: '', price: '', ingredients: [] });
+    const [newMenuItem, setNewMenuItem] = useState({ category: null, name: '', price: '', ingredients: [] });
     const [ingredients, setIngredients] = useState([]);
     const [selectedIngredient, setSelectedIngredient] = useState('');
+    const [customizations, setCustomizations] = useState([]);
     const [speakEnabled] = useState(false);
     const { textSize } = useTextSize();
 
@@ -38,11 +39,37 @@ function MenuItems () {
         }
     };
 
+    const fetchCustomizations = async () => {
+        try {
+            if (selectedItem) {
+                const response = await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitemcustomizations', { menuitemid: selectedItem.menuid });
+                setCustomizations(response.data);
+            }
+        } catch (error) {
+            console.error('Error fetching customizations:', error);
+        }
+    };
+
+    const [categories] = useState([
+        { value: 100, label: 'Burgers' },
+        { value: 200, label: 'Sandwiches' },
+        { value: 400, label: 'Desserts' },
+        { value: 700, label: 'Limited Time' },
+        { value: 500, label: 'Drinks & Fries' },
+        { value: 300, label: 'Salads' },
+        { value: 600, label: 'Value Meals' }
+    ]);
+    
+    const handleCategoryChange = (event) => {
+        setNewMenuItem({ ...newMenuItem, category: event.target.value });
+    };
+
     const rowClicked = async (event, item) => {
         setSelectedItem(item);
         try {
             const response = await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', { menuitemid: item.menuid });
             setCheckedItems(response.data);
+            fetchCustomizations();
         } catch (error) {
             console.error('Error fetching ingredients:', error);
         }
@@ -67,6 +94,7 @@ function MenuItems () {
             [name]: value
         }));
     };
+    
 
     const handleUpdateMenuItem = async () => {
         try {
@@ -86,17 +114,25 @@ function MenuItems () {
 
     const handleAddMenuItem = async () => {
         try {
-            console.log(newMenuItem.name);
-            console.log(newMenuItem.catagory);
-            console.log(newMenuItem.price);
-            await axios.post('http://127.0.0.1:5000/api/manager/menuitems', { catagory: newMenuItem.catagory, itemname: newMenuItem.name, price: newMenuItem.price });
+            console.log('Name:', newMenuItem.name, 'Type:', typeof newMenuItem.name);
+            console.log('Category:', newMenuItem.category, 'Type:', typeof newMenuItem.category);
+            console.log('Price:', newMenuItem.price, 'Type:', typeof newMenuItem.price);
+            
+            const itemName = newMenuItem.name.toString();
+    
+            await axios.post('https://team21revsbackend.onrender.com/api/manager/menuitems', { category: newMenuItem.category, itemname: itemName, price: newMenuItem.price });
+    
+            alert('New menu item added successfully.');
+    
+            setNewMenuItem({ category: null, name: '', price: '', ingredients: [] });
         }
-        catch {
-            console.log("Error adding menu item");
+        catch (error) {
+            console.error("Error adding menu item:", error);
         }
         fetchMenuItems();
     };
-
+    
+    
     const handleIngredientChange = (event) => {
         setSelectedIngredient(event.target.value);
     };
@@ -109,7 +145,7 @@ function MenuItems () {
             await axios.post('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid, ingredientid: ingredientId });
 
             const response = await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid });
-            setCheckedItems(response.data); // Update the checkedItems state with the updated list
+            setCheckedItems(response.data); 
 
         } catch (error) {
             console.error('Error adding ingredient:', error);
@@ -120,17 +156,39 @@ function MenuItems () {
         try {
             await axios.delete('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', {
                 data: {
-                    menuitemid: selectedItem.menuid, // Pass the selected menu item ID
-                    ingredientid: ingredientIdToDelete // Pass the ID of the ingredient to delete
+                    menuitemid: selectedItem.menuid, 
+                    ingredientid: ingredientIdToDelete 
                 }
             });
 
-            // Fetch the updated list of checked ingredients for the selected menu item
             const response = await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid });
-            setCheckedItems(response.data); // Update the checkedItems state with the updated list
+            setCheckedItems(response.data);
 
         } catch (error) {
             console.error('Error deleting ingredient:', error);
+        }
+    };
+
+    const handleAddCustomization = async (customizationId) => {
+        try {
+            const payload = { menuitemid: selectedItem.menuid, customizationid: Number(customizationId) };
+            // console.log('Payload:', payload);
+            await axios.post('https://team21revsbackend.onrender.com/api/manager/menuitemcustomizations', payload);
+            fetchCustomizations();
+        } catch (error) {
+            console.error('Error adding customization:', error);
+        }
+    };
+
+    const handleDeleteCustomization = async (customizationId) => {
+        try {
+            console.log('Customization ID:', customizationId); // Logging the value before passing it in
+            const payload = { menuitemid: selectedItem.menuid, customizationid: Number(customizationId) };
+            console.log('Delete Payload:', payload); // Logging the payload
+            await axios.delete(`https://team21revsbackend.onrender.com/api/manager/menuitemcustomizations`, { data: payload });
+            fetchCustomizations();
+        } catch (error) {
+            console.error('Error deleting customization:', error);
         }
     };
 
@@ -147,6 +205,15 @@ function MenuItems () {
     const renderIngredientOptions = () => {
         return ingredients.map(ingredient => (
             <option key={ingredient.ingredientid} value={ingredient.ingredientid}>{ingredient.ingredientname}</option>
+        ));
+    };
+
+    const renderCustomizations = () => {
+        return customizations.map(customization => (
+            <div key={customization.customizationid}>
+                {customization.customizationname} - {customization.ingredientname}
+                <button className='menu-item-button' onClick={() => handleDeleteCustomization(customization.customizationid)}>Delete</button>
+            </div>
         ));
     };
 
@@ -190,53 +257,57 @@ function MenuItems () {
 
     return (
         <div className={`manager-menu ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
-            <div><ManagerTopBar/></div>
+            <ManagerTopBar/>
             <div className='manager-menu-items'>
-                <div className="left-panel">
-                    <div className="add-item-section">
-                        <h2 onMouseOver={handleMouseOver}>Add New MenuItem</h2>
-                        <div>
-                            <label>Item Name:</label>
-                            <input
-                                type="text"
-                                value={newMenuItem.name}
-                                onChange={(e) => setNewMenuItem({ ...newMenuItem, name: e.target.value })}
-                            />
-                        </div>
-                        <div>
-                            <label>Price:</label>
-                            <input
-                                type="number"
-                                value={newMenuItem.price}
-                                onChange={(e) => setNewMenuItem({ ...newMenuItem, price: e.target.value })}
-                            />
-                        </div>
-                        <div>
-                            <label>Catagory:</label>
-                            <input
-                                type="number"
-                                value={newMenuItem.count}
-                                onChange={(e) => setNewMenuItem({ ...newMenuItem, catagory: e.target.value })}
-                            />
-                        </div>
-                        <button onClick={handleAddMenuItem} onMouseOver={handleMouseOver}>Submit</button>
+                <div className="add-item-section">
+                    <h2 onMouseOver={handleMouseOver}>Add New Menu Item</h2>
+                    <div className='add-item-object'>
+                        <label>Item Name:</label>
+                        <input className='menu-item-input'
+                            type="text"
+                            value={newMenuItem.name}
+                            onChange={(e) => setNewMenuItem({ ...newMenuItem, name: e.target.value })}
+                        />
                     </div>
+                    <div className='add-item-object'>
+                        <label>Price:</label>
+                        <input className='menu-item-input'
+                            type="number"
+                            value={newMenuItem.price}
+                            onChange={(e) => setNewMenuItem({ ...newMenuItem, price: e.target.value })}
+                        />
+                    </div>
+                    <div className='add-item-object'>
+                        <label>Category:</label>
+                        <select className='menu-item-input'
+                            value={newMenuItem.category}
+                            onChange={handleCategoryChange}
+                        >
+                            <option value="">Select Category</option>
+                            {categories.map(category => (
+                                <option key={category.value} value={category.value}>
+                                    {category.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <button className='menu-item-button' onClick={handleAddMenuItem} onMouseOver={handleMouseOver}>Submit</button>
                 </div>
-                <div className="right-panel">
+                <div className="edit-item-section">
                     <h2 onMouseOver={handleMouseOver}>{selectedItem ? `Edit Menu Item ${selectedItem.menuid}` : 'Select a Menu Item to Edit'}</h2>
                     {selectedItem && (
                         <>
                             <label htmlFor="editName" onMouseOver={handleMouseOver}>Name:</label>
-                            <input type="text" id="editName" name="name" value={selectedItem.itemname} onChange={handleInputChange} onMouseOver={handleMouseOver} />
+                            <input type="text" id="editName" name="itemname" value={selectedItem.itemname} onChange={handleInputChange} />
                             <label htmlFor="editPrice" onMouseOver={handleMouseOver}>Price:</label>
                             <input type="text" id="editPrice" name="price" value={selectedItem.price} onChange={handleInputChange} onMouseOver={handleMouseOver} />
-                            <button onClick={handleUpdateMenuItem}>Update</button>
+                            <button className='menu-item-button' onClick={handleUpdateMenuItem}>Update</button>
                             <h3 onMouseOver={handleMouseOver}>Ingredients:</h3>
                             <ul>
                                 {checkedItems.map((ingredient, index) => (
                                     <li key={index} onMouseOver={handleMouseOver}>
                                         {ingredient.ingredientname}
-                                        <button onClick={() => handleDeleteIngredient(ingredient.ingredientid)}>Delete</button>
+                                        <button className='menu-item-button-delete' onClick={() => handleDeleteIngredient(ingredient.ingredientid)}><img src="/Images/deleteIcon.png" alt="Delete" className="delete-icon" /></button>
                                     </li>
                                 ))}
                             </ul>
@@ -246,31 +317,45 @@ function MenuItems () {
                                     <option value="">Select Ingredient</option>
                                     {renderIngredientOptions()}
                                 </select>
-                                <button onClick={handleAddIngredient} onMouseOver={handleMouseOver}>Add</button>
+                                <button className='menu-item-button-delete' onClick={handleAddIngredient} onMouseOver={handleMouseOver}><img src="/Images/addIcon.png" alt="Add" className="delete-icon" /></button>
+                            </div>
+                            <h3 onMouseOver={handleMouseOver}>Customizations:</h3>
+                            <div>
+                                {renderCustomizations()}
+                            </div>
+                            <div>
+                                <h3 htmlFor="customizationSelect" onMouseOver={handleMouseOver}>Add Customization:</h3>
+                                <select id="customizationSelect" value={selectedIngredient} onChange={handleIngredientChange} onMouseOver={handleMouseOver}>
+                                    <option value="">Select Customization</option>
+                                    {renderIngredientOptions()}
+                                </select>
+                                <button className='menu-item-button' onClick={() => handleAddCustomization(selectedIngredient)} onMouseOver={handleMouseOver}>Add</button>
                             </div>
                         </>
                     )}
                 </div>
-                <h2 onMouseOver={handleMouseOver}>Menu Items</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th onMouseOver={handleMouseOver}>ID</th>
-                            <th onMouseOver={handleMouseOver}>Name</th>
-                            <th onMouseOver={handleMouseOver}>Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {renderMenuItems()}
-                    </tbody>
-                </table>
+                <div className='item-list'>
+                    <h2 onMouseOver={handleMouseOver}>Menu Items</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th onMouseOver={handleMouseOver}>ID</th>
+                                <th onMouseOver={handleMouseOver}>Name</th>
+                                <th onMouseOver={handleMouseOver}>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {renderMenuItems()}
+                        </tbody>
+                    </table>
+                </div>
                 <div className="button-panel">
-                    <button onClick={handleDeleteButtonClick} disabled={!selectedItem} onMouseOver={handleMouseOver}>Delete</button>
+                    <button className='menu-item-button' onClick={handleDeleteButtonClick} disabled={!selectedItem} onMouseOver={handleMouseOver}>Delete</button>
                 </div>
             </div>
             <ManagerBottomBar/>
         </div>
-    );
+    );    
 };
 
 export default MenuItems;

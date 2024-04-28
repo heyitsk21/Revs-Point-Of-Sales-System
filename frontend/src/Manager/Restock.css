@@ -1,0 +1,35 @@
+.restock-content {
+    font-family: "Chakra Petch", sans-serif;
+    color: #000000;
+    top: 10%;
+    overflow-y: auto;
+    height: 82%;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border:#000000;
+    padding: 0 20px;
+}
+
+.restock-button {
+    font-size: 20px;
+    background-color: #077a8e;
+    color: #fff;
+    border: solid;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 5px 10px;
+    font-family: "Chakra Petch", sans-serif;
+}
+
+.restock-open-button {
+    font-family: "Chakra Petch", sans-serif;
+    background-color: #077a8e;
+    color: #ffffff;
+    border: none;
+    padding: 15px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}

@@ -1,16 +1,16 @@
-table {
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+.employee-table {
+    width: 100%; /* Set the table width */
+    table-layout: fixed;
     border-collapse: collapse; 
-    width: 100%; 
 }
 
 td {
     border: 1px solid #a2a2a2; 
-    padding: 8px;
-    text-align: left; 
-    font-weight: 600;
 }
 
-th {
+.employee-table th {
     border: 1px solid #a2a2a2; 
     background-color: #f2f2f2;
 }
@@ -23,31 +23,18 @@ th {
     font-size: 40px;
 }
 
-.quantity {
-    text-align: center;
-}
-
 .adjust {
     text-align: center;
-}
-
-.minus {
-    margin: 5px;
-    width: 40%;
-}
-
-.plus {
-    margin: 5px;
-    width: 40%;
-}
-
-.delete {
     margin: 5px;
 }
 
-.tfoot .td{
-    font-weight: 1000 !important;
+.cart-button {
+    font-family: "Chakra Petch", sans-serif;
+    margin: 5px 10px;
+    background-color: #077a8e;
+    color: #fff;
 }
+
 
 .cartFooter {
     align-items: end;
