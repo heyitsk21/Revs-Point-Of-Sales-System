@@ -124,9 +124,11 @@ const Ordering = ({ onCatChange }) => {
         <div className={`Ordering ${textSize === 'large' ? 'large-text' : ''}`}>
             <div className="employee-middle-content">
                 <div className="employee-leftSide">
-                    <div className='employee-categoryName'>
-                        {category}
-                    </div>
+                    <SimpleBar style={{ height: 600, width: 750}}>
+                        <div className='employee-categoryName'>
+                            {category}
+                        </div>
+                    </SimpleBar>
                     <div className='employee-items'>
                         {renderMenuSection()}
                     </div>
