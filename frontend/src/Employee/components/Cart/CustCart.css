@@ -179,9 +179,16 @@ details {
     text-align: right;
 }
 
+.cart-button {
+    font-size: .5em;
+}
+
 .cart-button:disabled {
     background-color: #ccc; 
     cursor: not-allowed; 
+    &:hover {
+        color: #b5bfd9;
+    }
 }
 
 .adjust * {
@@ -205,6 +212,6 @@ dl {
     font-size: 40px;
 }
 
-.large-text .cart button {
+.large-text cart button {
     font-size: 40px;
 }

@@ -7,11 +7,13 @@ import Cart from '../Cart/Cart'
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 
+let cust_is_open = false;
 let curr_url = window.location.href;
 console.log(curr_url);
-if (curr_url == 'https://project-3-full-stack-agile-web-team-21-2.onrender.com/customer' || curr_url == 'http://localhost:3000/customer') {
+if (curr_url === 'https://project-3-full-stack-agile-web-team-21-2.onrender.com/customer' || curr_url === 'http://localhost:3000/customer') {
     import('./CustOrdering.css');
-} else if (curr_url == 'https://project-3-full-stack-agile-web-team-21-2.onrender.com/employee' || curr_url == 'http://localhost:3000/employee') {
+    cust_is_open = true;
+} else {
     import('./Ordering.css');
 }
 
