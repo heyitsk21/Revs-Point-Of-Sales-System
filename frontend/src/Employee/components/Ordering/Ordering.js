@@ -9,8 +9,9 @@ import 'simplebar-react/dist/simplebar.min.css';
 
 let cust_is_open = false;
 let curr_url = window.location.href;
-console.log(curr_url);
-if (curr_url === 'https://project-3-full-stack-agile-web-team-21-2.onrender.com/customer' || curr_url === 'http://localhost:3000/customer') {
+console.log(curr_url.substring(0,70));
+console.log(curr_url.substring(0,30));
+if (curr_url.substring(0,70) === 'https://project-3-full-stack-agile-web-team-21-2.onrender.com/customer' || curr_url.substring(0,30) === 'http://localhost:3000/customer') {
     import('./CustOrdering.css');
     cust_is_open = true;
 } else {
@@ -119,12 +120,23 @@ const Ordering = ({ onCatChange }) => {
         }
 
         if (selectedList) { 
+            // return <div>
+            //     <img src='..\\..\\public\\Images\\CustomerImages\\menu-items\\Burgers\\Bacon-Cheeseburger.jpg' alt="asdf"/>
+            //     </div>
             return selectedList.map(menuitem => (
-                <button className='employee-item-button' onClick={() => { console.log('Adding item:', menuitem); addItem({ id: menuitem.menuid, name: menuitem.itemname, price: menuitem.price });}}>
-                    <div>{menuitem.itemname}</div>
-                    <div>${menuitem.price}</div>
-                </button>
+                <React.Fragment key={menuitem.menuid}>
+                    <button className='employee-item-button' onClick={() => { console.log('Adding item:', menuitem); addItem({ id: menuitem.menuid, name: menuitem.itemname, price: menuitem.price, picturepath: menuitem.picturepath });}}>
+                        {cust_is_open && (
+                            <div>
+                                <img src={menuitem.picturepath} alt={menuitem.itemname} />
+                            </div>
+                        )}
+                        <div>{menuitem.itemname}</div>
+                        <div>${menuitem.price}</div>
+                    </button>
+                </React.Fragment>
             ));
+            
         }
         else {
             return null;

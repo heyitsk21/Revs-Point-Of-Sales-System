@@ -35,7 +35,7 @@ function ConfirmSubmit(props) {
             <form>
               <label className='label'>
                 <div className='prompt'>
-                  Name:
+                  Name: 
                   <input type="text" name="name" />
                 </div>
               </label>

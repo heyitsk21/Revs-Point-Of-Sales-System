@@ -10,8 +10,8 @@ import 'simplebar-react/dist/simplebar.min.css';
 
 let cust_is_open = false;
 let curr_url = window.location.href;
-console.log(curr_url);
-if (curr_url === 'https://project-3-full-stack-agile-web-team-21-2.onrender.com/customer' || curr_url === 'http://localhost:3000/customer') {
+// console.log(curr_url);
+if (curr_url.substring(0,70) === 'https://project-3-full-stack-agile-web-team-21-2.onrender.com/customer' || curr_url.substring(0,30) === 'http://localhost:3000/customer') {
     import('./CustCart.css');
     cust_is_open = true;
 } else {
