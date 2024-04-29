@@ -4,7 +4,7 @@ import { useCart } from "react-use-cart";
 import { useTextSize } from '../../../components/TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
 import Cart from '../Cart/Cart'
-import SimpleBar from 'simplebar-react';
+//import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 // import CustomerImages from './CustomerImages/menu-items/';
 // import imagefolder from './CustomerImages/menu-items';

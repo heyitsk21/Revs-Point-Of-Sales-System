@@ -5,7 +5,7 @@ import ConfirmClearOrder from '../ConfirmClearOrder/ConfirmClearOrder';
 // import './CustCart.css';
 import { useCart } from 'react-use-cart';
 import { useState } from 'react'
-import SimpleBar from 'simplebar-react';
+//import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 
 let cust_is_open = false;
