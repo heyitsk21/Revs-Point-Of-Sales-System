@@ -162,10 +162,9 @@ function Inventory() {
     }, []);
 
     return (
-        <div className={`inventory ${textSize === 'large' ? 'large-text' : ''}`}>
+        <div>
             <ManagerTopBar />
-            <Restock/>
-            <div className='manager-inventory'>
+            <div className={`manager-inventory ${textSize === 'large' ? 'large-text' : ''}`}>
                 <div className="inventory-details">
                     <h2>Selected Item Details</h2>
                     {selectedItem && (
@@ -286,7 +285,7 @@ function Inventory() {
                 </div>
 
                 <div className="inventory-list">
-                    <h2>Inventory Items</h2>
+                    <h2>Inventory Items <Restock/></h2>
                     {renderInventoryItems()}
                 </div>
             </div>

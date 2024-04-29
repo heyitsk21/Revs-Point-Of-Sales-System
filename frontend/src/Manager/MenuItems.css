@@ -19,6 +19,8 @@
     position: fixed;
     left: 55%;
     width: 18%;
+    max-height:80%;
+    overflow-y:auto;
 }
 
 .add-item-object {
@@ -52,6 +54,8 @@
     position: fixed;
     left: 77%;
     width: 18%;
+    max-height:80%;
+    overflow-y:auto;
 }
 
 .item-list {

@@ -14,6 +14,11 @@
     align-items: left;
 }
 
+.manager-restock {
+    position:fixed;
+    left: 15%;
+}
+
 /* Inventory details styles */
 .inventory-details {
     background-color: #ffffff;
@@ -24,6 +29,8 @@
     position: fixed;
     left: 77%;
     width: 18%;
+    max-height:80%;
+    overflow-y:auto;
 }
 
 /* Selected item styles */
@@ -75,6 +82,8 @@
     left: 55%;
     width: 18%;
     padding: 10px;
+    max-height:80%;
+    overflow-y:auto;
 }
 
 .new-ingredient-user {

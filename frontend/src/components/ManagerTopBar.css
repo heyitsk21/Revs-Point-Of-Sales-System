@@ -14,6 +14,7 @@
   align-items: center;
   background: rgba(0, 0, 0, 0.8);
   z-index: 1000;
+  font-size: 1.2rem;
 }
 
 .manager-top-bar-button {
@@ -25,7 +26,7 @@
   padding: 5px 10px;
   cursor: pointer;
   transition: color 0.3s ease;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 
   .manager-top-bar-button:hover {
@@ -40,7 +41,6 @@
   
   .manager-user-info span {
     color: #ffffff;
-    font-size: 20px;
   }
 
   button:hover {
@@ -55,7 +55,6 @@
     background-color: #ffffff;
     border: none;
     color: #843838;
-    font-size: 16px;
     cursor: pointer;
     transition: color 0.3s ease;
   }
@@ -80,7 +79,6 @@
     background-color: transparent;
     border: none;
     color: #ffffff;
-    font-size: 14px;
     text-align: left;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -94,7 +92,6 @@
     background-color: transparent;
     border: none;
     color: #ffffff;
-    font-size: 14px;
     cursor: pointer;
     transition: color 0.3s ease;
   }
