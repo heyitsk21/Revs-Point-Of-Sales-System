@@ -7,7 +7,7 @@
     font-size: 24px;
 }
 
-button {
+.employee button {
     background-color: maroon;
     color: #fff;
     border: none;
@@ -19,7 +19,7 @@ button {
     font-family: "Chakra Petch", sans-serif;
 }
 
-button:hover {
+.employee button:hover {
     background-color: rgb(157, 62, 62);    
     color: gold;
     font-family: "Chakra Petch", sans-serif;

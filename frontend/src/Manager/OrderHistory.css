@@ -20,6 +20,8 @@
     left: 55%;
     width: 18%;
     padding: 10px;
+    max-height:80%;
+    overflow-y:auto;
 }
 
 .search-bar {

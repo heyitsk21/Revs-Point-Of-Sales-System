@@ -13,11 +13,6 @@
     align-items: center;
 }
 
-/* Large text */
-.large-text {
-    font-size: 24px;
-}
-
 /* Trend buttons container */
 .trend-buttons {
     display: grid;
