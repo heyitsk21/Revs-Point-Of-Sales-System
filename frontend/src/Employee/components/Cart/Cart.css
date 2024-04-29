@@ -3,6 +3,7 @@
 .employee-table {
     width: 100%; /* Set the table width */
     table-layout: fixed;
+    border-collapse: collapse; 
 }
 
 td {

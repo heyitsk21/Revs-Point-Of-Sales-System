@@ -95,7 +95,7 @@ class MenuItems(Resource):
             result = conn.execution_options(stream_results=True).execute(text("select * from menuitems"))
             menuitemlist = []
             for row in result:
-                menuitemlist.append({"menuid":row.menuid, "itemname":row.itemname, "price":row.price})
+                menuitemlist.append({"menuid":row.menuid, "itemname":row.itemname, "price":row.price, "picturepath":row.picturepath})
         return jsonify(menuitemlist)
     
     @api.expect(AddMenuItem_model, validate=False)
@@ -418,6 +418,10 @@ class OrderHistory(Resource):
             except:
                 return jsonify({"message":"failed to deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
 
+
+
+
+
 @api.route('/api/manager/orderstatuscompleted')
 class OrderStatusCompleted(Resource):
     @api.expect(OrderStatus_model, validate=True)
@@ -482,6 +486,10 @@ class OrderStatusCanceled(Resource):
             conn.commit()
         return jsonify({"message": "Set order status to CANCELED for orderid = {inputorderid}.".format(inputorderid=orderid)})
 
+
+
+
+
 @api.route('/api/manager/restockall')
 class RestockAll(Resource):
     def get(self): #get all that needs to be restocked
@@ -501,6 +509,7 @@ class RestockAll(Resource):
                 # ingrdientlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount,"location":row.location,"recommendedamount":row.recommendedamount, "caseamount":row.caseamount})
         # return jsonify(ingrdientlist)
         return jsonify(restocklist)
+    
     # @api.expect(RestockAll_model, validate=True)
     def put(self): #"update" restock all
         with db.engine.connect() as conn:
@@ -608,7 +617,6 @@ class RestockByLocation(Resource):
             if (len(restocklist) == 0):
                 return jsonify({"message": "No inventory in the location {x} is below recommended amount. No query executed.".format(x=location)})
         return jsonify(restocklist)
-
 
     @api.expect(RestockByLocation_model, validate=True)
     def put(self): #"update" restock by location

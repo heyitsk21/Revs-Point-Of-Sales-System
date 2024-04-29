@@ -6,6 +6,20 @@ import axios from 'axios'; // Import Axios for making API requests
 import Cart from '../Cart/Cart'
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
+// import CustomerImages from './CustomerImages/menu-items/';
+// import imagefolder from './CustomerImages/menu-items';
+
+let cust_is_open = false;
+let curr_url = window.location.href;
+// console.log(curr_url.substring(0,70));
+// console.log(curr_url.substring(0,30));
+if (curr_url.substring(0,70) === 'https://project-3-full-stack-agile-web-team-21-2.onrender.com/customer' || curr_url.substring(0,30) === 'http://localhost:3000/customer') {
+    import('./CustOrdering.css');
+    cust_is_open = true;
+} else {
+    import('./Ordering.css');
+}
+
 const Ordering = ({ onCatChange }) => {
     const { textSize, toggleTextSize } = useTextSize();
     const [category, setCategory] = useState('Value Meals');
@@ -108,25 +122,57 @@ const Ordering = ({ onCatChange }) => {
         }
 
         if (selectedList) { 
+            // return <div>
+            //     <img src='..\\..\\public\\Images\\CustomerImages\\menu-items\\Burgers\\Bacon-Cheeseburger.jpg' alt="asdf"/>
+            //     </div>
+            // function importAll(r) {
+            // let images = {};
+            // r.keys().map((item, index) => { images[item.replace('./', '')] = r(item); });
+            // return images;
+            // }
+            // const images = require.context('./CustomerImages/menu-items', false, /\.(png|jpe?g|svg)$/);
+            
+            
+            // let dirpath = '/CustomerImages/menu-items/' + category
+            // const images = require.context(dirpath, false, /\.(png|jpe?g|svg|webp)$/);
+            // const imagePaths = images.keys().map(images);
+            
             return selectedList.map(menuitem => (
-                <button className='employee-item-button' onClick={() => { console.log('Adding item:', menuitem); addItem({ id: menuitem.menuid, name: menuitem.itemname, price: menuitem.price });}}>
-                    <div>{menuitem.itemname}</div>
-                    <div>${menuitem.price}</div>
-                </button>
+                <React.Fragment key={menuitem.menuid}>
+                    <button className='employee-item-button' onClick={() => { console.log('Adding item:', menuitem); addItem({ id: menuitem.menuid, name: menuitem.itemname, price: menuitem.price, picturepath: menuitem.picturepath });}}>
+                        {cust_is_open && (
+                            <div>
+                                <img id='menuitemimage' src={menuitem.picturepath ? menuitem.picturepath : '/default_tamu_dining_logo.jpg'} alt={menuitem.itemname} />
+                                {/* menuitem.itemname+'.jpg'
+                                <img src={images[menuitem.picturepath]} alt={menuitem.itemname} /> */}
+                            </div>
+                        )}
+                        <div>{menuitem.itemname}</div>
+                        <div>${menuitem.price}</div>
+                    </button>
+                </React.Fragment>
             ));
+            
         }
         else {
             return null;
         }
     };	  
 
+    const btnEmpCatList = document.querySelectorAll('.employee-category-button');
+    btnEmpCatList.forEach(btnEmpCat => {
+        btnEmpCat.addEventListener('click', () => {
+            document.querySelector('.special')?.classList.remove('special');
+            btnEmpCat.classList.add('special');
+        })
+    });
     return (
         <div className={`Ordering ${textSize === 'large' ? 'large-text' : ''}`}>
             <div className="employee-middle-content">
                 <div className="employee-leftSide">
-                    <div className='employee-categoryName'>
-                        {category}
-                    </div>
+                        <div className='employee-categoryName'>
+                            {category}
+                        </div>
                     <div className='employee-items'>
                         {renderMenuSection()}
                     </div>
@@ -136,6 +182,7 @@ const Ordering = ({ onCatChange }) => {
                 </div>                    
             </div>
 
+            
             <div className="employee-bottom-nav">
                 <button className='employee-category-button' onClick={() => handleCategories('Value Meals')}>Value Meals</button>
                 <button className='employee-category-button' onClick={() => handleCategories('Burgers')}>Burgers</button>
