@@ -54,7 +54,7 @@ const Cart = () => {
                     <div className ='emptyMessage'>Your Cart is Empty</div>
                 ) : (
                     <div>
-                        <SimpleBar style={{ height: 400, width: '100%'}}>
+                        
                         <table className="employee-table">
                             <thead>
                                 <tr>
@@ -83,7 +83,6 @@ const Cart = () => {
                                 ))}
                             </tbody>
                         </table>
-                        </SimpleBar>
                         <table className='employee-table'>
                             <tfoot>
                                 <tr>
