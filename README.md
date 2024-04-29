@@ -1,22 +1,30 @@
 #Scrum Meeting Minutes
 
-#Meeting One 4/6/2024
--Fist to five average was a 3
--Noteably Katelyn gave the rating a 1
--All sprint two tasks were then distrubted to everyone
--Roadblocks everyone has been facing where getting react to play nice
--Everyone was tasked with finishing up the sprint one tasks first and then dealing with everything else later
+#Meeting One 4/18/2024
+-Fist to five average was a 3.8
+-Shared task status and talking about stuff from spirint planning meeting
+-Darren was tasked with starting to get CSS framework setup.
+-Katelyn was to finish the API call for place order for employee to now support custimzations.
+-Josh had a variety of quilaty of life tasks including the bar chart for d3
+-Jessica had some errors to fix with react use cart in employee
 
-#Meeting Two 4/9/2024
--Fist to Five Average was a 3.8
--Confidence was increased after all sprint two tasks where completed
--Everyone was asked to work on sprint two tasks 
--Roadblocks constinsted of stress for exams for Katelyn and page switching being set up incorrectly for Darren
 
-#Meeting Three 4/1/2024
--Shared Task Status
--Fist to Five Average was a 3.8
--Everyone shared updates on tasks being completed
--Roadblocks constisted of Custimzations taking a super long time for Katelyn and Joseph having an issue with table Sorting
+#Meeting Two 4/23/2024
+-all tasks were completed from preivous scrum meeting!
+-assining final tasks
+-Darren had CSS
+-Joseph had kitchen board and weather API
+-Katelyn had Customer CSS and images
+-Josh had a variety of misc tasks that would improve our product 
+-Jessica was assigended with intergrating the menu item Custimzations into the front end
+
+#Meeting Three 4/25/2024
+-tasks were partiality completed
+-Darren made progress and finished manager CSS
+-Joseph finished kitchen
+-Katelyn started customer css and images
+-Josh finished some tasks
+-Jessica got custizations to be fetched and displayed
+
 
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/ttC5_kKh)
