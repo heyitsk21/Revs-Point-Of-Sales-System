@@ -30,7 +30,8 @@ CREATE TABLE Ingredients (
 CREATE TABLE MenuItems (
     MenuID SERIAL PRIMARY KEY,
     ItemName VARCHAR(100),
-    Price NUMERIC(10, 2) 
+    Price NUMERIC(10, 2),
+    PicturePath VARCHAR(200)
 );
 
 -- Create Employee table
@@ -123,7 +124,7 @@ CREATE TABLE CustomizationOrderMenu (
 
 \COPY Ingredients (IngredientName, PPU, Count, MinAmount, Location, RecommendedAmount, CaseAmount) FROM 'database_generation/Ingredients.csv' DELIMITER ',' CSV HEADER;
 
-\COPY MenuItems (MenuID, ItemName, Price) FROM 'database_generation/MenuItems.csv' DELIMITER ',' CSV HEADER;
+\COPY MenuItems (MenuID, ItemName, Price, PicturePath) FROM 'database_generation/MenuItems.csv' DELIMITER ',' CSV HEADER;
 
 \COPY MenuItemIngredients (MenuID, IngredientID) FROM 'database_generation/MenuItemsIngredients.csv' DELIMITER ',' CSV HEADER;
 
