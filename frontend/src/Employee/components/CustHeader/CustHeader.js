@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Translate from '../../../components/translate'
 
 
-const EmpHeader = ({ onCatChange }) => {
+const CustHeader = ({ onCatChange }) => {
     const navigate = useNavigate();
     const { textSize, toggleTextSize } = useTextSize();
     const [currentTime, setCurrentTime] = useState('');
@@ -50,4 +50,4 @@ const EmpHeader = ({ onCatChange }) => {
     );
 };
 
-export default EmpHeader;
+export default CustHeader;
