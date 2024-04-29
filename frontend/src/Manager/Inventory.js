@@ -3,7 +3,6 @@ import './Inventory.css';
 import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
-import ManagerBottomBar from '../components/ManagerBottomBar';
 import Restock from './Restock.js';
 
 function Inventory() {
@@ -289,7 +288,6 @@ function Inventory() {
                     {renderInventoryItems()}
                 </div>
             </div>
-            <ManagerBottomBar />
         </div>
     );
 };
