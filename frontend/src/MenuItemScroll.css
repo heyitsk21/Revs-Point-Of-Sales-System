@@ -1,0 +1,31 @@
+/* MenuItemScroll.css */
+
+.menu-item-scroll {
+    overflow: hidden; 
+    white-space: nowrap; 
+    width: 100%;
+    position: relative; 
+}
+
+.menu-item-scroll-item {
+    display: inline-block; 
+    margin-right: 50px;
+    animation: marquee 20s linear infinite;
+}
+
+.menu-item-scroll-item img {
+    width: 400px; 
+    height: 400px; 
+    object-fit: cover;
+}
+
+.menu-item-scroll-item div {
+    text-align: center;
+    margin-top: 5px;
+}
+
+/* Animation for marquee effect */
+@keyframes marquee {
+    0% { transform: translateX(100%); } 
+    100% { transform: translateX(-100%); }
+}

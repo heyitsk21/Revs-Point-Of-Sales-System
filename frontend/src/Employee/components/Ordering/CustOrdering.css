@@ -55,6 +55,9 @@ th {
 	box-sizing: border-box;
 }
 
+.large-text * {
+    font-size: 40px;
+}
 
 body {
     font-family: "Chakra Petch", sans-serif;
