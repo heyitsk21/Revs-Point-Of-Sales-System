@@ -3,7 +3,6 @@ import './OrderHistory.css';
 import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
-import ManagerBottomBar from '../components/ManagerBottomBar';
 import RevThankYou from '../components/RevThankYou';
 
 const OrderHistory = () => {
@@ -85,7 +84,6 @@ const OrderHistory = () => {
                     </div>
                 </div>
             </div>
-            <ManagerBottomBar />
             {showRevThankYou && <RevThankYou onAnimationEnd={() => setShowRevThankYou(false)} />} {/* Pass onAnimationEnd event to handle reset */}
         </div>
     );

@@ -7,17 +7,18 @@ import { useNavigate } from 'react-router-dom';
 function ManagerTopBar() {
     const navigate = useNavigate();
     const { toggleTextSize } = useTextSize();
+    const [loggedIn, setLoggedIn] = useState(false);
+    const [username, setUsername] = useState('');
     const [currentTime, setCurrentTime] = useState('');
     const [speakEnabled, setSpeakEnabled] = useState(false);
     const [dropdownVisible, setDropdownVisible] = useState(false);
-    const { textSize } = useTextSize();
 
     const updateTime = () => {
         const date = new Date();
         const hours = date.getHours().toString().padStart(2, '0');
         const minutes = date.getMinutes().toString().padStart(2, '0');
-        // const seconds = date.getSeconds().toString().padStart(2, '0');
-        const timeString = `${hours}:${minutes}`;
+        const seconds = date.getSeconds().toString().padStart(2, '0');
+        const timeString = `${hours}:${minutes}:${seconds}`;
         setCurrentTime(timeString);
     };
 
@@ -59,15 +60,49 @@ function ManagerTopBar() {
         navigate('/');
     };
 
+    const handleButtonClick = (buttonName) => {
+        // Perform actions based on which button is clicked
+        switch (buttonName) {
+          case 'trends':
+            // Do something for Trends button
+            console.log('Trends button clicked');
+            navigate('/manager/trends');
+            break;
+          case 'inventory':
+            // Do something for Inventory button
+            console.log('Inventory button clicked');
+            navigate('/manager/inventory');
+            break;
+          case 'menuItems':
+            // Do something for Menu Items button
+            console.log('Menu Items button clicked');
+            navigate('/manager/menuitems');
+            break;
+          case 'orderHistory':
+            // Do something for Order History button
+            console.log('Order History button clicked');
+            navigate('/manager/orderhistory');
+            break;
+          default:
+            break;
+        }
+    };
+
     return (
-        <div className={`manager-top-bar ${textSize === 'large' ? 'large-text' : ''}`}>
-            <div className="manager-user-info">
-                <span>{`Welcome, ${localStorage.getItem('username')}`}</span>
-                <span>{currentTime}</span>
+        <div className='manager-bar'>
+            <div className='user-options'>
+                <div className="manager-user-info">
+                    <span>{`Welcome, ${localStorage.getItem('username')}`}</span>
+                    <span>{currentTime}</span>
+                </div>
+                <button onClick={handleLogout} className = "manager-top-bar-button">Logout</button>
+            </div>   
+            <div className="manager-bar-nav">
+                <button className="manager-bottom-bar-button" onClick={() => handleButtonClick('trends')}>Trends</button>
+                <button className="manager-bottom-bar-button" onClick={() => handleButtonClick('inventory')}>Inventory</button>
+                <button className="manager-bottom-bar-button" onClick={() => handleButtonClick('menuItems')}>Menu Items</button>
+                <button className="manager-bottom-bar-button" onClick={() => handleButtonClick('orderHistory')}>Order History</button>
             </div>
-
-            <button onClick={handleLogout} className = "manager-top-bar-button">Logout</button>
-
             <div className="manager-dropdown-container">
                 <button className={`manager-dropdown-toggle ${dropdownVisible ? 'active' : ''}`} onClick={toggleDropdown}>
                     <img src="/Images/accessibilityIcon.png" alt="Accessibility" className="manager-dropdown-icon" />
@@ -81,6 +116,7 @@ function ManagerTopBar() {
                 )}
             </div>
         </div>
+        
     );
 }
 

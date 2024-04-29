@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import './Trends.css';
 import { useTextSize } from '../components/TextSizeContext';
 import ManagerTopBar from '../components/ManagerTopBar';
-import ManagerBottomBar from '../components/ManagerBottomBar';
 import { useNavigate  } from 'react-router-dom';
 
 function Trends () {
@@ -37,7 +36,6 @@ function Trends () {
                     <button className="trends-button" onClick={() => navigate('/manager/trends/ordertrend')}>Generate Order Trend Report</button>
                 </div>
             </div>
-            <ManagerBottomBar />
         </div>
     );
 };

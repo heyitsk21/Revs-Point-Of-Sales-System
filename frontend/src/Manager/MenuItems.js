@@ -3,7 +3,6 @@ import './MenuItems.css';
 import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
-import ManagerBottomBar from '../components/ManagerBottomBar';
 
 function MenuItems() {
     const [menu, setMenu] = useState([]);
@@ -356,7 +355,6 @@ function MenuItems() {
                     <button className='menu-item-button' onClick={handleDeleteButtonClick} disabled={!selectedItem} onMouseOver={handleMouseOver}>Delete</button>
                 </div>
             </div>
-            <ManagerBottomBar />
         </div>
     );
 };

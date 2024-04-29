@@ -4,7 +4,7 @@
     color: #000000;
     top: 10%;
     overflow-y: auto;
-    height: 82%;
+    max-height: 90%;
     width: calc(100% - 40px);
     display: flex;
     flex-direction: column;
@@ -19,7 +19,7 @@
     position: fixed;
     left: 55%;
     width: 18%;
-    max-height:80%;
+    max-height: 90%;
     overflow-y:auto;
 }
 
@@ -54,7 +54,7 @@
     position: fixed;
     left: 77%;
     width: 18%;
-    max-height:80%;
+    max-height: 90%;
     overflow-y:auto;
 }
 
