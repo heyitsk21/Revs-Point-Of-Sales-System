@@ -214,7 +214,7 @@ function MenuItems() {
         return customizations.map(customization => (
             <div key={customization.customizationid}>
                 {customization.customizationname} - {customization.ingredientname}
-                <button className='menu-item-button' onClick={() => handleDeleteCustomization(customization.ingredientid)}>Delete</button>
+                <button className='menu-item-button' onClick={() => handleDeleteCustomization(customization.ingredientid)}><img src="/Images/deleteIcon.png" alt="Delete" className="delete-icon" /></button>
             </div>
         ));
     };
@@ -326,13 +326,13 @@ function MenuItems() {
                             <div>
                                 {renderCustomizations()}
                             </div>
-                            <div>
+                            <div className="edit-customization-section">
                                 <h3 htmlFor="customizationSelect" onMouseOver={handleMouseOver}>Add Customization:</h3>
                                 <select id="customizationSelect" value={selectedCustomization} onChange={(e) => setSelectedCustomization(e.target.value)} onMouseOver={handleMouseOver}>
                                     <option value="">Select Customization</option>
                                     {renderIngredientOptions()}
                                 </select>
-                                <button className='menu-item-button' onClick={() => handleAddCustomization(selectedCustomization)} onMouseOver={handleMouseOver}>Add</button>
+                                <button className='menu-item-button' onClick={() => handleAddCustomization(selectedCustomization)} onMouseOver={handleMouseOver}><img src="/Images/addIcon.png" alt="Add" className="delete-icon" /></button>
                             </div>
                         </>
                     )}

@@ -3,7 +3,7 @@ import './MenuBoard.css';
 import axios from 'axios';
 import revLogo from './rev.png';
 import Translate from './components/translate';
-
+import MenuItemScroll from './MenuItemScroll';
 
 const MenuBoard = ({ onPageChange }) => {
     const [menuGroups, setMenuGroups] = useState([]);
@@ -40,6 +40,10 @@ const MenuBoard = ({ onPageChange }) => {
         }
     };
 
+    const handleMarqueeTextChange = (event) => {
+        setMarqueeText(event.target.innerText);
+    };
+
     const renderMenuItems = () => {
         return menuGroups.map(group => (
             <div key={group.title} className="menu-group">
@@ -54,14 +58,6 @@ const MenuBoard = ({ onPageChange }) => {
                 </div>
             </div>
         ));
-    };
-
-    const handleReturnClick = () => {
-        onPageChange('manager');
-    };
-
-    const handleMarqueeTextChange = (event) => {
-        setMarqueeText(event.target.innerText);
     };
 
     return (
@@ -81,6 +77,7 @@ const MenuBoard = ({ onPageChange }) => {
                 <h1 className="menu-title">Rev's American Grill</h1>
                 {renderMenuItems()}
             </div>
+            <MenuItemScroll menuGroups={menuGroups} />
             <Translate />
         </div>
     );
