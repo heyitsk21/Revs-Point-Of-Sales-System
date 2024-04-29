@@ -106,8 +106,6 @@ const Cart = () => {
     } else {
         return (
             <section>
-
-                <img src='CustomerImages/logo192.png' alt='asdf'/>
                 <h1>Your Cart</h1>
                 <div className='employee-cart'>
                     <div className='employee-cartTitle'></div>

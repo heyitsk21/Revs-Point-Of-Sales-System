@@ -16,8 +16,8 @@ MenuID,ItemName,Price,PicturePath
 406,Cookie Ice Cream Sundae,4.69,/Images/CustomerImages/menu-items/Desserts/Cookie Ice Cream Sundae.jpg
 407,Root Beer Float,5.49,/Images/CustomerImages/menu-items/Desserts/Root Beer Float.jpg
 501,French Fries,1.99,/Images/CustomerImages/menu-items/Drinks&Fries/French Fries.jpg
-502,Aquafina 16 OZ,1.79,/Images/CustomerImages/menu-items/Drinks&Fries/Aquafina 16 Oz.webp
-503,Aquafina 20 OZ,2.19,/Images/CustomerImages/menu-items/Drinks&Fries/Aquafina 20 Oz.webp
+502,Aquafina 16 OZ,1.79,/Images/CustomerImages/menu-items/Drinks&Fries/Aquafina 16 Oz.jpg
+503,Aquafina 20 OZ,2.19,/Images/CustomerImages/menu-items/Drinks&Fries/Aquafina 20 Oz.jpg
 504,Pepsi Fountain 20 OZ,1.99,/Images/CustomerImages/menu-items/Drinks&Fries/Pepsi Fountain 20 OZ.jpg
 601,2 Corn Dog Value Meal,4.99,/Images/CustomerImages/menu-items/ValueMeals/2 Corn Dog Value Meal.jpg
 602,2 Hot Dog Value Meal,4.99,/Images/CustomerImages/menu-items/ValueMeals/2 Hot Dog Value Meal.jpg

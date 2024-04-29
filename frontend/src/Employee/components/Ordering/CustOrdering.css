@@ -101,13 +101,13 @@ body {
     background-color: #077a8e;
     color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 15px;
     cursor: pointer;
     transition: background-color 0.3s ease;
     margin: 5px 10px;
     font-family: "Chakra Petch", sans-serif;
     width: 44%;
-    height: 80px;
+    height: 50%;
 }
 
 .employee-bottom-nav {
@@ -139,4 +139,8 @@ body {
 .employee-category-button:focus {
     background-color: #9d3e3e;
     color: gold;
+}
+
+img {
+    width: 50%;
 }
