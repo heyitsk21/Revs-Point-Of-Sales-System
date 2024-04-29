@@ -23,7 +23,7 @@ function ConfirmSubmit(props) {
           customizations: Object.keys(checkboxState[item.id] || {}).filter(option => checkboxState[item.id][option])
         })),
         customername: name,
-        employeeid: 1 //TODO change to whichever employee is logged in
+        employeeid: localStorage.getItem('userID')
       };
 
       const response = await axios.post('https://team21revsbackend.onrender.com/api/employee/placeorder', orderData);
@@ -58,10 +58,10 @@ function ConfirmSubmit(props) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    props.setTrigger(false);
     const name = event.target.name.value;
     sendToDatabase(name);
     props.emptyCart();
+    //props.setTrigger(false);
   }
 
   function handleCheckboxChange(uniqueID, optionName) {
