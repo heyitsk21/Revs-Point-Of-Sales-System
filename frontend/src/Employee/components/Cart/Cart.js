@@ -104,7 +104,6 @@ const Cart = () => {
             </div>
         );
     } else {
-        console.log(window.location.pathname);
         return (
             <section>
 
