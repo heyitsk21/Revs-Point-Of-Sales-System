@@ -5,24 +5,25 @@ const MenuItemScroll = ({ menuGroups }) => {
     const scrollRef = useRef(null);
 
     useEffect(() => {
-        const scrollWidth = scrollRef.current.scrollWidth;
-        const clientWidth = scrollRef.current.clientWidth;
-        const maxScrollLeft = scrollWidth - clientWidth;
-
-        let scrollAmount = 0;
-        const step = 5;
         const marqueeAnimation = () => {
-            scrollAmount += step;
-            if (scrollAmount < maxScrollLeft) {
+            if (scrollRef.current) {
+                const scrollWidth = scrollRef.current.scrollWidth;
+                const clientWidth = scrollRef.current.clientWidth;
+                const maxScrollLeft = scrollWidth - clientWidth;
+                let scrollAmount = scrollRef.current.scrollLeft;
+                const step = 3.5;
+                if (scrollAmount >= maxScrollLeft) {
+                    scrollAmount = 0;
+                } else {
+                    scrollAmount += step;
+                }
                 scrollRef.current.scrollLeft = scrollAmount;
-            } else {
-                scrollRef.current.scrollLeft = 0;
-                scrollAmount = 0;
             }
             requestAnimationFrame(marqueeAnimation);
         };
 
-        marqueeAnimation();
+        const animationId = requestAnimationFrame(marqueeAnimation);
+        return () => cancelAnimationFrame(animationId);
     }, [menuGroups]);
 
     return (

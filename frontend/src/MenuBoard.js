@@ -7,7 +7,7 @@ import MenuItemScroll from './MenuItemScroll';
 
 const MenuBoard = ({ onPageChange }) => {
     const [menuGroups, setMenuGroups] = useState([]);
-    const [marqueeText, setMarqueeText] = useState('Your Promotional Text Here...');
+    const [marqueeText, setMarqueeText] = useState('WELCOME TO REVS COME CHECK OUT OUR MENU!');
 
     useEffect(() => {
         fetchMenuGroups();

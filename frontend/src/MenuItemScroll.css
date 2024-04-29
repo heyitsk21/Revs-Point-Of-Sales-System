@@ -1,31 +1,31 @@
-.menu-item-scroll {
-    overflow: hidden;
-    width: 100%;
-    display: flex; 
-    justify-content: center; 
-}
+/* MenuItemScroll.css */
 
-.menu-item-scroll-content {
-    display: flex;
-    will-change: transform; 
+.menu-item-scroll {
+    overflow: hidden; 
+    white-space: nowrap; 
+    width: 100%;
+    position: relative; 
 }
 
 .menu-item-scroll-item {
-    flex: 0 0 33.3333%; 
-    margin-right: 20px;
-    display: flex; 
-    flex-direction: column; 
-    justify-content: center; 
-    align-items: center; 
+    display: inline-block; 
+    margin-right: 50px;
+    animation: marquee 20s linear infinite;
 }
 
 .menu-item-scroll-item img {
-    width: 100px;
-    height: 100px;
+    width: 400px; 
+    height: 400px; 
     object-fit: cover;
 }
 
 .menu-item-scroll-item div {
     text-align: center;
     margin-top: 5px;
+}
+
+/* Animation for marquee effect */
+@keyframes marquee {
+    0% { transform: translateX(100%); } 
+    100% { transform: translateX(-100%); }
 }
