@@ -137,13 +137,12 @@ const Ordering = ({ onCatChange }) => {
             // const images = require.context(dirpath, false, /\.(png|jpe?g|svg|webp)$/);
             // const imagePaths = images.keys().map(images);
             
-        
             return selectedList.map(menuitem => (
                 <React.Fragment key={menuitem.menuid}>
                     <button className='employee-item-button' onClick={() => { console.log('Adding item:', menuitem); addItem({ id: menuitem.menuid, name: menuitem.itemname, price: menuitem.price, picturepath: menuitem.picturepath });}}>
                         {cust_is_open && (
                             <div>
-                                <img src={menuitem.picturepath} alt={menuitem.itemname} />
+                                <img id='menuitemimage' src={menuitem.picturepath ? menuitem.picturepath : '/default_tamu_dining_logo.jpg'} alt={menuitem.itemname} />
                                 {/* menuitem.itemname+'.jpg'
                                 <img src={images[menuitem.picturepath]} alt={menuitem.itemname} /> */}
                             </div>
