@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTextSize } from './TextSizeContext';
-import './ManagerTopBar.css';
+import './EmployeeTopBar.css';
 import './../Common.css';
 import { useNavigate } from 'react-router-dom';
 
