@@ -160,6 +160,13 @@ const Ordering = ({ onCatChange }) => {
         }
     };	  
 
+    const btnEmpCatList = document.querySelectorAll('.employee-category-button');
+    btnEmpCatList.forEach(btnEmpCat => {
+        btnEmpCat.addEventListener('click', () => {
+            document.querySelector('.special')?.classList.remove('special');
+            btnEmpCat.classList.add('special');
+        })
+    });
     return (
         <div className={`Ordering ${textSize === 'large' ? 'large-text' : ''}`}>
             <div className="employee-middle-content">
@@ -176,6 +183,7 @@ const Ordering = ({ onCatChange }) => {
                 </div>                    
             </div>
 
+            
             <div className="employee-bottom-nav">
                 <button className='employee-category-button' onClick={() => handleCategories('Value Meals')}>Value Meals</button>
                 <button className='employee-category-button' onClick={() => handleCategories('Burgers')}>Burgers</button>

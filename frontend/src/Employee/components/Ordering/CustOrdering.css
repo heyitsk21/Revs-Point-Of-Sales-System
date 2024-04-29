@@ -98,16 +98,18 @@ body {
 .employee-item-button {
     font-size: 1rem;
     padding: 10px 20px;
-    background-color: #077a8e;
-    color: #fff;
+    background-color: maroon;
+    color: white;
     border: none;
     border-radius: 15px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin: 5px 10px;
+    /* margin: 5px 10px; */
     font-family: "Chakra Petch", sans-serif;
-    width: 44%;
-    height: 50%;
+    width: 15em;
+    height: 15em;
+    min-height: 240px;
+    z-index: 10;
 }
 
 .employee-bottom-nav {
@@ -126,9 +128,9 @@ body {
 
 .employee-category-button {
     font-family: "Chakra Petch", sans-serif;
-    background-color: transparent;
+    background-color: white;
     border: none;
-    color: #ffffff;
+    color: maroon;
     font-size: 20px;
     font-weight: bold;
     padding: 5px 10px;
@@ -136,11 +138,12 @@ body {
     transition: color 0.3s ease;
 }
 
-.employee-category-button:focus {
-    background-color: #9d3e3e;
+.special {
+    background-color: #9d3e3e !important;
     color: gold;
 }
 
 img {
-    width: 50%;
+    width: 10em;
+    border-radius: 15px;
 }
