@@ -125,7 +125,7 @@ function RestockReport () {
             <ManagerTopBar/>
             <div className='report-body'>
                 <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
-                <h2 onMouseOver={handleMouseOver}>Restock Report</h2>
+                <h2  className="trends-header" onMouseOver={handleMouseOver}>Restock Report</h2>
                 <button type='button' onClick={exportToCsv}>
                 Export to CSV
                 </button>

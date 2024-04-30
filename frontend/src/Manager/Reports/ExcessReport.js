@@ -111,7 +111,7 @@ function ExcessReport () {
             <ManagerTopBar/>
             <div className='report-body'>
                 <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
-                <h2 onMouseOver={handleMouseOver}>Excess Report</h2>
+                <h2  className="trends-header" onMouseOver={handleMouseOver}>Excess Report</h2>
                 <div className="date-fields">
                     <label onMouseOver={handleMouseOver}>Start Date:</label>
                     <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />

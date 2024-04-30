@@ -133,7 +133,7 @@ function OrderTrend () {
             <ManagerTopBar/>
             <div className='report-body'>
                 <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
-                <h2 onMouseOver={handleMouseOver}>Order Trend Report</h2>
+                <h2  className="trends-header" onMouseOver={handleMouseOver}>Order Trend Report</h2>
                 <div className="date-fields">
                     <label>Start Date:</label>
                     <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
