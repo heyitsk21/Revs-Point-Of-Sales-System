@@ -7,7 +7,7 @@
     font-size: 24px;
 }
 
-.employee button {
+.employee-button {
     background-color: #005bbd;
     color: #fff;
     border: none;
@@ -17,6 +17,6 @@
     font-size: 24px;
 }
 
-.employee button:hover {
+.employee-button:hover {
     background-color: rgb(0, 69, 142);
 }

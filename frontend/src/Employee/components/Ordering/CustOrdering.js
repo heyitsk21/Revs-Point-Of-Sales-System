@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import './Ordering.css';
+import './CustOrdering.css';
 import { useCart } from "react-use-cart";
 import { useTextSize } from '../../../components/TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
@@ -20,7 +20,7 @@ if (curr_url.substring(0,70) === 'https://project-3-full-stack-agile-web-team-21
     import('./Ordering.css');
 }
 
-const Ordering = ({ onCatChange }) => {
+const CustOrdering = ({ onCatChange }) => {
     const { textSize, toggleTextSize } = useTextSize();
     const [category, setCategory] = useState('Value Meals');
     const [selectedMenuSection] = useState(null);  //setSelectedMenuSection
@@ -195,4 +195,4 @@ const Ordering = ({ onCatChange }) => {
     );
 };
 
-export default Ordering;
+export default CustOrdering;
