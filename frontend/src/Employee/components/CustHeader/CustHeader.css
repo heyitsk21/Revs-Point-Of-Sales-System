@@ -13,6 +13,7 @@
     background-color: #800000;
     font-family: "Chakra Petch", sans-serif;
 }
+
 .cust-top-bar button:hover {
     background-color: #9d3e3e;
     color: gold;
@@ -28,7 +29,7 @@
     align-items: center;
     font-family: "Chakra Petch", sans-serif;
     position: fixed;
-    width: 100%;
+    width: 97%;
 }
 
 .cust-user-info span {
