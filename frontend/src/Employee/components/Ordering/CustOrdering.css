@@ -85,6 +85,11 @@
     transition: color 0.3s ease;
 }
 
+.customer-category-button:hover {
+    background-color: #9d3e3e;
+    color: gold;
+}
+
 .CustOrderingSpecial {
     background-color: #9d3e3e !important;
     color: gold;
