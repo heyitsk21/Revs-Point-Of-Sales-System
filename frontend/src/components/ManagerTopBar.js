@@ -12,6 +12,8 @@ function ManagerTopBar() {
     const [currentTime, setCurrentTime] = useState('');
     const [speakEnabled, setSpeakEnabled] = useState(false);
     const [dropdownVisible, setDropdownVisible] = useState(false);
+    const [leftdropdownVisible, setLeftdropdownVisible] = useState(false);
+
 
     const updateTime = () => {
         const date = new Date();
@@ -52,6 +54,12 @@ function ManagerTopBar() {
         setDropdownVisible(!dropdownVisible);
     };
 
+    const toggleLeftDropdown = () => {
+        setLeftdropdownVisible(!leftdropdownVisible);
+    };
+
+    
+
     const handleLogout = () => {
         console.log('Button clicked!');
         localStorage.setItem('authority', 0);
@@ -90,6 +98,20 @@ function ManagerTopBar() {
 
     return (
         <div className='manager-bar'>
+            <div className="manager-navigation-container">
+                <button className={`manager-dropdown-toggle ${leftdropdownVisible ? 'active' : ''}`} onClick={toggleLeftDropdown}>
+                    <img src="/Images/navigationIcon.png" alt="Accessibility" className="manager-dropdown-icon" />
+                    <i className="fa fa-cog"></i>
+                </button>
+                {leftdropdownVisible && (
+                    <div className="manager-navigation-menu">
+                        <button onClick={() => navigate('/employee')} >Employee</button>
+                        <button onClick={() => navigate('/customer')} >Customer</button>
+                        <button onClick={() => navigate('/kitchen')} >Kitchen</button>
+                        <button onClick={() => navigate('/menuboard')} >Menu Board</button>
+                    </div>
+                )}
+            </div>
             <div className='user-options'>
                 <div className="manager-user-info">
                     <span>{`Welcome, ${localStorage.getItem('username')}`}</span>
@@ -116,7 +138,6 @@ function ManagerTopBar() {
                 )}
             </div>
         </div>
-        
     );
 }
 

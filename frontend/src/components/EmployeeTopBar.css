@@ -99,6 +99,16 @@
   .employee-speak-button.speak-on {
     color: #00bfff;
   }
+
+  .employee button {
+    background-color: maroon;
+    color: #fff;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 24px;
+    font-family: "Chakra Petch", sans-serif;
+  }
   
   .employee-speak-button.speak-off:hover {
     color: #00bfff;
