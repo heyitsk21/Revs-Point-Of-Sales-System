@@ -4,6 +4,8 @@ import { useTextSize } from '../../components/TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
 import { useNavigate  } from 'react-router-dom';
 import ManagerTopBar from '../../components/ManagerTopBar';
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
 
 function ExcessReport () {
     const navigate = useNavigate();
@@ -11,6 +13,35 @@ function ExcessReport () {
     const [reportData, setReportData] = useState([]);
     const [speakEnabled, setSpeakEnabled] = useState(false); // State to track whether speak feature is enabled
     const { textSize, toggleTextSize } = useTextSize();
+
+    const downloadFile = ({ data, fileName, fileType }) => {
+        const blob = new Blob([data], { type: fileType })
+        const a = document.createElement('a')
+        a.download = fileName
+        a.href = window.URL.createObjectURL(blob)
+        const clickEvt = new MouseEvent('click', {
+          view: window,
+          bubbles: true,
+          cancelable: true,
+        })
+        a.dispatchEvent(clickEvt)
+        a.remove()
+      }
+
+    const exportToCsv = e => {
+        e.preventDefault()
+        let headers = ['Item ID,Item Name']
+        let usersCsv = reportData.reduce((acc, user) => {
+          const { menuid,itemname } = user
+          acc.push([menuid,itemname ].join(','))
+          return acc
+        }, [])
+        downloadFile({
+          data: [...headers, ...usersCsv].join('\n'),
+          fileName: 'ExcessReport.csv',
+          fileType: 'text/csv',
+        })
+      }
 
     const fetchData = async () => {
         try {
@@ -25,15 +56,9 @@ function ExcessReport () {
     };
 
     const handleGenerateExcessReport = () => {
-        if (isValidDate(startDate)) {
+    
             fetchData();
-        } else {
-            alert('Please enter a valid start date (YYYY-MM-DD).');
-        }
-    };
-
-    const isValidDate = (date) => {
-        return date.match(/\d{4}-\d{2}-\d{2}/);
+        
     };
 
     const speakText = (text) => {
@@ -86,16 +111,10 @@ function ExcessReport () {
             <ManagerTopBar/>
             <div className='report-body'>
                 <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
-                <h2 onMouseOver={handleMouseOver}>Excess Report</h2>
+                <h2  className="trends-header" onMouseOver={handleMouseOver}>Excess Report</h2>
                 <div className="date-fields">
                     <label onMouseOver={handleMouseOver}>Start Date:</label>
-                    <input
-                        type="text"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        placeholder="YYYY-MM-DD"
-                        onMouseOver={handleMouseOver}
-                    />
+                    <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
                 </div>
                 <div className="report-table">
                     <div className="report-row header">
@@ -110,6 +129,9 @@ function ExcessReport () {
                     ))}
                 </div>
                 <button onClick={handleGenerateExcessReport} onMouseOver={handleMouseOver}>Generate Excess Report</button>
+                <button type='button' onClick={exportToCsv}>
+                Export to CSV
+                </button>
             </div>
         </div>
     );

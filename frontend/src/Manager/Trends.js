@@ -3,6 +3,8 @@ import './Trends.css';
 import { useTextSize } from '../components/TextSizeContext';
 import ManagerTopBar from '../components/ManagerTopBar';
 import { useNavigate  } from 'react-router-dom';
+import Restock from './Restock';
+import Wheater from '../components/Wheater';
 
 function Trends () {
     const navigate = useNavigate();
