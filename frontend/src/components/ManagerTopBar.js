@@ -4,16 +4,14 @@ import './ManagerTopBar.css';
 import './../Common.css';
 import { useNavigate } from 'react-router-dom';
 
-function ManagerTopBar() {
+function ManagerTopBar({ toggleHighContrast }) {
     const navigate = useNavigate();
     const { toggleTextSize } = useTextSize();
     const [loggedIn, setLoggedIn] = useState(false);
     const [username, setUsername] = useState('');
     const [currentTime, setCurrentTime] = useState('');
-    const [speakEnabled, setSpeakEnabled] = useState(false);
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [leftdropdownVisible, setLeftdropdownVisible] = useState(false);
-
 
     const updateTime = () => {
         const date = new Date();
@@ -29,27 +27,6 @@ function ManagerTopBar() {
         return () => clearInterval(interval);
     }, []);
 
-    const speakText = (text) => {
-        const utterance = new SpeechSynthesisUtterance();
-        utterance.text = text;
-        window.speechSynthesis.speak(utterance);
-    };
-
-    const handleMouseOver = (text) => {
-        if (speakEnabled) {
-            setTimeout(() => {
-                speakText(text);
-            }, 1000); // 1-second delay
-        }
-    };
-
-    const toggleSpeak = () => {
-        if (speakEnabled) {
-            window.speechSynthesis.cancel();
-        }
-        setSpeakEnabled(!speakEnabled);
-    };
-
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
     };
@@ -57,8 +34,6 @@ function ManagerTopBar() {
     const toggleLeftDropdown = () => {
         setLeftdropdownVisible(!leftdropdownVisible);
     };
-
-    
 
     const handleLogout = () => {
         console.log('Button clicked!');
@@ -117,8 +92,8 @@ function ManagerTopBar() {
                     <span>{`Welcome, ${localStorage.getItem('username')}`}</span>
                     <span>{currentTime}</span>
                 </div>
-                <button onClick={handleLogout} className = "manager-top-bar-button">Logout</button>
-            </div>   
+                <button onClick={handleLogout} className="manager-top-bar-button">Logout</button>
+            </div>
             <div className="manager-bar-nav">
                 <button className="manager-bottom-bar-button" onClick={() => handleButtonClick('trends')}>Trends</button>
                 <button className="manager-bottom-bar-button" onClick={() => handleButtonClick('inventory')}>Inventory</button>
@@ -132,8 +107,8 @@ function ManagerTopBar() {
                 </button>
                 {dropdownVisible && (
                     <div className="manager-dropdown-menu">
-                        <button className={`manager-speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak} onMouseOver={() => handleMouseOver('Speak button')}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
-                        <button onClick={toggleTextSize} onMouseOver={() => handleMouseOver('Toggle Text Size button')}>Toggle Text Size</button>
+                        <button onClick={toggleTextSize}>Toggle Text Size</button>
+                        <button onClick={toggleHighContrast}>Toggle High Contrast</button>
                     </div>
                 )}
             </div>

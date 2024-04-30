@@ -73,7 +73,7 @@
     padding: 10px 20px;
     background-color: #077a8e;
     color: #fff;
-    border: none;
+    border: 3px solid #fff; /* Add white border */
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -88,7 +88,7 @@
 .manager-menu.high-contrast,
 .manager-menu.high-contrast *,
 .manager-menu-items.high-contrast,
-.manager-menu-items.high-contrast * {
+.manager-menu-items.high-contrast *:not(img) {
     color: #ffffff;
     background-color: #000000;
 }
@@ -98,6 +98,11 @@
 .manager-menu-items.high-contrast .item-list {
     background-color: #000000;
     color: #ffffff;
+}
+
+.manager-menu-items.high-contrast button,
+.manager-menu.high-contrast.high-contrast button {
+    outline: 3px solid white;
 }
 
 .manager-menu-items.high-contrast .menu-item-input {

@@ -38,7 +38,7 @@
 .manager-top-bar-button {
   font-family: "Chakra Petch", sans-serif;
   background-color: transparent;
-  border: none;
+  border: 2px solid #ffffff;
   color: #ffffff;
   font-weight: bold;
   padding: 5px 10px;
@@ -47,9 +47,9 @@
   font-size: 1.2rem;
 }
 
-  .manager-top-bar-button:hover {
-    color: #00bfff;
-  }
+.manager-top-bar-button:hover {
+  color: #00bfff;
+}
 
   .manager-user-options {
     
