@@ -66,10 +66,12 @@ const CustCart = () => {
                         ))}
                     </>
                 )}
-                <div colSpan="2">Total Price: </div>
-                <div colSpan="2">${cartTotal.toFixed(2)}</div>
-                <button className="cart-button" onClick={() => setClearOrderPopup(true)} disabled={cartTotal === 0}>Clear Order</button>
-                <button className="cart-button" onClick={handleConfirmSubmit} disabled={cartTotal === 0}>Buy Now</button>
+                <div className='customer-total'>
+                    <div>Total Price: </div>
+                    <div className='customer-total-price-value'>${cartTotal.toFixed(2)}</div>
+                </div>
+                    <button className="customer-cart-button" onClick={() => setClearOrderPopup(true)} disabled={cartTotal === 0}>Clear Order</button>
+                    <button className="customer-cart-button" onClick={handleConfirmSubmit} disabled={cartTotal === 0}>Buy Now</button>
             </div>
             <ConfirmClearOrder trigger={clearOrderPopup} setTrigger={setClearOrderPopup} emptyCart={emptyCart} >
                 <h3>Are you sure you want to cancel your order?</h3>
