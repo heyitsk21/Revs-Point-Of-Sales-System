@@ -23,6 +23,19 @@
     font-size: 30px;
 }
 
+.date-fields{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+.trends-header{
+    padding: 50px;
+    size: 100px;
+    font-size: xx-large;
+    text-align: justify;
+    text-align-last: center;
+}
+
 .line-container {
     display: flex;
     flex-direction: row;
