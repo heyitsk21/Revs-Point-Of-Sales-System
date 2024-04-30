@@ -6,19 +6,6 @@ import axios from 'axios'; // Import Axios for making API requests
 import Cart from '../Cart/Cart'
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
-// import CustomerImages from './CustomerImages/menu-items/';
-// import imagefolder from './CustomerImages/menu-items';
-
-let cust_is_open = false;
-let curr_url = window.location.href;
-// console.log(curr_url.substring(0,70));
-// console.log(curr_url.substring(0,30));
-if (curr_url.substring(0,70) === 'https://project-3-full-stack-agile-web-team-21-2.onrender.com/customer' || curr_url.substring(0,30) === 'http://localhost:3000/customer') {
-    import('./CustOrdering.css');
-    cust_is_open = true;
-} else {
-    import('./Ordering.css');
-}
 
 const CustOrdering = ({ onCatChange }) => {
     const { textSize, toggleTextSize } = useTextSize();
@@ -124,14 +111,10 @@ const CustOrdering = ({ onCatChange }) => {
         if (selectedList) { 
             return selectedList.map(menuitem => (
                 <React.Fragment key={menuitem.menuid}>
-                    <button className='employee-item-button' onClick={() => { console.log('Adding item:', menuitem); addItem({ id: menuitem.menuid, name: menuitem.itemname, price: menuitem.price, picturepath: menuitem.picturepath });}}>
-                        {cust_is_open && (
-                            <div>
+                    <button className='customer-item-button' onClick={() => { console.log('Adding item:', menuitem); addItem({ id: menuitem.menuid, name: menuitem.itemname, price: menuitem.price, picturepath: menuitem.picturepath });}}>
+                        <div>
                                 <img id='menuitemimage' src={menuitem.picturepath ? menuitem.picturepath : '/default_tamu_dining_logo.jpg'} alt={menuitem.itemname} />
-                                {/* menuitem.itemname+'.jpg'
-                                <img src={images[menuitem.picturepath]} alt={menuitem.itemname} /> */}
                             </div>
-                        )}
                         <div>{menuitem.itemname}</div>
                         <div>${menuitem.price}</div>
                     </button>
@@ -153,22 +136,20 @@ const CustOrdering = ({ onCatChange }) => {
     });
     return (
         <div className={`Ordering ${textSize === 'large' ? 'large-text' : ''}`}>
-            <div className="employee-middle-content">
-                <div className="employee-leftSide">
-                        <div className='employee-categoryName'>
+            <div className="customer-middle-content">
+                <div className="customer-leftSide">
+                        <div className='customer-categoryName'>
                             {category}
                         </div>
-                    <div className='employee-items'>
+                    <div className='customer-items'>
                         {renderMenuSection()}
                     </div>
                 </div>
-                <div className="employee-rightSide">
+                <div className="customer-rightSide">
                     <Cart />
                 </div>                    
             </div>
-
-            {cust_is_open && (
-                <div className="customer-bottom-nav">
+            <div className="customer-bottom-nav">
                 <button className='customer-category-button' onClick={() => handleCategories('Value Meals')}>Value Meals</button>
                 <button className='customer-category-button' onClick={() => handleCategories('Burgers')}>Burgers</button>
                 <button className='customer-category-button' onClick={() => handleCategories('Sandwiches')}>Sandwiches</button>
@@ -177,20 +158,6 @@ const CustOrdering = ({ onCatChange }) => {
                 <button className='customer-category-button' onClick={() => handleCategories('Drinks & Fries')}>Drinks & Fries</button>
                 <button className='customer-category-button' onClick={() => handleCategories('Limited Time')}>Limited Time</button>
             </div>
-            )}
-
-            
-            {(!cust_is_open &&
-            <div className="employee-bottom-nav">
-                <button className='employee-category-button' onClick={() => handleCategories('Value Meals')}>Value Meals</button>
-                <button className='employee-category-button' onClick={() => handleCategories('Burgers')}>Burgers</button>
-                <button className='employee-category-button' onClick={() => handleCategories('Sandwiches')}>Sandwiches</button>
-                <button className='employee-category-button' onClick={() => handleCategories('Salads')}>Salads</button>
-                <button className='employee-category-button' onClick={() => handleCategories('Desserts')}>Desserts</button>
-                <button className='employee-category-button' onClick={() => handleCategories('Drinks & Fries')}>Drinks & Fries</button>
-                <button className='employee-category-button' onClick={() => handleCategories('Limited Time')}>Limited Time</button>
-            </div>
-            )}
         </div>
     );
 };
