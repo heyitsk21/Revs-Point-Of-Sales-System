@@ -59,6 +59,11 @@
     color: white;
 }
 
+.customer-item-button:hover {
+    background-color: #9d3e3e;
+    color: gold;
+}
+
 .customer-bottom-nav {
     font-family: "Chakra Petch", sans-serif;
     display: flex;
