@@ -27,6 +27,8 @@
     justify-content: space-between;
     align-items: center;
     font-family: "Chakra Petch", sans-serif;
+    position: fixed;
+    width: 100%;
 }
 
 .cust-user-info span {

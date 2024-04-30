@@ -35,10 +35,10 @@ const CustCart = () => {
     };
 
     return (
-        <section>
+        <section className='customer-section'>
             <h1>Your Cart</h1>
-            <div className='employee-cart'>
-                <div className='employee-cartTitle'></div>
+            <div className='customer-cart'>
+                <div className='customer-cartTitle'></div>
                 {isEmpty ? (
                     <div className='emptyMessage'>Your Cart is Empty</div>
                 ) : (
@@ -52,7 +52,7 @@ const CustCart = () => {
                                         <div><u>Modify</u></div>
                                     </h3>
                                 </summary>
-                                <div className='adjust'>
+                                <div className='customer-adjust'>
                                     <div className="changeQuantity">
                                         <button className="cart-button" onClick={() => updateItemQuantity(item.id, item.quantity - 1)} disabled={item.quantity === 1}>-</button>
                                         <span>{item.quantity}</span>

@@ -1,12 +1,5 @@
 /* Ordering.css */
 
-.employee {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    font-size: 24px;
-}
-
 .employee-button {
     background-color: #005bbd;
     color: #fff;
