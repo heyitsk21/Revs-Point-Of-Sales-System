@@ -8,11 +8,11 @@ function ConfirmClearOrder(props) {
   }
 
   return (props.trigger) ? (
-    <div className = 'popup'>
-        <div className= 'popup-inner'>
+    <div className = 'confirm-popup'>
+        <div className= 'confirm-popup-inner'>
             <button className='close' onClick={() => props.setTrigger(false)}>No</button>
             { props.children }
-            <button className='confirm'  onClick={() => handleClearOrder()}>Clear Order</button>
+            <button className='confirm-button'  onClick={() => handleClearOrder()}>Clear Order</button>
         </div>
     </div>
   ) : "";

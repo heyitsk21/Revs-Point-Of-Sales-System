@@ -9,21 +9,17 @@
     font-size: 24px;
 }
 
-.top-bar button {
+.cust-top-bar button {
     background-color: #800000;
     font-family: "Chakra Petch", sans-serif;
 }
-.top-bar button:hover {
+.cust-top-bar button:hover {
     background-color: #9d3e3e;
     color: gold;
     font-family: "Chakra Petch", sans-serif;
 }
 
-.large-text .top-bar button {
-    font-size: 40px;
-}
-
-.top-bar {
+.cust-top-bar {
     background-color: #333;
     color: #fff;
     padding: 10px 20px;
@@ -33,14 +29,6 @@
     font-family: "Chakra Petch", sans-serif;
 }
 
-.user-info span {
+.cust-user-info span {
     margin-right: 10px;
 }
-.large-text .user-info span {
-    font-size: 40px !important;
-}
-
-.large-text * {
-    font-size: 40px !important;
-}
-
