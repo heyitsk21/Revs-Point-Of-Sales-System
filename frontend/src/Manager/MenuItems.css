@@ -84,3 +84,23 @@
 .menu-item-button:hover {
     background-color: #0056b3;
 }
+
+.manager-menu.high-contrast,
+.manager-menu.high-contrast *,
+.manager-menu-items.high-contrast,
+.manager-menu-items.high-contrast * {
+    color: #ffffff;
+    background-color: #000000;
+}
+
+.manager-menu-items.high-contrast .add-item-section,
+.manager-menu-items.high-contrast .edit-item-section,
+.manager-menu-items.high-contrast .item-list {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.manager-menu-items.high-contrast .menu-item-input {
+    background-color: #ffffff;
+    color: #000000;
+}
