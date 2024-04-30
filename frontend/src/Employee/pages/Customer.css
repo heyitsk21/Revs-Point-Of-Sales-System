@@ -1,9 +1,5 @@
 /* Ordering.css */
 
-.large-text {
-    font-size: 40px;
-}
-
 .employee {
     display: flex;
     flex-direction: column;
@@ -11,7 +7,7 @@
     font-size: 24px;
 }
 
-.employee button {
+.customer button {
     background-color: maroon;
     color: #fff;
     border: none;
@@ -23,7 +19,7 @@
     font-family: "Chakra Petch", sans-serif;
 }
 
-.employee button:hover {
+.customer button:hover {
     background-color: rgb(157, 62, 62);    
     color: gold;
     font-family: "Chakra Petch", sans-serif;

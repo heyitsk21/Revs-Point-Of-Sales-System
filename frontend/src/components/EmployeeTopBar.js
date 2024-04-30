@@ -12,6 +12,7 @@ function EmployeeTopBar() {
     const [currentTime, setCurrentTime] = useState('');
     const [speakEnabled, setSpeakEnabled] = useState(false);
     const [dropdownVisible, setDropdownVisible] = useState(false);
+    const [leftdropdownVisible, setLeftdropdownVisible] = useState(false);
 
     const updateTime = () => {
         const date = new Date();
@@ -52,6 +53,10 @@ function EmployeeTopBar() {
         setDropdownVisible(!dropdownVisible);
     };
 
+    const toggleLeftDropdown = () => {
+        setLeftdropdownVisible(!leftdropdownVisible);
+    };
+
     const handleLogout = () => {
         console.log('Button clicked!');
         localStorage.setItem('authority', 0);
@@ -61,22 +66,35 @@ function EmployeeTopBar() {
     };
 
     return (
-        <div className="employee-top-bar">
-            <div className="employee-user-info">
-                <span>{`Welcome, ${localStorage.getItem('username')}`}</span>
-                <span>{currentTime}</span>
+        <div className='manager-bar'>
+            <div className="manager-navigation-container">
+                <button className={`manager-dropdown-toggle ${leftdropdownVisible ? 'active' : ''}`} onClick={toggleLeftDropdown}>
+                    <img src="/Images/navigationIcon.png" alt="Accessibility" className="manager-dropdown-icon" />
+                    <i className="fa fa-cog"></i>
+                </button>
+                {leftdropdownVisible && (
+                    <div className="manager-navigation-menu">
+                        <button onClick={() => navigate('/customer')} >Customer</button>
+                        <button onClick={() => navigate('/menuboard')} >Menu Board</button>
+                    </div>
+                )}
             </div>
-
-            <button onClick={handleLogout} className = "employee-top-bar-button">Logout</button>
-
-            <div className="employee-dropdown-container">
-                <button className={`employee-dropdown-toggle ${dropdownVisible ? 'active' : ''}`} onClick={toggleDropdown}>
-                    <img src="/Images/accessibilityIcon.png" alt="Accessibility" className="employee-dropdown-icon" />
+            <div className='user-options'>
+                <div className="manager-user-info">
+                    <span>{`Welcome, ${localStorage.getItem('username')}`}</span>
+                    <span>{currentTime}</span>
+                </div>
+                <button onClick={handleLogout} className = "manager-top-bar-button">Logout</button>
+            </div>   
+            <div className='placeholder-employee'></div>
+            <div className="manager-dropdown-container">
+                <button className={`manager-dropdown-toggle ${dropdownVisible ? 'active' : ''}`} onClick={toggleDropdown}>
+                    <img src="/Images/accessibilityIcon.png" alt="Accessibility" className="manager-dropdown-icon" />
                     <i className="fa fa-cog"></i>
                 </button>
                 {dropdownVisible && (
-                    <div className="employee-dropdown-menu">
-                        <button className={`employee-speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak} onMouseOver={() => handleMouseOver('Speak button')}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
+                    <div className="manager-dropdown-menu">
+                        <button className={`manager-speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak} onMouseOver={() => handleMouseOver('Speak button')}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
                         <button onClick={toggleTextSize} onMouseOver={() => handleMouseOver('Toggle Text Size button')}>Toggle Text Size</button>
                     </div>
                 )}
