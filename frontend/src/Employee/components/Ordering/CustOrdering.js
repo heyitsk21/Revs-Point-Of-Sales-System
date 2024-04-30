@@ -3,7 +3,7 @@ import './CustOrdering.css';
 import { useCart } from "react-use-cart";
 import { useTextSize } from '../../../components/TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
-import Cart from '../Cart/Cart'
+import CustCart from '../Cart/CustCart'
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 
@@ -146,7 +146,7 @@ const CustOrdering = ({ onCatChange }) => {
                     </div>
                 </div>
                 <div className="customer-rightSide">
-                    <Cart />
+                    <CustCart />
                 </div>                    
             </div>
             <div className="customer-bottom-nav">
