@@ -37,6 +37,10 @@
     margin-right: 10px;
 }
 .large-text .user-info span {
-    font-size: 40px;
+    font-size: 40px !important;
+}
+
+.large-text * {
+    font-size: 40px !important;
 }
 

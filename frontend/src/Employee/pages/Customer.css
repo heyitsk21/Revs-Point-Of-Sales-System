@@ -1,5 +1,9 @@
 /* Ordering.css */
 
+.large-text {
+    font-size: 40px;
+}
+
 .employee {
     display: flex;
     flex-direction: column;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTextSize } from './TextSizeContext';
-import './ManagerTopBar.css';
+import './EmployeeTopBar.css';
 import './../Common.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -61,22 +61,22 @@ function EmployeeTopBar() {
     };
 
     return (
-        <div className="manager-top-bar">
-            <div className="manager-user-info">
+        <div className="employee-top-bar">
+            <div className="employee-user-info">
                 <span>{`Welcome, ${localStorage.getItem('username')}`}</span>
                 <span>{currentTime}</span>
             </div>
 
-            <button onClick={handleLogout} className = "manager-top-bar-button">Logout</button>
+            <button onClick={handleLogout} className = "employee-top-bar-button">Logout</button>
 
-            <div className="manager-dropdown-container">
-                <button className={`manager-dropdown-toggle ${dropdownVisible ? 'active' : ''}`} onClick={toggleDropdown}>
-                    <img src="/Images/accessibilityIcon.png" alt="Accessibility" className="manager-dropdown-icon" />
+            <div className="employee-dropdown-container">
+                <button className={`employee-dropdown-toggle ${dropdownVisible ? 'active' : ''}`} onClick={toggleDropdown}>
+                    <img src="/Images/accessibilityIcon.png" alt="Accessibility" className="employee-dropdown-icon" />
                     <i className="fa fa-cog"></i>
                 </button>
                 {dropdownVisible && (
-                    <div className="manager-dropdown-menu">
-                        <button className={`manager-speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak} onMouseOver={() => handleMouseOver('Speak button')}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
+                    <div className="employee-dropdown-menu">
+                        <button className={`employee-speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak} onMouseOver={() => handleMouseOver('Speak button')}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
                         <button onClick={toggleTextSize} onMouseOver={() => handleMouseOver('Toggle Text Size button')}>Toggle Text Size</button>
                     </div>
                 )}
