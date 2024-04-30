@@ -75,3 +75,30 @@
     margin: 5px 10px;
     font-family: "Chakra Petch", sans-serif;
 }
+
+/* Add high contrast styles */
+.order-manager.high-contrast,
+.order-manager.high-contrast *,
+.manager-order-history.high-contrast,
+.manager-order-history.high-contrast *:not(img) {
+    color: #ffffff;
+    background-color: #000000;
+}
+
+/* Add white outlines in high contrast mode */
+.order-manager.high-contrast button,
+.manager-order-history.high-contrast button {
+    outline: 2px solid white;
+}
+
+.manager-order-history.high-contrast .order-details,
+.manager-order-history.high-contrast .search-bar,
+.manager-order-history.high-contrast .order-list {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.manager-order-history.high-contrast .order-history-input {
+    background-color: #ffffff;
+    color: #000000;
+}
