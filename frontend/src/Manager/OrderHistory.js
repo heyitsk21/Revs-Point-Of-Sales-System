@@ -5,6 +5,8 @@ import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
 import RevThankYou from '../components/RevThankYou';
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
 
 const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
@@ -13,6 +15,7 @@ const OrderHistory = () => {
     const [highContrast, setHighContrast] = useState(false); // State variable for HighContrast mode
     const { textSize } = useTextSize();
     const searchInputRef = useRef(null);
+    const [ordersDate, setOrdersDate] = useState('');
 
     const fetchOrderHistory = async () => {
         try {
@@ -26,6 +29,19 @@ const OrderHistory = () => {
     useEffect(() => {
         fetchOrderHistory();
     }, []);
+
+    useEffect(() => {
+        const fetchFilteredOrders = async () => {
+            try {
+                const response = await axios.get(`https://team21revsbackend.onrender.com/api/manager/orderhistory?date=${ordersDate}`);
+                setOrders(response.data);
+            } catch (error) {
+                console.error('Error fetching filtered orders:', error);
+            }
+        };
+        fetchFilteredOrders();
+        console.log("Orders would be grabbed here");
+    }, [ordersDate]);
 
     const handleOrderClick = (order) => {
         setSelectedOrder(order);
@@ -86,6 +102,8 @@ const OrderHistory = () => {
                     </div>
                     <div className="order-list">
                         <h2>Order History</h2>
+                        <label>Find Orders for:</label>
+                        <DatePicker selected={ordersDate} onChange={(date) => setOrdersDate(date)} />
                         {renderOrderItems()}
                     </div>
                 </div>
