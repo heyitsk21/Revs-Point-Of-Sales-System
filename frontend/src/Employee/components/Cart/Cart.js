@@ -29,7 +29,7 @@ const Cart = () => {
                 price: item.price
             }))
         };
-        console.log('Data passed to ConfirmSubmit: ', data);
+        //console.log('Data passed to ConfirmSubmit: ', data);
         setSubmitPopup(data);
     };
 

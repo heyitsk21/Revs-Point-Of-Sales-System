@@ -21,7 +21,7 @@ const Ordering = ({ onCatChange }) => {
     const [limitedList, setLimitedList] = useState([]);
 
     const {addItem} = useCart();
-    console.log('Cart Hook:', useCart());
+    //console.log('Cart Hook:', useCart());
 
     const fetchMenuSection = async (currentIdStart) => {
         try {
