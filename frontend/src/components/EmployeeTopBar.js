@@ -3,6 +3,7 @@ import { useTextSize } from './TextSizeContext';
 import './EmployeeTopBar.css';
 import './../Common.css';
 import { useNavigate } from 'react-router-dom';
+import Translate from './../components/translate';
 
 function EmployeeTopBar({ toggleHighContrast }) {
     const navigate = useNavigate();
@@ -74,6 +75,7 @@ function EmployeeTopBar({ toggleHighContrast }) {
                     <div className="manager-dropdown-menu">
                         <button className="manager-high-contrast-button" onClick={toggleHighContrast}>Toggle High Contrast</button>
                         <button onClick={toggleTextSize}>Toggle Text Size</button>
+                        <Translate />
                     </div>
                 )}
             </div>

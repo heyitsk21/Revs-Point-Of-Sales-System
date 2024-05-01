@@ -3,7 +3,7 @@ import { useTextSize } from './TextSizeContext';
 import './ManagerTopBar.css';
 import './../Common.css';
 import { useNavigate } from 'react-router-dom';
-import Translate from './translate';
+import Translate from './translate.js';
 
 function ManagerTopBar({ toggleHighContrast }) {
     const navigate = useNavigate();
@@ -11,7 +11,6 @@ function ManagerTopBar({ toggleHighContrast }) {
     const [currentTime, setCurrentTime] = useState('');
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [leftdropdownVisible, setLeftdropdownVisible] = useState(false);
-    
 
     const updateTime = () => {
         const date = new Date();
