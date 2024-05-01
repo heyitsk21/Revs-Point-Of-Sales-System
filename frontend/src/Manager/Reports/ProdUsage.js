@@ -5,6 +5,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import * as d3 from 'd3';
 import ManagerTopBar from '../../components/ManagerTopBar';
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
 
 function ProdUsage() {
     const navigate = useNavigate();
@@ -14,10 +16,39 @@ function ProdUsage() {
     const [speakEnabled, setSpeakEnabled] = useState(false);
     const { textSize, toggleTextSize } = useTextSize();
 
+    const downloadFile = ({ data, fileName, fileType }) => {
+        const blob = new Blob([data], { type: fileType })
+        const a = document.createElement('a')
+        a.download = fileName
+        a.href = window.URL.createObjectURL(blob)
+        const clickEvt = new MouseEvent('click', {
+          view: window,
+          bubbles: true,
+          cancelable: true,
+        })
+        a.dispatchEvent(clickEvt)
+        a.remove()
+      }
+
+    const exportToCsv = e => {
+        e.preventDefault()
+        let headers = ['IngredientName,Total Amount Used']
+        let usersCsv = ingredientData.reduce((acc, user) => {
+          const { ingredientname,totalamountchanged} = user
+          acc.push([ingredientname,totalamountchanged ].join(','))
+          return acc
+        }, [])
+        downloadFile({
+          data: [...headers, ...usersCsv].join('\n'),
+          fileName: 'ProductUsage.csv',
+          fileType: 'text/csv',
+        })
+      }
+
     useEffect(() => {
-        if (isValidDate(startDate) && isValidDate(endDate)) {
+
             fetchData(startDate, endDate);
-        }
+        
     }, [startDate, endDate]);
 
     const fetchData = async (startDate, endDate) => {
@@ -32,10 +63,6 @@ function ProdUsage() {
         } catch (error) {
             console.error('Error fetching data:', error);
         }
-    };
-
-    const isValidDate = (date) => {
-        return date.match(/\d{4}-\d{2}-\d{2}/);
     };
 
     const calculateTotal = () => {
@@ -162,24 +189,17 @@ function ProdUsage() {
             <ManagerTopBar/>
             <div className='report-body'>
                 <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
-                <h1 onMouseOver={handleMouseOver}>Produce Usage (negative)</h1>
+                <h1 className="trends-header"onMouseOver={handleMouseOver}>Produce Usage (negative)</h1>
                 <div className="date-fields">
                     <label onMouseOver={handleMouseOver}>Start Date:</label>
-                    <input
-                        type="text"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        placeholder="YYYY-MM-DD"
-                    />
+                    <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
                     <label onMouseOver={handleMouseOver}>End Date:</label>
-                    <input
-                        type="text"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        placeholder="YYYY-MM-DD"
-                    />
+                    <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
                 </div>
                 <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Product Usage</button>
+                <button type='button' onClick={exportToCsv}>
+                Export to CSV
+                </button>
                 <div className="chart"></div>
             </div>
         </div>

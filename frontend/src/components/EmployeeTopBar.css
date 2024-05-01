@@ -43,10 +43,6 @@
     color: #ffffff;
   }
 
-  button:hover {
-    color: #00bfff;
-  }
-  
   .employee-dropdown-container {
     position: relative;
   }
@@ -100,7 +96,7 @@
     color: #00bfff;
   }
 
-  .employee button {
+  .employee-button {
     background-color: maroon;
     color: #fff;
     border: none;

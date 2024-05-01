@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import './Ordering.css';
+import './CustOrdering.css';
 import { useCart } from "react-use-cart";
 import { useTextSize } from '../../../components/TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
-import Cart from '../Cart/Cart'
+import CustCart from '../Cart/CustCart'
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 
-const Ordering = ({ onCatChange }) => {
+const CustOrdering = ({ onCatChange }) => {
     const { textSize, toggleTextSize } = useTextSize();
     const [category, setCategory] = useState('Value Meals');
     const [selectedMenuSection] = useState(null);  //setSelectedMenuSection
@@ -111,7 +111,10 @@ const Ordering = ({ onCatChange }) => {
         if (selectedList) { 
             return selectedList.map(menuitem => (
                 <React.Fragment key={menuitem.menuid}>
-                    <button className='employee-item-button' onClick={() => { console.log('Adding item:', menuitem); addItem({ id: menuitem.menuid, name: menuitem.itemname, price: menuitem.price, picturepath: menuitem.picturepath });}}>
+                    <button className='customer-item-button' onClick={() => { console.log('Adding item:', menuitem); addItem({ id: menuitem.menuid, name: menuitem.itemname, price: menuitem.price, picturepath: menuitem.picturepath });}}>
+                        <div>
+                                <img id='menuitemimage' src={menuitem.picturepath ? menuitem.picturepath : '/default_tamu_dining_logo.jpg'} alt={menuitem.itemname} />
+                            </div>
                         <div>{menuitem.itemname}</div>
                         <div>${menuitem.price}</div>
                     </button>
@@ -124,33 +127,39 @@ const Ordering = ({ onCatChange }) => {
         }
     };	  
 
+    const btnEmpCatList = document.querySelectorAll('.customer-category-button');
+    btnEmpCatList.forEach(btnEmpCat => {
+        btnEmpCat.addEventListener('click', () => {
+            document.querySelector('.CustOrderingSpecial')?.classList.remove('CustOrderingSpecial');
+            btnEmpCat.classList.add('CustOrderingSpecial');
+        })
+    });
     return (
         <div className={`Ordering ${textSize === 'large' ? 'large-text' : ''}`}>
-            <div className="employee-middle-content">
-                <div className="employee-leftSide">
-                        <div className='employee-categoryName'>
+            <div className="customer-middle-content">
+                <div className="customer-leftSide">
+                        <div className='customer-categoryName'>
                             {category}
                         </div>
-                    <div className='employee-items'>
+                    <div className='customer-items'>
                         {renderMenuSection()}
                     </div>
                 </div>
-                <div className="employee-rightSide">
-                    <Cart />
+                <div className="customer-rightSide">
+                    <CustCart />
                 </div>                    
             </div>
-            
-            <div className="employee-bottom-nav">
-                <button className='employee-category-button' onClick={() => handleCategories('Value Meals')}>Value Meals</button>
-                <button className='employee-category-button' onClick={() => handleCategories('Burgers')}>Burgers</button>
-                <button className='employee-category-button' onClick={() => handleCategories('Sandwiches')}>Sandwiches</button>
-                <button className='employee-category-button' onClick={() => handleCategories('Salads')}>Salads</button>
-                <button className='employee-category-button' onClick={() => handleCategories('Desserts')}>Desserts</button>
-                <button className='employee-category-button' onClick={() => handleCategories('Drinks & Fries')}>Drinks & Fries</button>
-                <button className='employee-category-button' onClick={() => handleCategories('Limited Time')}>Limited Time</button>
+            <div className="customer-bottom-nav">
+                <button className='customer-category-button' onClick={() => handleCategories('Value Meals')}>Value Meals</button>
+                <button className='customer-category-button' onClick={() => handleCategories('Burgers')}>Burgers</button>
+                <button className='customer-category-button' onClick={() => handleCategories('Sandwiches')}>Sandwiches</button>
+                <button className='customer-category-button' onClick={() => handleCategories('Salads')}>Salads</button>
+                <button className='customer-category-button' onClick={() => handleCategories('Desserts')}>Desserts</button>
+                <button className='customer-category-button' onClick={() => handleCategories('Drinks & Fries')}>Drinks & Fries</button>
+                <button className='customer-category-button' onClick={() => handleCategories('Limited Time')}>Limited Time</button>
             </div>
         </div>
     );
 };
 
-export default Ordering;
+export default CustOrdering;

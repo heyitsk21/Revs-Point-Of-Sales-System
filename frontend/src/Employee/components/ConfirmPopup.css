@@ -1,4 +1,7 @@
-.popup {
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+.confirm-popup {
+    font-family: "Chakra Petch", sans-serif;
     position: fixed;
     top: 0;
     left: 0;
@@ -10,7 +13,7 @@
     align-items: center;
 }
 
-.popup-inner {
+.confirm-popup-inner {
     position: relative;
     padding: 30px;
     width: 100%;
@@ -18,13 +21,13 @@
     background-color: white;
 }
 
-.popup-inner .close {
+.confirm-popup-inner .close {
     position: absolute;
     top: 16px;
     right: 16px;
 }
 
-.confirm {
+.confirm-button {
     background-color: #005bbd;
     color: #fff;
     border: none;
@@ -32,9 +35,6 @@
     padding: 8px 16px;
     cursor: pointer;
     font-size: 24px;
-}
-.large-text .confirm {
-    font-size: 40px;
 }
 
 .label {
@@ -46,7 +46,4 @@
     display: flex;
     justify-content: center;
     align-items: center;
-}
-.large-text .prompt {
-    font-size: 40px;
 }
