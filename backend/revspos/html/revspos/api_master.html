@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>revspos.api_master API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="This module initializes the Flask-RESTx API and the database connection for the RevsPos backend …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,16 +22,48 @@
 <h1 class="title">Module <code>revspos.api_master</code></h1>
 </header>
 <section id="section-intro">
+<p>This module initializes the Flask-RESTx API and the database connection for the RevsPos backend.</p>
+<p>It imports the <code>Api</code> class from <code>flask_restx</code> and the <code>Database</code> class from the <code>database</code> module.</p>
+<p>The <code>api</code> object represents the RESTful API with a specific version and title, while the <code>db</code> object represents the database connection.</p>
+<p>Both the API and database connection are essential components of the backend.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>api</code></strong> :&ensp;<code>Api</code></dt>
+<dd>Represents the Flask-RESTx API with a specific version and title.</dd>
+<dt><strong><code>db</code></strong> :&ensp;<code>Database</code></dt>
+<dd>Represents the database connection for the backend.</dd>
+</dl>
+<h2 id="note">Note</h2>
+<p>The <code>api</code> and <code>db</code> objects are essential for the functionality of the backend, and their initialization is crucial.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from flask_restx import Api
+<pre><code class="python">&#34;&#34;&#34;
+This module initializes the Flask-RESTx API and the database connection for the RevsPos backend.
+
+It imports the `Api` class from `flask_restx` and the `Database` class from the `database` module.
+
+The `api` object represents the RESTful API with a specific version and title, while the `db` object represents the database connection.
+
+Both the API and database connection are essential components of the backend.
+
+Attributes:
+    api (Api): Represents the Flask-RESTx API with a specific version and title.
+    db (Database): Represents the database connection for the backend.
+
+Note:
+    The `api` and `db` objects are essential for the functionality of the backend, and their initialization is crucial.
+
+&#34;&#34;&#34;
+
+from flask_restx import Api
 from .database import Database
 
-#this is needed trust
-
+# Initialize the Flask-RESTx API with version and title
 api = Api(version=&#34;1.0&#34;, title=&#34;RevsPos API&#34;)
+
+# Initialize the database connection
 db = Database()</code></pre>
 </details>
 </section>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>revspos.employee_routes API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="This module defines RESTful API resources for managing menu items and placing orders in the RevsPos application …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,32 +22,79 @@
 <h1 class="title">Module <code>revspos.employee_routes</code></h1>
 </header>
 <section id="section-intro">
+<p>This module defines RESTful API resources for managing menu items and placing orders in the RevsPos application.</p>
+<p>It imports necessary modules from Flask, Flask-RESTx, and SQLAlchemy.</p>
+<h2 id="classes">Classes</h2>
+<ul>
+<li>GetMenuItems: Defines a resource for retrieving menu items based on a menu group.</li>
+<li>PlaceOrder: Defines a resource for placing an order with menu items and customizations.</li>
+</ul>
+<h2 id="attributes">Attributes</h2>
+<ul>
+<li>api: Represents the Flask-RESTx API instance.</li>
+<li>db: Represents the database instance.</li>
+</ul>
+<h2 id="models">Models</h2>
+<ul>
+<li>menuGet_model: Defines a model for the request payload of the 'GetMenuItems' resource.</li>
+<li>customization_model: Defines a model for representing customization data.</li>
+<li>placeOrder_model: Defines a model for the request payload of the 'PlaceOrder' resource.</li>
+</ul>
+<h2 id="methods">Methods</h2>
+<ul>
+<li>GetDatabaseURL: Retrieves the database URL from a configuration file.</li>
+<li><strong>init</strong>: Initializes the database URL and engine using SQLAlchemy.</li>
+</ul>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from flask import request, jsonify
+<pre><code class="python">&#34;&#34;&#34;
+This module defines RESTful API resources for managing menu items and placing orders in the RevsPos application.
+
+It imports necessary modules from Flask, Flask-RESTx, and SQLAlchemy.
+
+Classes:
+    - GetMenuItems: Defines a resource for retrieving menu items based on a menu group.
+    - PlaceOrder: Defines a resource for placing an order with menu items and customizations.
+
+Attributes:
+    - api: Represents the Flask-RESTx API instance.
+    - db: Represents the database instance.
+
+Models:
+    - menuGet_model: Defines a model for the request payload of the &#39;GetMenuItems&#39; resource.
+    - customization_model: Defines a model for representing customization data.
+    - placeOrder_model: Defines a model for the request payload of the &#39;PlaceOrder&#39; resource.
+
+Methods:
+    - GetDatabaseURL: Retrieves the database URL from a configuration file.
+    - __init__: Initializes the database URL and engine using SQLAlchemy.
+
+&#34;&#34;&#34;
+
+from flask import request, jsonify
 from flask_restx import  Resource, fields
-from sqlalchemy import text
-# import os, decimal, datetime
+from sqlalchemy import Text, text
 from .api_master import api, db
-print(&#34;got here&#34;)
+
 menuGet_model = api.model(&#39;GetMenuModel&#39;, {&#34;menugroup&#34;: fields.Integer(required=True)}) #String:     , min_length=1, max_length=64
 customization_model = api.model(&#39;CustomizationModel&#39;, {&#39;menuid&#39;: fields.Integer(required=True), &#39;customizationids&#39;: fields.List(fields.Integer)})
 placeOrder_model = api.model(&#39;PlaceOrderModel&#39;,{&#39;menuitems&#39;: fields.List(fields.Nested(customization_model)),
                                                 &#39;customername&#39;:fields.String(required=True),
                                                 &#39;employeeid&#39;:fields.Integer(required=True)})
-# def alchemyencoder(obj):
-#     &#34;&#34;&#34;JSON encoder function for SQLAlchemy special classes.&#34;&#34;&#34;
-#     if isinstance(obj, datetime.date):
-#         return obj.isoformat()
-#     elif isinstance(obj, decimal.Decimal):
-#         return float(obj)
 
 @api.route(&#39;/api/employee/getmenuitems&#39;)
 class GetMenuItems(Resource):
+    &#34;&#34;&#34;
+    Resource for retrieving menu items based on a menu group.
+    &#34;&#34;&#34;
+
     @api.expect(menuGet_model, validate=True)
     def post(self):
+        &#34;&#34;&#34;
+        POST method for retrieving menu items.
+        &#34;&#34;&#34;
         menugroup = request.get_json().get(&#34;menugroup&#34;)
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(text(&#34;select * from menuitems&#34;))
@@ -59,14 +106,18 @@ class GetMenuItems(Resource):
 
 @api.route(&#39;/api/employee/placeorder&#39;)
 class PlaceOrder(Resource):
+    &#34;&#34;&#34;
+    Resource for placing an order with menu items and customizations.
+    &#34;&#34;&#34;
+
     @api.expect(placeOrder_model, validate=True)
     def post(self):
+        &#34;&#34;&#34;
+        POST method for placing an order.
+        &#34;&#34;&#34;
         name = request.get_json().get(&#34;customername&#34;)
         employeeid = request.get_json().get(&#34;employeeid&#34;)
         menuitems = request.get_json().get(&#34;menuitems&#34;, [])
-        # print(&#39;name: &#39;+str(name))
-        # print(&#39;empl id: &#39;+str(employeeid))
-        # print(&#39;menuitems: &#39;+str(menuitems))
         
         allmenuids = &#39;(&#39;
         allcustomizationids = {}
@@ -83,12 +134,9 @@ class PlaceOrder(Resource):
                     allcustomizationids[cust] = 1
                 else:
                     allcustomizationids[cust] += 1
-        
-        # for thing in allcustomizationids:
-        #     print(&#39;allcust: &#39;+str(thing) + &#39;::&#39;+str(allcustomizationids[thing]))
         allmenuids = allmenuids[:-1]
         allmenuids += &#39;)&#39;
-        # print(str(allmenuids))
+        
         totalprice = 0
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(text(&#34;SELECT SUM(Price) FROM MenuItems WHERE MenuID IN &#34; + allmenuids + &#34;;&#34;)) 
@@ -138,10 +186,12 @@ class PlaceOrder(Resource):
                     for cust in allmenuidcustomizations[item]:
                         conn.connection.cursor().execute(&#34;INSERT INTO CustomizationOrderMenu (customizationordermenuid,ingredientid) VALUES (&#34;+str(getJoinID)+&#34;,&#34;+str(cust)+&#34;)&#34;)
             conn.connection.commit()
-        # print(totalprice)
         return None
     
 def init():
+    &#34;&#34;&#34;
+    Initialization function.
+    &#34;&#34;&#34;
     return </code></pre>
 </details>
 </section>
@@ -156,12 +206,15 @@ def init():
 <span>def <span class="ident">init</span></span>(<span>)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Initialization function.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def init():
+    &#34;&#34;&#34;
+    Initialization function.
+    &#34;&#34;&#34;
     return </code></pre>
 </details>
 </dd>
@@ -175,22 +228,22 @@ def init():
 <span>(</span><span>api=None, *args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Represents an abstract RESTX resource.</p>
-<p>Concrete resources should extend from this class
-and expose methods for each supported HTTP method.
-If a resource is invoked with an unsupported HTTP method,
-the API will return a response with status 405 Method Not Allowed.
-Otherwise the appropriate method is called and passed all arguments
-from the url rule used when adding the resource to an Api instance.
-See :meth:<code>~flask_restx.Api.add_resource</code> for details.</p></div>
+<div class="desc"><p>Resource for retrieving menu items based on a menu group.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@api.route(&#39;/api/employee/getmenuitems&#39;)
 class GetMenuItems(Resource):
+    &#34;&#34;&#34;
+    Resource for retrieving menu items based on a menu group.
+    &#34;&#34;&#34;
+
     @api.expect(menuGet_model, validate=True)
     def post(self):
+        &#34;&#34;&#34;
+        POST method for retrieving menu items.
+        &#34;&#34;&#34;
         menugroup = request.get_json().get(&#34;menugroup&#34;)
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(text(&#34;select * from menuitems&#34;))
@@ -219,13 +272,16 @@ class GetMenuItems(Resource):
 <span>def <span class="ident">post</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>POST method for retrieving menu items.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@api.expect(menuGet_model, validate=True)
 def post(self):
+    &#34;&#34;&#34;
+    POST method for retrieving menu items.
+    &#34;&#34;&#34;
     menugroup = request.get_json().get(&#34;menugroup&#34;)
     with db.engine.connect() as conn:
         result = conn.execution_options(stream_results=True).execute(text(&#34;select * from menuitems&#34;))
@@ -243,28 +299,25 @@ def post(self):
 <span>(</span><span>api=None, *args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Represents an abstract RESTX resource.</p>
-<p>Concrete resources should extend from this class
-and expose methods for each supported HTTP method.
-If a resource is invoked with an unsupported HTTP method,
-the API will return a response with status 405 Method Not Allowed.
-Otherwise the appropriate method is called and passed all arguments
-from the url rule used when adding the resource to an Api instance.
-See :meth:<code>~flask_restx.Api.add_resource</code> for details.</p></div>
+<div class="desc"><p>Resource for placing an order with menu items and customizations.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@api.route(&#39;/api/employee/placeorder&#39;)
 class PlaceOrder(Resource):
+    &#34;&#34;&#34;
+    Resource for placing an order with menu items and customizations.
+    &#34;&#34;&#34;
+
     @api.expect(placeOrder_model, validate=True)
     def post(self):
+        &#34;&#34;&#34;
+        POST method for placing an order.
+        &#34;&#34;&#34;
         name = request.get_json().get(&#34;customername&#34;)
         employeeid = request.get_json().get(&#34;employeeid&#34;)
         menuitems = request.get_json().get(&#34;menuitems&#34;, [])
-        # print(&#39;name: &#39;+str(name))
-        # print(&#39;empl id: &#39;+str(employeeid))
-        # print(&#39;menuitems: &#39;+str(menuitems))
         
         allmenuids = &#39;(&#39;
         allcustomizationids = {}
@@ -281,12 +334,9 @@ class PlaceOrder(Resource):
                     allcustomizationids[cust] = 1
                 else:
                     allcustomizationids[cust] += 1
-        
-        # for thing in allcustomizationids:
-        #     print(&#39;allcust: &#39;+str(thing) + &#39;::&#39;+str(allcustomizationids[thing]))
         allmenuids = allmenuids[:-1]
         allmenuids += &#39;)&#39;
-        # print(str(allmenuids))
+        
         totalprice = 0
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(text(&#34;SELECT SUM(Price) FROM MenuItems WHERE MenuID IN &#34; + allmenuids + &#34;;&#34;)) 
@@ -336,7 +386,6 @@ class PlaceOrder(Resource):
                     for cust in allmenuidcustomizations[item]:
                         conn.connection.cursor().execute(&#34;INSERT INTO CustomizationOrderMenu (customizationordermenuid,ingredientid) VALUES (&#34;+str(getJoinID)+&#34;,&#34;+str(cust)+&#34;)&#34;)
             conn.connection.commit()
-        # print(totalprice)
         return None</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -358,19 +407,19 @@ class PlaceOrder(Resource):
 <span>def <span class="ident">post</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>POST method for placing an order.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@api.expect(placeOrder_model, validate=True)
 def post(self):
+    &#34;&#34;&#34;
+    POST method for placing an order.
+    &#34;&#34;&#34;
     name = request.get_json().get(&#34;customername&#34;)
     employeeid = request.get_json().get(&#34;employeeid&#34;)
     menuitems = request.get_json().get(&#34;menuitems&#34;, [])
-    # print(&#39;name: &#39;+str(name))
-    # print(&#39;empl id: &#39;+str(employeeid))
-    # print(&#39;menuitems: &#39;+str(menuitems))
     
     allmenuids = &#39;(&#39;
     allcustomizationids = {}
@@ -387,12 +436,9 @@ def post(self):
                 allcustomizationids[cust] = 1
             else:
                 allcustomizationids[cust] += 1
-    
-    # for thing in allcustomizationids:
-    #     print(&#39;allcust: &#39;+str(thing) + &#39;::&#39;+str(allcustomizationids[thing]))
     allmenuids = allmenuids[:-1]
     allmenuids += &#39;)&#39;
-    # print(str(allmenuids))
+    
     totalprice = 0
     with db.engine.connect() as conn:
         result = conn.execution_options(stream_results=True).execute(text(&#34;SELECT SUM(Price) FROM MenuItems WHERE MenuID IN &#34; + allmenuids + &#34;;&#34;)) 
@@ -442,7 +488,6 @@ def post(self):
                 for cust in allmenuidcustomizations[item]:
                     conn.connection.cursor().execute(&#34;INSERT INTO CustomizationOrderMenu (customizationordermenuid,ingredientid) VALUES (&#34;+str(getJoinID)+&#34;,&#34;+str(cust)+&#34;)&#34;)
         conn.connection.commit()
-    # print(totalprice)
     return None</code></pre>
 </details>
 </dd>

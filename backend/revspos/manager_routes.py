@@ -176,6 +176,9 @@ class Employee(Resource):
 
     @api.expect(AddEmployee_model, validate=True)
     def post(self):
+        """
+        POST method for adding a new employee.
+        """
         data = request.get_json()
         name = data.get("employeeName")
         email = data.get("employeeEmail")
@@ -196,7 +199,9 @@ class Employee(Resource):
 
     @api.expect(UpdateEmployee_model, validate=True)
     def put(self):
-
+        """
+        PUT method for updating employee information.
+        """
         data = request.get_json()
         empid = data.get("employeeid")
         name = data.get("employeeName")
@@ -230,6 +235,9 @@ class Employee(Resource):
 
     @api.expect(DeleteEmployee_model, validate=True)
     def delete(self):
+        """
+        DELETE method for deleting an employee.
+        """
         employeeid = request.get_json().get("employeeid")
 
         delete_employee_query = "DELETE FROM employee WHERE EmployeeID = {inputempid}".format(inputempid=employeeid)

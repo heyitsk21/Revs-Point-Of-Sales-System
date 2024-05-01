@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>revspos.database API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="This module provides functionality for managing the database connection using SQLAlchemy …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +22,41 @@
 <h1 class="title">Module <code>revspos.database</code></h1>
 </header>
 <section id="section-intro">
+<p>This module provides functionality for managing the database connection using SQLAlchemy.</p>
+<p>It imports the necessary modules from <code>flask_sqlalchemy</code> and <code>sqlalchemy</code>.</p>
+<p>The <code><a title="revspos.database.Database" href="#revspos.database.Database">Database</a></code> class contains methods for getting the database URL and initializing the database engine.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>url</code></strong> :&ensp;<code>str</code></dt>
+<dd>Represents the URL of the database.</dd>
+<dt><strong><code>engine</code></strong> :&ensp;<code>Engine</code></dt>
+<dd>Represents the SQLAlchemy engine for the database connection.</dd>
+</dl>
+<h2 id="methods">Methods</h2>
+<p>GetDatabaseURL: Retrieves the database URL from a configuration file.
+<strong>init</strong>: Initializes the database URL and engine using SQLAlchemy.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from flask_sqlalchemy import SQLAlchemy
+<pre><code class="python">&#34;&#34;&#34;
+This module provides functionality for managing the database connection using SQLAlchemy.
+
+It imports the necessary modules from `flask_sqlalchemy` and `sqlalchemy`.
+
+The `Database` class contains methods for getting the database URL and initializing the database engine.
+
+Attributes:
+    url (str): Represents the URL of the database.
+    engine (Engine): Represents the SQLAlchemy engine for the database connection.
+
+Methods:
+    GetDatabaseURL: Retrieves the database URL from a configuration file.
+    __init__: Initializes the database URL and engine using SQLAlchemy.
+
+&#34;&#34;&#34;
+
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine, URL, text
 
 class Database():
@@ -34,6 +64,14 @@ class Database():
     engine = None 
 
     def GetDatabaseURL(self):
+        &#34;&#34;&#34;
+        Retrieves the database URL from a configuration file.
+        
+        Reads the database credentials from a file named &#39;login.txt&#39; and constructs the database URL.
+        
+        Returns:
+            str: The database URL constructed from the credentials.
+        &#34;&#34;&#34;
         database_user = &#34;&#34;
         database_password = &#34;&#34;
         try:
@@ -57,6 +95,11 @@ class Database():
         return url_object
 
     def __init__(self):
+        &#34;&#34;&#34;
+        Initializes the database URL and engine using SQLAlchemy.
+
+        Calls the GetDatabaseURL method to retrieve the database URL and creates an engine using SQLAlchemy.
+        &#34;&#34;&#34;
         self.url = self.GetDatabaseURL()
         self.engine = create_engine(self.url)</code></pre>
 </details>
@@ -74,7 +117,8 @@ class Database():
 <span>class <span class="ident">Database</span></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Initializes the database URL and engine using SQLAlchemy.</p>
+<p>Calls the GetDatabaseURL method to retrieve the database URL and creates an engine using SQLAlchemy.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -84,6 +128,14 @@ class Database():
     engine = None 
 
     def GetDatabaseURL(self):
+        &#34;&#34;&#34;
+        Retrieves the database URL from a configuration file.
+        
+        Reads the database credentials from a file named &#39;login.txt&#39; and constructs the database URL.
+        
+        Returns:
+            str: The database URL constructed from the credentials.
+        &#34;&#34;&#34;
         database_user = &#34;&#34;
         database_password = &#34;&#34;
         try:
@@ -107,6 +159,11 @@ class Database():
         return url_object
 
     def __init__(self):
+        &#34;&#34;&#34;
+        Initializes the database URL and engine using SQLAlchemy.
+
+        Calls the GetDatabaseURL method to retrieve the database URL and creates an engine using SQLAlchemy.
+        &#34;&#34;&#34;
         self.url = self.GetDatabaseURL()
         self.engine = create_engine(self.url)</code></pre>
 </details>
@@ -127,12 +184,26 @@ class Database():
 <span>def <span class="ident">GetDatabaseURL</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Retrieves the database URL from a configuration file.</p>
+<p>Reads the database credentials from a file named 'login.txt' and constructs the database URL.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>The database URL constructed from the credentials.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def GetDatabaseURL(self):
+    &#34;&#34;&#34;
+    Retrieves the database URL from a configuration file.
+    
+    Reads the database credentials from a file named &#39;login.txt&#39; and constructs the database URL.
+    
+    Returns:
+        str: The database URL constructed from the credentials.
+    &#34;&#34;&#34;
     database_user = &#34;&#34;
     database_password = &#34;&#34;
     try:
