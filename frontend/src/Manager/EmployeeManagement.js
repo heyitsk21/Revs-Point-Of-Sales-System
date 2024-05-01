@@ -18,6 +18,7 @@ function EmployeeManagement() {
     });
     const [speakEnabled] = useState(false);
     const { textSize } = useTextSize();
+    const [highContrast, setHighContrast] = useState(false);
 
     const fetchEmployees = async () => {
         try {
@@ -99,43 +100,9 @@ function EmployeeManagement() {
         }));
     };
 
-    const speakText = (text) => {
-        const utterance = new SpeechSynthesisUtterance();
-        utterance.text = text;
-        window.speechSynthesis.speak(utterance);
+    const toggleHighContrast = () => {
+        setHighContrast(prevState => !prevState);
     };
-
-    const debounce = (func, wait) => {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                timeout = null;
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    };
-
-    const handleMouseOver = debounce((event) => {
-        let hoveredElementText = '';
-        if (speakEnabled) {
-            if (event.target.innerText) {
-                hoveredElementText = event.target.innerText;
-            } else if (event.target.value) {
-                hoveredElementText = event.target.value;
-            } else if (event.target.getAttribute('aria-label')) {
-                hoveredElementText = event.target.getAttribute('aria-label');
-            } else if (event.target.getAttribute('aria-labelledby')) {
-                const id = event.target.getAttribute('aria-labelledby');
-                const labelElement = document.getElementById(id);
-                if (labelElement) {
-                    hoveredElementText = labelElement.innerText;
-                }
-            }
-            speakText(hoveredElementText);
-        }
-    }, 1000);
 
     const renderEmployeeItems = () => {
         return employees.map(employee => (
@@ -154,9 +121,9 @@ function EmployeeManagement() {
     }, []);
 
     return (
-        <div>
-            <ManagerTopBar />
-            <div className={`manager-employee ${textSize === 'large' ? 'large-text' : ''}`}>
+        <div className={`employeemanager-topbar ${textSize === 'large' ? 'large-text' : ''} ${highContrast ? 'high-contrast' : ''}`}>
+            <ManagerTopBar toggleHighContrast={toggleHighContrast} />
+            <div className={`manager-employee ${textSize === 'large' ? 'large-text' : ''} ${highContrast ? 'high-contrast' : ''}`}>
                 <div className="employee-details">
                     <h2>Selected Employee Details</h2>
                     {selectedEmployee && (

@@ -1,14 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
 
-.translate {
-    background-color: #ffffff;
-    border: none;
-    border-radius: 5px;
-    padding: 8px 16px;
-    cursor: pointer;
-    font-size: 24px;
-}
-
 .cust-welcome {
     color: white;
     font-family: "chakra Petch", sans-serif;
@@ -21,6 +12,9 @@
     justify-content: space-between;
     background-color: #333;
     padding: 1em;
+    position: fixed;
+    top: 0;
+    width: 97%;
 }
 
 .cust-bar button {
