@@ -150,8 +150,13 @@
 .customer-cart-button {
     font-size: 1em;
 	margin: 1em;
+	padding: .4em;
 	font-family: "Chakra Petch", sans-serif;
 	background-color: maroon;
+	color: white;
+	border-radius: 5px;
+	border-style: none;
+
 }
 
 .customer-cart-button:hover {
