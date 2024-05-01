@@ -26,11 +26,13 @@ function ConfirmSubmit(props) {
       }
 
       const orderData = {
-        menuitems: props.trigger.items.map((item, index) => ({
-          key: index,
-          menuid: item.id,
-          customizationids: Object.keys(checkboxState[item.id] || {}).filter(option => checkboxState[item.id][option])
-        })),
+        menuitems: props.trigger.items.flatMap(item => 
+          Array.from({ length: item.quantity }, (_, index) => ({
+            key: `${item.id}_${index}`, // Unique key based on item id and index
+            menuid: item.id,
+            customizationids: Object.keys(checkboxState[`${item.id}_${index}`] || {}).filter(option => checkboxState[`${item.id}_${index}`][option])
+          }))
+        ),
         customername: name,
         employeeid: employeeID
       };
