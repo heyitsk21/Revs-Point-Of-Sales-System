@@ -6,10 +6,30 @@ export default function Wheater() {
   const [long, setLong] = useState([]);
   const [data, setData] = useState([]);
   const renderRev = () => {
-    if(data){
-        switch(data){
-            case 'mist':
+    let revpath = "/Images/Revs/rev.png";
+    if(data.weather[0].main){
+        switch(data.weather[0].main){
+            case 'Clouds':
+                revpath = "/Images/Revs/cloudRev.png"
                 break;
+            case 'Snow':
+                revpath = "/Images/Revs/coldRev.png"
+                break;           
+            case 'Clear':
+                revpath = "/Images/Revs/hotRev.png"
+                break;   
+            case 'Rain':
+                revpath = "/Images/Revs/wetRev.png"
+                break;     
+            case 'Thunderstorm':
+                revpath = "/Images/Revs/wetRev.png"
+                break; 
+            case 'Drizzle':
+                revpath = "/Images/Revs/wetRev.png"
+                break;    
+            case 'Mist':
+                revpath = "/Images/Revs/wetRev.png"
+                break;       
             default:
                 break;
         }
@@ -17,7 +37,7 @@ export default function Wheater() {
 
 
     return(
-    <img id='rev image' src={'/Images/Revs/coldRev.png'} alt={'rev'} width="25%" />
+    <img id='rev image' src={revpath} alt={'rev'} width="10%" />
     );
 };
 
@@ -59,7 +79,15 @@ export default function Wheater() {
 
   return (
     <div className="Wheater">
+        {(typeof data.main != 'undefined') ? (
+        <div>
+        <p>Tempature {data.main.temp} &deg;C</p>
         {renderRev()}
+        </div>
+      ): (
+        <div></div>
+      )}
+
     </div>
   );
 }
