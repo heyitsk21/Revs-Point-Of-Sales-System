@@ -52,6 +52,7 @@ const CustHeader = ({ onCatChange, toggleHighContrast }) => {
                     <div className="cust-dropdown-menu">
                         <button className="manager-high-contrast-button" onClick={toggleHighContrast}>Toggle High Contrast</button>
                         <button onClick={toggleTextSize}>Toggle Text Size</button>
+                        <Translate />
                     </div>
                 )}
             </div>
