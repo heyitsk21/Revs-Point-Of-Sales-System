@@ -7,70 +7,67 @@ import ManagerTopBar from '../components/ManagerTopBar.js';
 import Restock from './Restock.js';
 
 function EmployeeManagement() {
-    const [inventory, setInventory] = useState([]);
-    const [selectedItem, setSelectedItem] = useState(null);
-    const [newIngredient, setNewIngredient] = useState({
-        ingredientid: 0,
-        ingredientname: "",
-        count: 0,
-        ppu: 0,
-        minamount: 0,
-        location: "",
-        recommendedamount: 0,
-        caseamount: 0
+    const [employees, setEmployees] = useState([]);
+    const [selectedEmployee, setSelectedEmployee] = useState(null);
+    const [newEmployee, setNewEmployee] = useState({
+        employeeid: 0,
+        employeename: "",
+        email: "",
+        ismanager: "False",
+        salary: 0.0,
+        password: "",
     });
     const [speakEnabled] = useState(false);
     const { textSize } = useTextSize();
 
-    const fetchInventory = async () => {
+    const fetchEmployees = async () => {
         try {
-            const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/ingredients');
-            setInventory(response.data);
+            const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/employee');
+            setEmployees(response.data);
+            console.log(response.data);
         } catch (error) {
-            console.error('Error fetching inventory:', error);
+            console.error('Error fetching Employees:', error);
         }
     };
 
     const handleItemSelected = (item) => {
-        setSelectedItem(item);
+        setSelectedEmployee(item);
     };
 
     const handleItemUpdate = async () => {
         try {
             const payload = {
-                ingredientid: selectedItem.ingredientid,
-                ingredientname: selectedItem.ingredientname,
-                count: parseInt(selectedItem.count),
-                ppu: parseFloat(selectedItem.ppu),
-                minamount: parseFloat(selectedItem.minamount),
-                location: selectedItem.location,
-                recommendedamount: selectedItem.recommendedamount,
-                caseamount: selectedItem.caseamount
+                employeeid: parseInt(selectedEmployee.employeeid),
+                employeename: selectedEmployee.employeename,
+                email: selectedEmployee.email,
+                ismanager: selectedEmployee.ismanager,
+                salary: parseFloat(selectedEmployee.salary),
+                password: selectedEmployee.password,
             };
     
             await axios.put('https://team21revsbackend.onrender.com/api/manager/ingredients', payload);
             alert('Ingredient edited successfully:');
-            fetchInventory();
+            fetchEmployees();
         } catch (error) {
             console.error('Error updating ingredient:', error);
         }
     };
 
-    const handleIngredientSubmit = async () => {
+    const handleIngredientSubmit = async () => { //TODO
         try {
-            const newIngredientData = {
-                ...newIngredient,
-                count: parseInt(newIngredient.count),
-                ppu: parseFloat(newIngredient.ppu),
-                minamount: parseFloat(newIngredient.minamount),
-                recommendedamount: parseInt(newIngredient.recommendedamount),
-                caseamount: parseInt(newIngredient.caseamount)
+            const newEmployeeData = {
+                ...newEmployee,
+                count: parseInt(newEmployee.count),
+                ppu: parseFloat(newEmployee.ppu),
+                minamount: parseFloat(newEmployee.minamount),
+                recommendedamount: parseInt(newEmployee.recommendedamount),
+                caseamount: parseInt(newEmployee.caseamount)
             };
     
-            const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/ingredients', newIngredientData);
+            const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/ingredients', newEmployeeData);
             alert('Ingredient added successfully:');
-            fetchInventory();
-            setNewIngredient({
+            fetchEmployees();
+            setNewEmployee({
                 ingredientid: 0,
                 ingredientname: "",
                 count: 0,
@@ -90,7 +87,7 @@ function EmployeeManagement() {
             try {
                 const response = await axios.delete('https://team21revsbackend.onrender.com/api/manager/ingredients', { data: { ingredientid: itemId, count: deleteCount } });
                 alert('Item deleted successfully:');
-                fetchInventory();
+                fetchEmployees();
             } catch (error) {
                 console.error('Error deleting item:', error);
             }
@@ -99,7 +96,7 @@ function EmployeeManagement() {
 
     const handleInputChange = (e, field) => {
         const value = e.target.value;
-        setSelectedItem(prevState => ({
+        setSelectedEmployee(prevState => ({
             ...prevState,
             [field]: value
         }));
@@ -144,21 +141,19 @@ function EmployeeManagement() {
     }, 1000);
 
     const renderInventoryItems = () => {
-        return inventory.map(item => (
-            <div key={item.ingredientid} className="inventory-item" onClick={() => handleItemSelected(item)}>
-                <div className='ingredient-name'><span>{item.ingredientname}</span></div>
-                <span>Price Per Unit: ${item.ppu}</span>
-                <span>Count: {item.count}</span>
-                <span>Min Amount: {item.minamount}</span>
-                <span>Location: {item.location}</span>
-                <span>Recommended Amount: {item.recommendedamount}</span>
-                <span>Case Amount: {item.caseamount}</span>
+        return employees.map(employee => (
+            <div key={employee.ingredientid} className="inventory-item" onClick={() => handleItemSelected(employee)}>
+                <div className='ingredient-name'><span>{employee.employeename}</span></div>
+                <span>Employee Email: {employee.email}</span>
+                <span>Manager: { employee.ismanager ? 'Yes' : 'No' }</span>
+                <span>Salary: ${employee.salary}</span>
+                <span>Password: {employee.password}</span>
             </div>
         ));
     };
 
     useEffect(() => {
-        fetchInventory();
+        fetchEmployees();
     }, []);
 
     return (
@@ -166,126 +161,118 @@ function EmployeeManagement() {
             <ManagerTopBar />
             <div className={`manager-inventory ${textSize === 'large' ? 'large-text' : ''}`}>
                 <div className="inventory-details">
-                    <h2>Selected Item Details</h2>
-                    {selectedItem && (
+                    <h2>Selected Employee Details</h2>
+                    {selectedEmployee && (
                         <div className="selected-item">
-                            <h3>{selectedItem.ingredientname}</h3>
+                            <h3>{selectedEmployee.ingredientname}</h3>
                             <div>
-                                <label>Price Per Unit:</label>
-                                <input
-                                    type="number"
-                                    value={selectedItem.ppu}
-                                    onChange={(e) => handleInputChange(e, 'ppu')}
-                                />
-                            </div>
-                            <div>
-                                <label>Count:</label>
-                                <input
-                                    type="number"
-                                    value={selectedItem.count}
-                                    onChange={(e) => handleInputChange(e, 'count')}
-                                />
-                            </div>
-                            <div>
-                                <label>Min Amount:</label>
-                                <input
-                                    type="number"
-                                    value={selectedItem.minamount}
-                                    onChange={(e) => handleInputChange(e, 'minamount')}
-                                />
-                            </div>
-                            <div>
-                                <label>location:</label>
+                                <label>Employee ID:</label>
                                 <input
                                     type="text"
-                                    value={selectedItem.location}
-                                    onChange={(e) => handleInputChange(e, 'location')}
+                                    value={selectedEmployee.employeeid}
+                                    onChange={(e) => handleInputChange(e, 'employeeid')}
                                 />
                             </div>
                             <div>
-                                <label>Recommended Amount:</label>
+                                <label>Name:</label>
                                 <input
-                                    type="number"
-                                    value={selectedItem.recommendedamount}
-                                    onChange={(e) => handleInputChange(e, 'recommendedamount')}
+                                    type="text"
+                                    value={selectedEmployee.employeename}
+                                    onChange={(e) => handleInputChange(e, 'employeename')}
                                 />
                             </div>
                             <div>
-                                <label>Case Amount:</label>
+                                <label>Email:</label>
+                                <input
+                                    type="text"
+                                    value={selectedEmployee.email}
+                                    onChange={(e) => handleInputChange(e, 'email')}
+                                />
+                            </div>
+                            <div>
+                                <label>Manager:</label>
+                                <input
+                                    type="text"
+                                    value={selectedEmployee.ismanager}
+                                    onChange={(e) => handleInputChange(e, 'ismanager')}
+                                />
+                            </div>
+                            <div>
+                                <label>Salary:</label>
                                 <input
                                     type="number"
-                                    value={selectedItem.caseamount}
-                                    onChange={(e) => handleInputChange(e, 'caseamount')}
+                                    value={selectedEmployee.salary}
+                                    onChange={(e) => handleInputChange(e, 'salary')}
+                                />
+                            </div>
+                            <div>
+                                <label>Password:</label>
+                                <input
+                                    type="text"
+                                    value={selectedEmployee.password}
+                                    onChange={(e) => handleInputChange(e, 'password')}
                                 />
                             </div>
                             <button className='ingredient-button' onClick={handleItemUpdate}>Submit</button>
-                            <button className='ingredient-button' onClick={() => handleIngredientDelete(selectedItem.ingredientid, selectedItem.count)}>Delete</button>
+                            <button className='ingredient-button' onClick={() => handleIngredientDelete(selectedEmployee.employeeid)}>Delete</button>
                         </div>
                     )}
                 </div>
                 <div className="new-ingredient">
-                    <h2>Add New Ingredient</h2>
+                    <h2>Add New Employee</h2>
                     <div className='new-ingredient-user'>
-                        <label>Ingredient Name:</label>
+                        <label>Employee ID:</label>
+                        <input
+                            type="number"
+                            value={newEmployee.employeeid}
+                            onChange={(e) => setNewEmployee({ ...newEmployee, employeeid: e.target.value })}
+                        />
+                    </div>
+                    <div className='new-ingredient-user'>
+                        <label>Name:</label>
                         <input
                             type="text"
-                            value={newIngredient.ingredientname}
-                            onChange={(e) => setNewIngredient({ ...newIngredient, ingredientname: e.target.value })}
+                            value={newEmployee.employeename}
+                            onChange={(e) => setNewEmployee({ ...newEmployee, employeename: e.target.value })}
                         />
                     </div>
                     <div className='new-ingredient-user'>
-                        <label>Price Per Unit:</label>
-                        <input
-                            type="number"
-                            value={newIngredient.ppu}
-                            onChange={(e) => setNewIngredient({ ...newIngredient, ppu: e.target.value })}
-                        />
-                    </div>
-                    <div className='new-ingredient-user'>
-                        <label>Count:</label>
-                        <input
-                            type="number"
-                            value={newIngredient.count}
-                            onChange={(e) => setNewIngredient({ ...newIngredient, count: e.target.value })}
-                        />
-                    </div>
-                    <div className='new-ingredient-user'>
-                        <label>Min Amount:</label>
-                        <input
-                            type="number"
-                            value={newIngredient.minamount}
-                            onChange={(e) => setNewIngredient({ ...newIngredient, minamount: e.target.value })}
-                        />
-                    </div>
-                    <div className='new-ingredient-user'>
-                        <label>Location:</label>
+                        <label>Email:</label>
                         <input
                             type="text"
-                            value={newIngredient.location}
-                            onChange={(e) => setNewIngredient({ ...newIngredient, location: e.target.value })}
+                            value={newEmployee.email}
+                            onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })}
                         />
                     </div>
                     <div className='new-ingredient-user'>
-                        <label>Recommended Amount:</label>
+                        <label>Manager:</label>
                         <input
-                            type="number"
-                            value={newIngredient.recommendedamount}
-                            onChange={(e) => setNewIngredient({ ...newIngredient, recommendedamount: e.target.value })}
+                            type="text"
+                            value={newEmployee.ismanager}
+                            onChange={(e) => setNewEmployee({ ...newEmployee, ismanager: e.target.value })}
                         />
                     </div>
                     <div className='new-ingredient-user'>
-                        <label>Case Amount:</label>
+                        <label>Salary:</label>
                         <input
                             type="number"
-                            value={newIngredient.caseamount}
-                            onChange={(e) => setNewIngredient({ ...newIngredient, caseamount: e.target.value })}
+                            value={newEmployee.salary}
+                            onChange={(e) => setNewEmployee({ ...newEmployee, salary: e.target.value })}
+                        />
+                    </div>
+                    <div className='new-ingredient-user'>
+                        <label>Password:</label>
+                        <input
+                            type="number"
+                            value={newEmployee.password}
+                            onChange={(e) => setNewEmployee({ ...newEmployee, password: e.target.value })}
                         />
                     </div>
                     <button className='ingredient-button' onClick={handleIngredientSubmit}>Submit</button>
                 </div>
 
                 <div className="inventory-list">
-                    <h2>Inventory Items <Restock/></h2>
+                    <h2>Employees</h2>
                     {renderInventoryItems()}
                 </div>
             </div>
