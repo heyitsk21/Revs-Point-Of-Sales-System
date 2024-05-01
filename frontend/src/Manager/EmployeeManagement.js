@@ -36,9 +36,10 @@ function EmployeeManagement() {
     const handleEmployeeUpdate = async () => {
         try {
             const payload = {
-                employeename: selectedEmployee.employeename,
-                employeeemail: selectedEmployee.employeeemail,
-                ismanager: selectedEmployee.ismanager,
+                employeeid: selectedEmployee.employeeid,
+                employeeName: selectedEmployee.employeename,
+                employeeEmail: selectedEmployee.employeeemail,
+                isManager: selectedEmployee.ismanager,
                 salary: parseFloat(selectedEmployee.salary),
                 password: selectedEmployee.password,
             };
@@ -55,9 +56,9 @@ function EmployeeManagement() {
         try {
             const newEmployeeData = {
                 ...newEmployee,
-                employeename: newEmployee.employeename,
-                employeeemail: newEmployee.employeeemail,
-                ismanager: newEmployee.ismanager,
+                employeeName: newEmployee.employeename,
+                employeeEmail: newEmployee.employeeemail,
+                isManager: Boolean(newEmployee.ismanager),
                 salary: parseFloat(newEmployee.salary),
                 password: newEmployee.password,
             };
