@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Trends.css';
 import { useTextSize } from '../components/TextSizeContext';
 import ManagerTopBar from '../components/ManagerTopBar';
@@ -7,10 +7,15 @@ import { useNavigate } from 'react-router-dom';
 function Trends() {
     const navigate = useNavigate();
     const { textSize } = useTextSize();
+    const [highContrast, setHighContrast] = useState(false);
+
+    const toggleHighContrast = () => {
+        setHighContrast(!highContrast);
+    };
 
     return (
-        <div className={`trends ${textSize === 'large' ? 'large-text' : ''}`}>
-            <ManagerTopBar />
+        <div className={`trends ${textSize === 'large' ? 'large-text' : ''} ${highContrast ? 'high-contrast' : ''}`}>
+            <ManagerTopBar toggleHighContrast={toggleHighContrast} />
             <div className='manager-trends'>
                 <div className="trendsTitle">
                     <h2>Trends</h2>
