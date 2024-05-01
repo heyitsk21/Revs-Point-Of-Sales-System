@@ -128,6 +128,7 @@
     padding: 7px;
 }
 
+.this-inventory.high-contrast *,
 .manager-inventory.high-contrast,
 .manager-restock.high-contrast *,
 .inventory-details.high-contrast,
@@ -137,6 +138,7 @@
     background-color: #000000;
 }
 
+.this-inventory.high-contrast button,
 .manager-inventory.high-contrast button,
 .inventory-details.high-contrast button {
     outline: 2px solid white;
