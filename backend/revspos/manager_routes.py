@@ -101,7 +101,7 @@ CompleteOrder_model = api.model('CompleteOrder',{"orderid":fields.Integer(requir
 
 
 AddEmployee_model = api.model('AddEmployee', { "employeeName":fields.String(required=True), "employeeEmail":fields.String(required=True), "isManager":fields.Boolean(required=True), "salary":fields.Float(required=True), "password":fields.String(required=True)})
-UpdateEmployee_model = api.model('UpdateEmploy', {"employeeid":fields.Integer(required=True), "employeeName":fields.String(),"employeeEmail":fields.String(required=True), "isManager":fields.Boolean(), "salary":fields.Float(), "password":fields.String()})
+UpdateEmployee_model = api.model('UpdateEmploy', {"employeeid":fields.Integer(required=True), "employeeName":fields.String(),"employeeEmail":fields.String(), "isManager":fields.Boolean(), "salary":fields.Float(), "password":fields.String()})
 DeleteEmployee_model = api.model('DeleteEmployee',{'employeeid':fields.Integer(required=True)})
 
 @api.route('/api/kitchen/completeorder')
