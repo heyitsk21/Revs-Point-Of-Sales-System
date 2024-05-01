@@ -24,7 +24,7 @@ function LoginScreen(){
     };
 
     const getAuthority = (userData) => {
-        const employee = employees.find(emp => emp.email === userData.email);
+        const employee = employees.find(emp => emp.employeeemail === userData.email);
         console.log("authority: ", employee);
         if (employee) {
             localStorage.setItem('userID', employee.employeeid);
@@ -64,7 +64,7 @@ function LoginScreen(){
                 localStorage.setItem('authority', authority);
                 localStorage.setItem('isLoggedIn', true);
                 localStorage.setItem('userInfo', res.data);
-                localStorage.setItem('username', res.data.given_name)
+                localStorage.setItem('username', res.data.given_name);
                 console.log("Now logged in:", res.data);
                 setTimeout(redirect, 200);
             } catch (err) {
