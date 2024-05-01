@@ -24,6 +24,10 @@
   margin: 0px 2%;
 }
 
+.manager-bar button {
+  border-radius: 1rem;
+}
+
 .manager-bar-nav button {
   font-family: "Chakra Petch", sans-serif;
   background-color: #077a8e;
@@ -33,6 +37,8 @@
   font-size: 18px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  height: 8%;
+  margin: auto;
 }
 
 .manager-top-bar-button {

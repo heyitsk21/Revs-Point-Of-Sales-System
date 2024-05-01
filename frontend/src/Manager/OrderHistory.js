@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './OrderHistory.css';
+import './../Common.css';
 import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
