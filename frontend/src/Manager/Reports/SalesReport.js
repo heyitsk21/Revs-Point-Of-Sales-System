@@ -15,7 +15,6 @@ function SalesReport () {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [reportData, setReportData] = useState([]);
-    const [speakEnabled, setSpeakEnabled] = useState(false);
     const { textSize, toggleTextSize } = useTextSize();
 
 
@@ -84,81 +83,32 @@ function SalesReport () {
                 enddate: endDate
             });
             console.log('Response from API:', response.data);
-
             setReportData(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
 
-
-    const speakText = (text) => {
-        const utterance = new SpeechSynthesisUtterance();
-        utterance.text = text;
-        window.speechSynthesis.speak(utterance);
-    };
-
-    const debounce = (func, wait) => {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                timeout = null;
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    };
-
-    const handleMouseOver = debounce((event) => {
-        let hoveredElementText = '';
-        if (speakEnabled) {
-            if (event.target.innerText) {
-                hoveredElementText = event.target.innerText;
-            } else if (event.target.value) {
-                hoveredElementText = event.target.value;
-            } else if (event.target.getAttribute('aria-label')) {
-                hoveredElementText = event.target.getAttribute('aria-label');
-            } else if (event.target.getAttribute('aria-labelledby')) {
-                const id = event.target.getAttribute('aria-labelledby');
-                const labelElement = document.getElementById(id);
-                if (labelElement) {
-                    hoveredElementText = labelElement.innerText;
-                }
-            }
-            speakText(hoveredElementText);
-        }
-    }, 1000);
-
-    const toggleSpeak = () => {
-        if (speakEnabled) {
-            window.speechSynthesis.cancel();
-        }
-        setSpeakEnabled(!speakEnabled);
-    };
-
     return (
-        <div className={`sales-report ${textSize === 'large' ? '' : ''}`} onMouseOver={handleMouseOver}>
+        <div className={`sales-report ${textSize === 'large' ? '' : ''}`} >
             <ManagerTopBar/>
             <div className='report-body'>
 
                 <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
-                <h2  className="trends-header" onMouseOver={handleMouseOver}>Sales Report</h2>
+                <h2  className="trends-header">Sales Report</h2>
                 <div className="date-fields">
-                    <label onMouseOver={handleMouseOver}>Start Date:</label>
+                    <label >Start Date:</label>
                     <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
-                    <label onMouseOver={handleMouseOver}>End Date:</label>
+                    <label >End Date:</label>
                     <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
                 </div>
-                <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Sales Report</button>
-                <button type='button' onClick={exportToCsv}>
-                Export to CSV
-                </button>
+                <button onClick={() => fetchData(startDate, endDate)}>Generate Sales Report</button>
+                <button type='button' onClick={exportToCsv}> Export to CSV</button>
                 <div className="report-list">
                     {reportData.length > 0 ? (
                          <SortedTable columns={columns} data={reportData} />
                     ) : (
-                        <p onMouseOver={handleMouseOver}>No data to display</p>
+                        <p>No data to display</p>
                     )}
                 </div>
             </div>
