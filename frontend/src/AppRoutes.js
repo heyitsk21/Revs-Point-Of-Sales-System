@@ -1,6 +1,5 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import App from './App';
 import Employee from './Employee/pages/Employee';
 import Customer from './Employee/pages/Customer';
 import LoginScreen from './LoginScreen';
@@ -15,6 +14,7 @@ import RestockReport from './Manager/Reports/RestockReport';
 import OrderTrend from './Manager/Reports/OrderTrend';
 import MenuBoard from './MenuBoard';
 import KitchenBoard from './Manager/KitchenBoard'
+import EmployeeManagement from './Manager/EmployeeManagement';
 
 function AppRoutes() {
 
@@ -118,6 +118,16 @@ function AppRoutes() {
         element={
           localStorage.getItem('authority') >= 3 ? (
             <OrderTrend />
+          ) : (
+            <Navigate to="/unauthorized" replace />
+          )
+        }
+      />
+      <Route
+        path="/manager/employeemanagement"
+        element={
+          localStorage.getItem('authority') >= 3 ? (
+            <EmployeeManagement />
           ) : (
             <Navigate to="/unauthorized" replace />
           )

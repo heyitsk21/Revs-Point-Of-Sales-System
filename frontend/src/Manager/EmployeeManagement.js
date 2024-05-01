@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './Inventory.css';
 import './../Common.css';
-import { useTextSize } from '../components/TextSizeContext';
+import { useTextSize } from '../components/TextSizeContext.js';
 import axios from 'axios';
-import ManagerTopBar from '../components/ManagerTopBar';
+import ManagerTopBar from '../components/ManagerTopBar.js';
 import Restock from './Restock.js';
 
-function Inventory() {
+function EmployeeManagement() {
     const [inventory, setInventory] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [newIngredient, setNewIngredient] = useState({
@@ -293,4 +293,4 @@ function Inventory() {
     );
 };
 
-export default Inventory;
+export default EmployeeManagement;

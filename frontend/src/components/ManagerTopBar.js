@@ -7,8 +7,6 @@ import { useNavigate } from 'react-router-dom';
 function ManagerTopBar({ toggleHighContrast }) {
     const navigate = useNavigate();
     const { toggleTextSize } = useTextSize();
-    const [loggedIn, setLoggedIn] = useState(false);
-    const [username, setUsername] = useState('');
     const [currentTime, setCurrentTime] = useState('');
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [leftdropdownVisible, setLeftdropdownVisible] = useState(false);
@@ -66,6 +64,10 @@ function ManagerTopBar({ toggleHighContrast }) {
             console.log('Order History button clicked');
             navigate('/manager/orderhistory');
             break;
+          case 'employeeManagement':
+            console.log('Employee Management button clicked');
+            navigate('/manager/employeemanagement');
+            break;
           default:
             break;
         }
@@ -99,6 +101,7 @@ function ManagerTopBar({ toggleHighContrast }) {
                 <button className="manager-bottom-bar-button" onClick={() => handleButtonClick('inventory')}>Inventory</button>
                 <button className="manager-bottom-bar-button" onClick={() => handleButtonClick('menuItems')}>Menu Items</button>
                 <button className="manager-bottom-bar-button" onClick={() => handleButtonClick('orderHistory')}>Order History</button>
+                <button className="manager-bottom-bar-button" onClick={() => handleButtonClick('employeeManagement')}>Employees</button>
             </div>
             <div className="manager-dropdown-container">
                 <button className={`manager-dropdown-toggle ${dropdownVisible ? 'active' : ''}`} onClick={toggleDropdown}>
