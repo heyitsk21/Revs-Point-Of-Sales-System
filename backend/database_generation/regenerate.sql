@@ -38,6 +38,7 @@ CREATE TABLE MenuItems (
 CREATE TABLE Employee (
     EmployeeID SERIAL PRIMARY KEY,
     EmployeeName VARCHAR(100),
+    EmployeeEmail VARCHAR(100),
     IsManager BOOLEAN,
     Salary NUMERIC(10, 2), 
     Password VARCHAR(100)
@@ -127,7 +128,7 @@ CREATE TABLE CustomizationOrderMenu (
 
 \COPY MenuItemCustomizations (MenuID, CustomizationID) FROM 'database_generation/MenuItemCustomizations.csv' DELIMITER ',' CSV HEADER;
 
-\COPY Employee ( EmployeeName, IsManager, Salary, Password) FROM 'database_generation/Employee.csv' DELIMITER ',' CSV HEADER;
+\COPY Employee ( EmployeeName, EmployeeEmail,IsManager, Salary, Password) FROM 'database_generation/Employee.csv' DELIMITER ',' CSV HEADER;
 
 \COPY Orders (CustomerName, TaxPrice, BasePrice, OrderDateTime, EmployeeID) FROM 'database_generation/Orders.csv' DELIMITER ',' CSV HEADER;
 

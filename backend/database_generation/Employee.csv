@@ -1,15 +1,7 @@
-EmployeeName,IsManager,Salary,Password
-Katelyn Nguyen,FALSE,10,thisisaPassword1234%
-Joseph Nuccitelli,FALSE,10,p3ssw@rd
-Darren Collingwood,FALSE,10,631-81-2467
-Joshua Robert,FALSE,10,meowmeow69!
-Jessica Jakubik,TRUE,13,bestTable
-Anjali Varghese,FALSE,10,cashierpassword#6
-admin,TRUE,0,admin
-test,FALSE,0,test
-darren.l.collingwood@gmail.com,FALSE,10,test
-dlcollingwood@tamu.edu,TRUE,20,test
-heyitsk21@tamu.edu,TRUE,19,test
-jessjakubik@tamu.edu,TRUE,19,test
-jnuccitelli@tamu.edu,TRUE,19,test
-joshdrobert@tamu.edu,TRUE,19,test
+EmployeeName,email,IsManager,Salary,Password
+Fake Darren,darren.l.collingwood@gmail.com,FALSE,10,test
+Darren Collingwood,dlcollingwood@tamu.edu,TRUE,20,test
+Katelyn Nguyen,heyitsk21@tamu.edu,TRUE,19,test
+Jessica Jakubik,jessjakubik@tamu.edu,TRUE,19,test
+Joseph Nuccitelli,jnuccitelli@tamu.edu,TRUE,19,test
+Joshua Robert,joshdrobert@tamu.edu,TRUE,19,test

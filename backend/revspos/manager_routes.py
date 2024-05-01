@@ -100,8 +100,8 @@ GenerateOrderTrend_model = api.model('GenerateOrderTrend',{"startdate": fields.D
 CompleteOrder_model = api.model('CompleteOrder',{"orderid":fields.Integer(required=True)})
 
 
-AddEmployee_model = api.model('AddEmployee', { "employeeName":fields.String(required=True), "isManager":fields.Boolean(required=True), "salary":fields.Float(required=True), "password":fields.String(required=True)})
-UpdateEmployee_model = api.model('UpdateEmploy', {"employeeid":fields.Integer(required=True), "employeeName":fields.String(), "isManager":fields.Boolean(), "salary":fields.Float(), "password":fields.String()})
+AddEmployee_model = api.model('AddEmployee', { "employeeName":fields.String(required=True), "employeeEmail":fields.String(required=True), "isManager":fields.Boolean(required=True), "salary":fields.Float(required=True), "password":fields.String(required=True)})
+UpdateEmployee_model = api.model('UpdateEmploy', {"employeeid":fields.Integer(required=True), "employeeName":fields.String(),"employeeEmail":fields.String(required=True), "isManager":fields.Boolean(), "salary":fields.Float(), "password":fields.String()})
 DeleteEmployee_model = api.model('DeleteEmployee',{'employeeid':fields.Integer(required=True)})
 
 @api.route('/api/kitchen/completeorder')
@@ -177,18 +177,19 @@ class Employee(Resource):
     @api.expect(AddEmployee_model, validate=True)
     def post(self):
         data = request.get_json()
-        email = data.get("employeeName")
+        name = data.get("employeeName")
+        email = data.get("employeeEmail")
         isManager = data.get("isManager")
         salary = data.get("salary")
         password = data.get("password")
-        add_employee_query = text("INSERT INTO employee ( EmployeeName, IsManager, Salary, Password)  VALUES ('{inemail}', {inismanager}, {insalary},'{inpass}')".format(inemail=email, inismanager=isManager, insalary=salary,inpass = password))
-        try:
-            with db.engine.connect() as conn:
-                conn.execute(add_employee_query)
-                conn.commit()
-        except Exception as e:
+        add_employee_query = text("INSERT INTO employee ( EmployeeName,employeeEmail, IsManager, Salary, Password)  VALUES ('{inname}','{inemail}', {inismanager}, {insalary},'{inpass}')".format(inname = name,inemail=email, inismanager=isManager, insalary=salary,inpass = password))
+        
+        with db.engine.connect() as conn:
+            conn.execute(add_employee_query)
+            conn.commit()
+        #except Exception as e:
             # print(e)
-            return jsonify({"message": "Failed to add employee"})
+            #return jsonify({"message": "Failed to add employee"})
         
         return jsonify({"message": "Sucessfully added Employee"})
     
@@ -198,17 +199,20 @@ class Employee(Resource):
 
         data = request.get_json()
         empid = data.get("employeeid")
-        email = data.get("employeeName")
+        name = data.get("employeeName")
+        email = data.get("employeeEmail")
         isManager = data.get("isManager")
         salary = data.get("salary")
         password = data.get("password")
 
-        if(email == None and isManager == None and salary == None and password == None):
+        if(name == None and email == None and isManager == None and salary == None and password == None):
             return jsonify({"message": "No inputs entered. No query executed."})
 
         update_query = "UPDATE employee SET "
+        if (name != None):
+            update_query += "employeeName = '{inputname}',".format(inputname=name)
         if (email != None):
-            update_query += "employeename = '{inputnewname}',".format(inputnewname=email)
+            update_query += "employeeEmail = '{inputemail}',".format(inputemail=email)
         if (isManager != None):
             update_query += "ismanager = {inputisman},".format(inputisman=isManager)
         if (salary != None):
