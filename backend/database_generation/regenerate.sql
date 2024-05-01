@@ -51,11 +51,7 @@ CREATE TABLE Orders (
     BasePrice NUMERIC(10, 2), 
     OrderDateTime TIMESTAMP,
     EmployeeID INT, 
-    orderstat ORDERSTATUS,
-    CONSTRAINT fk_employee
-        FOREIGN KEY(EmployeeID) 
-        REFERENCES Employee(EmployeeID)
-
+    orderstat ORDERSTATUS
 );
 
 -- Create InventoryLog table
@@ -131,7 +127,7 @@ CREATE TABLE CustomizationOrderMenu (
 
 \COPY MenuItemCustomizations (MenuID, CustomizationID) FROM 'database_generation/MenuItemCustomizations.csv' DELIMITER ',' CSV HEADER;
 
-\COPY Employee (EmployeeID, EmployeeName, IsManager, Salary, Password) FROM 'database_generation/Employee.csv' DELIMITER ',' CSV HEADER;
+\COPY Employee ( EmployeeName, IsManager, Salary, Password) FROM 'database_generation/Employee.csv' DELIMITER ',' CSV HEADER;
 
 \COPY Orders (CustomerName, TaxPrice, BasePrice, OrderDateTime, EmployeeID) FROM 'database_generation/Orders.csv' DELIMITER ',' CSV HEADER;
 

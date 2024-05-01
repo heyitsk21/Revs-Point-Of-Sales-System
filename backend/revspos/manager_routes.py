@@ -99,6 +99,9 @@ GenerateOrderTrend_model = api.model('GenerateOrderTrend',{"startdate": fields.D
 
 CompleteOrder_model = api.model('CompleteOrder',{"orderid":fields.Integer(required=True)})
 
+
+AddEmployee_model = api.model('AddEmployee', { "employeeName":fields.String(required=True), "isManager":fields.Boolean(required=True), "salary":fields.Float(required=True), "password":fields.String(required=True)})
+UpdateEmployee_model = api.model('UpdateEmploy', {"employeeid":fields.Integer(required=True), "employeeName":fields.String(), "isManager":fields.Boolean(), "salary":fields.Float(), "password":fields.String()})
 DeleteEmployee_model = api.model('DeleteEmployee',{'employeeid':fields.Integer(required=True)})
 
 @api.route('/api/kitchen/completeorder')
@@ -171,13 +174,55 @@ class Employee(Resource):
                 employeelist.append({"employeeid":row.employeeid, "employeename":row.employeename, "ismanager":row.ismanager, "salary":row.salary, "password":row.password})
         return jsonify(employeelist)
 
+    @api.expect(AddEmployee_model, validate=True)
     def post(self):
-        with db.engine.connect() as conn:
-            pass
+        data = request.get_json()
+        email = data.get("employeeName")
+        isManager = data.get("isManager")
+        salary = data.get("salary")
+        password = data.get("password")
+        add_employee_query = text("INSERT INTO employee ( EmployeeName, IsManager, Salary, Password)  VALUES ('{inemail}', {inismanager}, {insalary},'{inpass}')".format(inemail=email, inismanager=isManager, insalary=salary,inpass = password))
+        try:
+            with db.engine.connect() as conn:
+                conn.execute(add_employee_query)
+                conn.commit()
+        except Exception as e:
+            # print(e)
+            return jsonify({"message": "Failed to add employee"})
+        
+        return jsonify({"message": "Sucessfully added Employee"})
     
+
+    @api.expect(UpdateEmployee_model, validate=True)
     def put(self):
+
+        data = request.get_json()
+        empid = data.get("employeeid")
+        email = data.get("employeeName")
+        isManager = data.get("isManager")
+        salary = data.get("salary")
+        password = data.get("password")
+
+        if(email == None and isManager == None and salary == None and password == None):
+            return jsonify({"message": "No inputs entered. No query executed."})
+
+        update_query = "UPDATE employee SET "
+        if (email != None):
+            update_query += "employeename = '{inputnewname}',".format(inputnewname=email)
+        if (isManager != None):
+            update_query += "ismanager = {inputisman},".format(inputisman=isManager)
+        if (salary != None):
+            update_query += "salary = {inputsalary},".format(inputsalary=salary)
+        if (password != None):
+            update_query += "password = '{inputpassword}',".format(inputpassword=password)
+
+        update_query = update_query[:-1]
+        update_query += " WHERE employeeid = {inputemployeeid}".format(inputemployeeid=empid)
+
         with db.engine.connect() as conn:
-            pass
+            conn.execute(text(update_query))
+            conn.commit()
+        return jsonify({"message": "successful update of employee"})
 
     @api.expect(DeleteEmployee_model, validate=True)
     def delete(self):
