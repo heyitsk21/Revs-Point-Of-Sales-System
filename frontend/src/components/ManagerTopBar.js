@@ -3,6 +3,7 @@ import { useTextSize } from './TextSizeContext';
 import './ManagerTopBar.css';
 import './../Common.css';
 import { useNavigate } from 'react-router-dom';
+import Translate from './translate.js';
 
 function ManagerTopBar({ toggleHighContrast }) {
     const navigate = useNavigate();
@@ -110,6 +111,7 @@ function ManagerTopBar({ toggleHighContrast }) {
                 </button>
                 {dropdownVisible && (
                     <div className="manager-dropdown-menu">
+                        <Translate/>
                         <button onClick={toggleTextSize}>Toggle Text Size</button>
                         <button onClick={toggleHighContrast}>Toggle High Contrast</button>
                     </div>
