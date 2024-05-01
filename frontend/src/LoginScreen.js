@@ -17,13 +17,14 @@ function LoginScreen(){
         try {
             const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/employee');
             setEmployees(response.data);
+            console.log(response.data);
         } catch (error) {
             console.error('Error fetching employees:', error);
         }
     };
 
     const getAuthority = (userData) => {
-        const employee = employees.find(emp => emp.employeename === userData.email);
+        const employee = employees.find(emp => emp.email === userData.email);
         console.log("authority: ", employee);
         if (employee) {
             localStorage.setItem('userID', employee.employeeid);
