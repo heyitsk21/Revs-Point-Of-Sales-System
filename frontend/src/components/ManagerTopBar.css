@@ -17,6 +17,10 @@
   align-items: center; /* Centers items vertically */
 }
 
+#iframe\:1\.container {
+  display: none !important;
+}
+
 .manager-bar-nav {
   display: flex;
   justify-content: space-between;
