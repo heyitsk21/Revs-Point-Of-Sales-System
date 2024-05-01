@@ -1,10 +1,11 @@
-/* Ordering.css */
+/* Customer.css */
 
 .customer {
     display: flex;
     flex-direction: column;
     height: 100%;
     font-size: 24px;
+    /* Default styles */
 }
 
 .customer button {
@@ -17,10 +18,25 @@
     cursor: pointer;
     font-size: 24px;
     font-family: "Chakra Petch", sans-serif;
+    /* Default button styles */
 }
 
 .customer button:hover {
-    background-color: rgb(157, 62, 62);    
+    background-color: rgb(157, 62, 62);
     color: gold;
     font-family: "Chakra Petch", sans-serif;
+}
+
+.employee.high-contrast {
+    background-color: #000000;
+    color: #ffffff; 
+}
+
+.employee.high-contrast * {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+.employee.high-contrast button {
+    outline: 3px solid white;
 }

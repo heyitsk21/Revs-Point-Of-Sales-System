@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import './CustHeader.css';
 import { useTextSize } from '../../../components/TextSizeContext';
 import { useNavigate } from 'react-router-dom';
-import Translate from '../../../components/translate'
+import Translate from '../../../components/translate';
 
-
-const CustHeader = ({ onCatChange }) => {
+const CustHeader = ({ onCatChange, toggleHighContrast }) => {
     const navigate = useNavigate();
     const { textSize, toggleTextSize } = useTextSize();
     const [currentTime, setCurrentTime] = useState('');
@@ -23,18 +22,16 @@ const CustHeader = ({ onCatChange }) => {
         return () => clearInterval(interval);
     }, []);
 
-    const speakText = (text) => {
-        const utterance = new SpeechSynthesisUtterance();
-        utterance.text = text;
-        window.speechSynthesis.speak(utterance);
-    };
-
     const handleLogout = () => {
-        console.log('Button clicked!');
+        console.log('Logout button clicked!');
         localStorage.setItem('authority', 0);
         localStorage.setItem('isLoggedIn', false);
         localStorage.setItem('userInfo', null);
         navigate('/');
+    };
+
+    const handleToggleHighContrast = () => {
+        toggleHighContrast(); 
     };
 
     return (
@@ -45,6 +42,7 @@ const CustHeader = ({ onCatChange }) => {
             </div>
             <button onClick={handleLogout}>Logout</button>
             <button onClick={toggleTextSize}>Toggle Text Size</button>
+            <button onClick={handleToggleHighContrast}>Toggle High Contrast</button>
             <div className='translate'><Translate /></div>
         </div>
     );

@@ -16,6 +16,7 @@ function KitchenBoard() {
     };
 
     const [orders, setOrders] = useState([]);
+    const [highContrast, setHighContrast] = useState(false);
 
     const fetchOrders = async () => {
         try {
@@ -25,38 +26,10 @@ function KitchenBoard() {
             console.error('Error fetching inventory:', error);
         }
     };
-    const data = [
-        {
-            "orderid": 10,
-            "customername": "Damion",
-            "menuitems": [
-                {
-                    "menuitemname": "Chicken Sandwhich",
-                    "customizations": ["Lettuce", "tomato"]
-                },
-                {
-                    "menuitemname": "Aggie Chicken Club",
-                    "customizations": ["Lettuce"]
-                },
-                {
-                    "menuitemname": "water bottle"
-                }
-            ]
-        },
-        {
-            "orderid": 11,
-            "customername": "John",
-            "menuitems": [
-                {
-                    "menuitemname": "Burger",
-                    "customizations": ["Lettuce", "tomato"]
-                },
-                {
-                    "menuitemname": "water bottle"
-                }
-            ]
-        }
-    ];
+
+    const toggleHighContrast = () => {
+        setHighContrast(prevState => !prevState);
+    };
 
     useEffect(() => {
         fetchOrders();
@@ -64,9 +37,8 @@ function KitchenBoard() {
 
     return (
         <TextSizeProvider>
-        <ManagerTopBar />
-            <div className="kitchen-board-container">
-
+            <ManagerTopBar toggleHighContrast={toggleHighContrast} highContrast={highContrast} />
+            <div className={`kitchen-board-container ${highContrast ? 'high-contrast' : ''}`}>
                 <Translate />
                 <div className="orders-grid">
                     {orders.map(order => (
