@@ -111,7 +111,6 @@ function ManagerTopBar({ toggleHighContrast }) {
                 </button>
                 {dropdownVisible && (
                     <div className="manager-dropdown-menu">
-                        <Translate/>
                         <button onClick={toggleTextSize}>Toggle Text Size</button>
                         <button onClick={toggleHighContrast}>Toggle High Contrast</button>
                     </div>
