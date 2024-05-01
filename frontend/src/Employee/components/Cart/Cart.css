@@ -6,7 +6,7 @@
     border-collapse: collapse; 
 }
 
-td {
+.employee-table td {
     border: 1px solid #a2a2a2; 
 }
 
@@ -15,15 +15,7 @@ td {
     background-color: #f2f2f2;
 }
 
-.large-text .cart {
-    font-size: 40px;
-}
-
-.large-text .cart button {
-    font-size: 40px;
-}
-
-.adjust {
+.employee-adjust {
     text-align: center;
     margin: 5px;
 }

@@ -3,13 +3,13 @@ import './OrderHistory.css';
 import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
-import ManagerBottomBar from '../components/ManagerBottomBar';
 import RevThankYou from '../components/RevThankYou';
 
 const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [showRevThankYou, setShowRevThankYou] = useState(false);
+    const [highContrast, setHighContrast] = useState(false); // State variable for HighContrast mode
     const { textSize } = useTextSize();
     const searchInputRef = useRef(null);
 
@@ -55,12 +55,16 @@ const OrderHistory = () => {
         setShowRevThankYou(true);
     };
 
+    const toggleHighContrast = () => {
+        setHighContrast(!highContrast);
+    };
+
     return (
-        <div className={`order-manager ${textSize === 'large' ? 'large-text' : ''}`}>
-            <ManagerTopBar />
+        <div className={`order-manager ${textSize === 'large' ? 'large-text' : ''} ${highContrast ? 'high-contrast' : ''}`}>
+            <ManagerTopBar toggleHighContrast={toggleHighContrast} />
             <div className='manager-order-history'>
                 <div className="order-details">
-                <button onClick={handleShowRevThankYou}>SUBMIT ORDER</button>
+                    <button onClick={handleShowRevThankYou}>SUBMIT ORDER</button>
                     <h2>{selectedOrder ? `Order Details: ${selectedOrder.orderid}` : 'Select an Order to View Details'}</h2>
                     {selectedOrder && (
                         <div className="selected-order">
@@ -85,7 +89,6 @@ const OrderHistory = () => {
                     </div>
                 </div>
             </div>
-            <ManagerBottomBar />
             {showRevThankYou && <RevThankYou onAnimationEnd={() => setShowRevThankYou(false)} />} {/* Pass onAnimationEnd event to handle reset */}
         </div>
     );

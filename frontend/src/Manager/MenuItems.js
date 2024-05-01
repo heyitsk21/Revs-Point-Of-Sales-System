@@ -3,7 +3,6 @@ import './MenuItems.css';
 import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
-import ManagerBottomBar from '../components/ManagerBottomBar';
 
 function MenuItems() {
     const [menu, setMenu] = useState([]);
@@ -14,7 +13,7 @@ function MenuItems() {
     const [selectedIngredient, setSelectedIngredient] = useState('');
     const [selectedCustomization, setSelectedCustomization] = useState('');
     const [customizations, setCustomizations] = useState([]);
-    const [speakEnabled] = useState(false);
+    const [highContrast, setHighContrast] = useState(false); // State variable for HighContrast mode
     const { textSize } = useTextSize();
 
     useEffect(() => {
@@ -196,9 +195,9 @@ function MenuItems() {
     const renderMenuItems = () => {
         return menu.map(item => (
             <tr key={item.menuid} onClick={(event) => rowClicked(event, item)} className={selectedItem && selectedItem.menuid === item.menuid ? 'selected' : ''}>
-                <td onMouseOver={handleMouseOver}>{item.menuid}</td>
-                <td onMouseOver={handleMouseOver}>{item.itemname}</td>
-                <td onMouseOver={handleMouseOver}>${item.price}</td>
+                <td>{item.menuid}</td>
+                <td>{item.itemname}</td>
+                <td>${item.price}</td>
             </tr>
         ));
     };
@@ -210,60 +209,25 @@ function MenuItems() {
     };
     
     const renderCustomizations = () => {
-        console.log('Customizations:', customizations); // Log the customizations array
+        console.log('Customizations:', customizations);
         return customizations.map(customization => (
             <div key={customization.customizationid}>
                 {customization.customizationname} - {customization.ingredientname}
-                <button className='menu-item-button' onClick={() => handleDeleteCustomization(customization.ingredientid)}>Delete</button>
+                <button className='menu-item-button' onClick={() => handleDeleteCustomization(customization.ingredientid)}><img src="/Images/deleteIcon.png" alt="Delete" className="delete-icon" /></button>
             </div>
         ));
     };
-    
 
-    const speakText = (text) => {
-        const utterance = new SpeechSynthesisUtterance();
-        utterance.text = text;
-        window.speechSynthesis.speak(utterance);
+    const toggleHighContrast = () => {
+        setHighContrast(!highContrast);
     };
-
-    const debounce = (func, wait) => {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                timeout = null;
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    };
-
-    const handleMouseOver = debounce((event) => {
-        let hoveredElementText = '';
-        if (speakEnabled) {
-            if (event.target.innerText) {
-                hoveredElementText = event.target.innerText;
-            } else if (event.target.value) {
-                hoveredElementText = event.target.value;
-            } else if (event.target.getAttribute('aria-label')) {
-                hoveredElementText = event.target.getAttribute('aria-label');
-            } else if (event.target.getAttribute('aria-labelledby')) {
-                const id = event.target.getAttribute('aria-labelledby');
-                const labelElement = document.getElementById(id);
-                if (labelElement) {
-                    hoveredElementText = labelElement.innerText;
-                }
-            }
-            speakText(hoveredElementText);
-        }
-    }, 1000);
 
     return (
-        <div className={`manager-menu ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
-            <ManagerTopBar />
+        <div className={`manager-menu ${textSize === 'large' ? 'large-text' : ''} ${highContrast ? 'high-contrast' : ''}`}>
+            <ManagerTopBar toggleHighContrast={toggleHighContrast} />
             <div className='manager-menu-items'>
                 <div className="add-item-section">
-                    <h2 onMouseOver={handleMouseOver}>Add New Menu Item</h2>
+                    <h2>Add New Menu Item</h2>
                     <div className='add-item-object'>
                         <label>Item Name:</label>
                         <input className='menu-item-input'
@@ -294,57 +258,57 @@ function MenuItems() {
                             ))}
                         </select>
                     </div>
-                    <button className='menu-item-button' onClick={handleAddMenuItem} onMouseOver={handleMouseOver}>Submit</button>
+                    <button className='menu-item-button' onClick={handleAddMenuItem}>Submit</button>
                 </div>
                 <div className="edit-item-section">
-                    <h2 onMouseOver={handleMouseOver}>{selectedItem ? `Edit Menu Item ${selectedItem.menuid}` : 'Select a Menu Item to Edit'}</h2>
+                    <h2>{selectedItem ? `Edit Menu Item ${selectedItem.menuid}` : 'Select a Menu Item to Edit'}</h2>
                     {selectedItem && (
                         <>
-                            <label htmlFor="editName" onMouseOver={handleMouseOver}>Name:</label>
+                            <label htmlFor="editName">Name:</label>
                             <input type="text" id="editName" name="itemname" value={selectedItem.itemname} onChange={handleInputChange} />
-                            <label htmlFor="editPrice" onMouseOver={handleMouseOver}>Price:</label>
-                            <input type="text" id="editPrice" name="price" value={selectedItem.price} onChange={handleInputChange} onMouseOver={handleMouseOver} />
+                            <label htmlFor="editPrice">Price:</label>
+                            <input type="text" id="editPrice" name="price" value={selectedItem.price} onChange={handleInputChange} />
                             <button className='menu-item-button' onClick={handleUpdateMenuItem}>Update</button>
-                            <h3 onMouseOver={handleMouseOver}>Ingredients:</h3>
+                            <h3>Ingredients:</h3>
                             <ul>
                                 {checkedItems.map((ingredient, index) => (
-                                    <li key={index} onMouseOver={handleMouseOver}>
+                                    <li key={index}>
                                         {ingredient.ingredientname}
                                         <button className='menu-item-button-delete' onClick={() => handleDeleteIngredient(ingredient.ingredientid)}><img src="/Images/deleteIcon.png" alt="Delete" className="delete-icon" /></button>
                                     </li>
                                 ))}
                             </ul>
                             <div>
-                                <h3 htmlFor="ingredientSelect" onMouseOver={handleMouseOver}>Add New Ingredient:</h3>
-                                <select id="ingredientSelect" value={selectedIngredient} onChange={handleIngredientChange} onMouseOver={handleMouseOver}>
+                                <h3 htmlFor="ingredientSelect">Add New Ingredient:</h3>
+                                <select id="ingredientSelect" value={selectedIngredient} onChange={handleIngredientChange}>
                                     <option value="">Select Ingredient</option>
                                     {renderIngredientOptions()}
                                 </select>
-                                <button className='menu-item-button-delete' onClick={handleAddIngredient} onMouseOver={handleMouseOver}><img src="/Images/addIcon.png" alt="Add" className="delete-icon" /></button>
+                                <button className='menu-item-button-delete' onClick={handleAddIngredient}><img src="/Images/addIcon.png" alt="Add" className="delete-icon" /></button>
                             </div>
-                            <h3 onMouseOver={handleMouseOver}>Customizations:</h3>
+                            <h3>Customizations:</h3>
                             <div>
                                 {renderCustomizations()}
                             </div>
-                            <div>
-                                <h3 htmlFor="customizationSelect" onMouseOver={handleMouseOver}>Add Customization:</h3>
-                                <select id="customizationSelect" value={selectedCustomization} onChange={(e) => setSelectedCustomization(e.target.value)} onMouseOver={handleMouseOver}>
+                            <div className="edit-customization-section">
+                                <h3 htmlFor="customizationSelect">Add Customization:</h3>
+                                <select id="customizationSelect" value={selectedCustomization} onChange={(e) => setSelectedCustomization(e.target.value)}>
                                     <option value="">Select Customization</option>
                                     {renderIngredientOptions()}
                                 </select>
-                                <button className='menu-item-button' onClick={() => handleAddCustomization(selectedCustomization)} onMouseOver={handleMouseOver}>Add</button>
+                                <button className='menu-item-button' onClick={() => handleAddCustomization(selectedCustomization)}><img src="/Images/addIcon.png" alt="Add" className="delete-icon" /></button>
                             </div>
                         </>
                     )}
                 </div>
                 <div className='item-list'>
-                    <h2 onMouseOver={handleMouseOver}>Menu Items</h2>
+                    <h2>Menu Items</h2>
                     <table>
                         <thead>
                             <tr>
-                                <th onMouseOver={handleMouseOver}>ID</th>
-                                <th onMouseOver={handleMouseOver}>Name</th>
-                                <th onMouseOver={handleMouseOver}>Price</th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Price</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -353,10 +317,9 @@ function MenuItems() {
                     </table>
                 </div>
                 <div className="button-panel">
-                    <button className='menu-item-button' onClick={handleDeleteButtonClick} disabled={!selectedItem} onMouseOver={handleMouseOver}>Delete</button>
+                    <button className='menu-item-button' onClick={handleDeleteButtonClick} disabled={!selectedItem}>Delete</button>
                 </div>
             </div>
-            <ManagerBottomBar />
         </div>
     );
 };

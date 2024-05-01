@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './Customer.css';
-import Ordering from '../components/Ordering/Ordering';
+import CustOrdering from '../components/Ordering/CustOrdering';
 import CustHeader from '../components/CustHeader/CustHeader'
 import { useTextSize } from '../../components/TextSizeContext';
 import { CartProvider } from 'react-use-cart';
@@ -12,7 +12,7 @@ const Employee = ({ onCatChange }) => {
         <div className={`employee ${textSize === 'large' ? 'large-text' : ''}`}>
             <CartProvider>
                 <CustHeader/>
-                <Ordering/>
+                <CustOrdering/>
             </CartProvider>
         </div>
     );

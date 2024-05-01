@@ -6,12 +6,17 @@
     color: #000000;
     top: 10%;
     overflow-y: auto;
-    height: 82%;
+    max-height: 90%;
     left:0;
     width: calc(100% - 40px);
     display: flex;
     flex-direction: column;
     align-items: left;
+}
+
+.manager-restock {
+    position:fixed;
+    left: 15%;
 }
 
 /* Inventory details styles */
@@ -24,6 +29,8 @@
     position: fixed;
     left: 77%;
     width: 18%;
+    max-height: 90%;
+    overflow-y:auto;
 }
 
 /* Selected item styles */
@@ -75,6 +82,8 @@
     left: 55%;
     width: 18%;
     padding: 10px;
+    max-height:80%;
+    overflow-y:auto;
 }
 
 .new-ingredient-user {

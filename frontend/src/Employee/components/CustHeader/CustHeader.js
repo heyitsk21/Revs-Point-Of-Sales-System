@@ -38,8 +38,8 @@ const CustHeader = ({ onCatChange }) => {
     };
 
     return (
-        <div className="top-bar">
-            <div className="user-info">
+        <div className="cust-top-bar">
+            <div className="cust-user-info">
                 <span>Welcome to Rev's!</span>
                 <span>{currentTime}</span>
             </div>

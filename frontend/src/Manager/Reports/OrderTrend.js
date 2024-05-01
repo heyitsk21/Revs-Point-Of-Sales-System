@@ -5,6 +5,10 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import ManagerTopBar from '../../components/ManagerTopBar';
 
+import DatePicker from "react-datepicker";
+import SortedTable from '../../components/SortedTable';
+import "react-datepicker/dist/react-datepicker.css";
+
 function OrderTrend () {
     const navigate = useNavigate();
     const [menuData, setMenuData] = useState([]);
@@ -12,6 +16,53 @@ function OrderTrend () {
     const [endDate, setEndDate] = useState('');
     const [speakEnabled, setSpeakEnabled] = useState(false);
     const { textSize, toggleTextSize } = useTextSize();
+
+    const columns = React.useMemo(
+        () => [
+          {
+            Header: 'Menu Item 1',
+            accessor: 'menuid1' 
+          },
+          {
+            Header: 'Menu Item 2',
+            accessor: 'menuid2' 
+          },
+          {
+            Header: 'Pair Count',
+            accessor: 'count' 
+          },          
+        ],
+        []
+      )
+
+      const downloadFile = ({ data, fileName, fileType }) => {
+        const blob = new Blob([data], { type: fileType })
+        const a = document.createElement('a')
+        a.download = fileName
+        a.href = window.URL.createObjectURL(blob)
+        const clickEvt = new MouseEvent('click', {
+          view: window,
+          bubbles: true,
+          cancelable: true,
+        })
+        a.dispatchEvent(clickEvt)
+        a.remove()
+      }
+
+    const exportToCsv = e => {
+        e.preventDefault()
+        let headers = ['MenuItem1,MenuItem2,Amount']
+        let usersCsv = menuData.reduce((acc, user) => {
+          const { menuid1,menuid2,count } = user
+          acc.push([menuid1,menuid2,count ].join(','))
+          return acc
+        }, [])
+        downloadFile({
+          data: [...headers, ...usersCsv].join('\n'),
+          fileName: 'OrderTrendReport.csv',
+          fileType: 'text/csv',
+        })
+      }
 
     useEffect(() => {
         if (startDate && endDate) {
@@ -82,39 +133,19 @@ function OrderTrend () {
             <ManagerTopBar/>
             <div className='report-body'>
                 <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
-                <h2 onMouseOver={handleMouseOver}>Order Trend Report</h2>
+                <h2  className="trends-header" onMouseOver={handleMouseOver}>Order Trend Report</h2>
                 <div className="date-fields">
                     <label>Start Date:</label>
-                    <input
-                        type="text"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        placeholder="YYYY-MM-DD"
-                        onMouseOver={handleMouseOver}
-                    />
+                    <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
                     <label>End Date:</label>
-                    <input
-                        type="text"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        placeholder="YYYY-MM-DD"
-                        onMouseOver={handleMouseOver}
-                    />
+                    <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
                 </div>
                 <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Trend Report</button>
+                <button type='button' onClick={exportToCsv}>
+                Export to CSV
+                </button>
                 <div className="report-list" onMouseOver={handleMouseOver}>
-                    <div className="report-header">
-                        <span className="header-item">Menu Item 1</span>
-                        <span className="header-item">Menu Item 2</span>
-                        <span className="header-item">Pair Count</span>
-                    </div>
-                    {menuData.map((item, index) => (
-                        <div key={index} className="report-item">
-                            <span className="report-item">{item.menuid1}</span>
-                            <span className="report-item">{item.menuid2}</span>
-                            <span className="report-item">{item.count}</span>
-                        </div>
-                    ))}
+                <SortedTable columns={columns} data={menuData} />
                 </div>
             </div>
         </div>

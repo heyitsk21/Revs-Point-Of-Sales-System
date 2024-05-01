@@ -26,6 +26,8 @@ function LoginScreen(){
         const employee = employees.find(emp => emp.employeename === userData.email);
         console.log("authority: ", employee);
         if (employee) {
+            localStorage.setItem('userID', employee.employeeid);
+            console.log(localStorage.getItem('userID'));
             return employee.ismanager ? 3 : 2;
         } else {
             return 1;
@@ -57,6 +59,7 @@ function LoginScreen(){
                     }
                 );
                 const authority = getAuthority(res.data);
+                console.log(res.data);
                 localStorage.setItem('authority', authority);
                 localStorage.setItem('isLoggedIn', true);
                 localStorage.setItem('userInfo', res.data);
@@ -92,8 +95,8 @@ function LoginScreen(){
     };
 
     return (
-        <div class="LoginScreen">
-            <div class="LoginTitle">
+        <div className="LoginScreen">
+            <div className="LoginTitle">
                 Rev's Grill - By Team 21
             </div>
             <form onSubmit={handleSubmit}>
@@ -117,12 +120,12 @@ function LoginScreen(){
                     required
                 />
                 </div>
-                <div class="loginButton">
+                <div className="loginButton">
                     <button type="submit">Sign in</button>
                 </div>
             </form>
             
-            <div class="googleLoginButton">
+            <div className="googleLoginButton">
                 <button onClick={() => googleLogin()}>
                     Sign in with Google
                 </button>

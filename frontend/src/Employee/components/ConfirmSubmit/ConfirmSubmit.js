@@ -95,8 +95,8 @@ function ConfirmSubmit(props) {
   }
 
   return (props.trigger) ? (
-    <div className = 'popup'>
-        <div className= 'popup-inner'>
+    <div className = 'confirm-popup'>
+        <div className= 'confirm-popup-inner'>
             <button className='close' onClick={() => props.setTrigger(false)}>Not Yet</button>
             <h3>Please select any add-ons you would like.</h3>
             <SimpleBar style={{ height: 400, width: 600}}>
