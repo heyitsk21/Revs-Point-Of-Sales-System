@@ -14,22 +14,46 @@ function ConfirmSubmit(props) {
 
   const sendToDatabase = async (name) => {
     try {
+      if (!name) {
+        console.error("Customer name is required.");
+        return;
+      }
+
+      const employeeID = parseInt(localStorage.getItem('userID'));
+      if (isNaN(employeeID)) {
+        console.error("Employee ID is not a valid integer.");
+        return;
+      }
+
       const orderData = {
-        menuitems: props.trigger.items.map(item => ({
-          id: item.id,
-          quantity: item.quantity,
-          name: item.name,
-          price: item.price,
-          customizations: Object.keys(checkboxState[item.id] || {}).filter(option => checkboxState[item.id][option])
+        menuitems: props.trigger.items.map((item, index) => ({
+          key: index,
+          menuid: item.id,
+          customizationids: Object.keys(checkboxState[item.id] || {}).filter(option => checkboxState[item.id][option])
         })),
         customername: name,
-        employeeid: localStorage.getItem('userID')
+        employeeid: employeeID
       };
+
+      /*{
+        "menuitems": [
+          {
+            "menuid": 0,
+            "customizationids": [
+              0
+            ]
+          }
+        ],
+        "customername": "string",
+        "employeeid": 0
+      }*/
 
       const response = await axios.post('https://team21revsbackend.onrender.com/api/employee/placeorder', orderData);
       console.log('Order submitted successfully:', response.data);
+      props.emptyCart();
+      props.setTrigger(false);
     } catch (error) {
-      console.error('Error submitting order:', error);
+      console.error('Error submitting order:', error.response.data);
     }
   };
 
@@ -38,7 +62,6 @@ function ConfirmSubmit(props) {
       menuitemid:id
     };
     try {
-        console.log(id);
         const response = await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitemcustomizations', payload);
         const filteredOptions = options.filter(option => option.id !== id);
         setOptions(prevOptions => [...filteredOptions, { id: id, options: response.data }]);
@@ -48,7 +71,6 @@ function ConfirmSubmit(props) {
   };
 
   useEffect(() => {
-    console.log('Trigger items:', props.trigger.items);
     if (props.trigger && props.trigger.items.length > 0) {
       props.trigger.items.forEach(item => {
         fetchOptions(item.id);
@@ -60,8 +82,6 @@ function ConfirmSubmit(props) {
     event.preventDefault();
     const name = event.target.name.value;
     sendToDatabase(name);
-    props.emptyCart();
-    //props.setTrigger(false);
   }
 
   function handleCheckboxChange(uniqueID, optionName) {
@@ -113,14 +133,14 @@ function ConfirmSubmit(props) {
             </SimpleBar>
 
             <h3>Please enter your name and press Submit to finalize your order.</h3>
-            <form>
+            <form onSubmit={handleSubmit}>
               <label className='label'>
                 <div className='prompt'>
                   Name: 
                   <input type="text" name="name" />
                 </div>
               </label>
-              <input type="submit" className='confirm' value="Submit" onClick={() => handleSubmit()}/>
+              <input type="submit" className='confirm' value="Submit" />
             </form>
         </div>
     </div>
