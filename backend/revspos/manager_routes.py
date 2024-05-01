@@ -374,7 +374,7 @@ class Ingredients(Resource):
         caseamount = data.get("caseamount")
 
         
-        if (ingredientname == "string" or count == 0 or ppu == 0 or minamount == 0 or location == 'string' or recommendedamount == 0 or caseamount == 0):
+        if (ingredientname == "string" or count == None or ppu == 0 or minamount == 0 or location == 'string' or recommendedamount == 0 or caseamount == 0):
             return jsonify({"message":"failed to insert ingredient. Missing fields. All fields are required."})
         
         insert_query = text("INSERT INTO Ingredients (Ingredientname, Count, PPU, minamount, location, recommendedamount, caseamount) VALUES ('{inputingredientname}', {inputcount}, {inputppu}, {inputminamount}, '{inputlocation}', {inputrecamt}, {inputcaseamt})".format(inputingredientname=ingredientname,inputcount=count,inputppu=ppu, inputminamount=minamount,inputlocation=location,inputrecamt=recommendedamount,inputcaseamt=caseamount))
@@ -400,13 +400,13 @@ class Ingredients(Resource):
         
         if (ingredientid == 0):
             return jsonify({"message": "No ingredientid entered. No query executed."})
-        elif (newname == "string" and newcount == 0 and newppu == 0 and newminamount == 0 and newloc == "string" and newrecamt == 0 and newcaseamt == 0):
+        elif (newname == "string" and newcount == None and newppu == 0 and newminamount == 0 and newloc == "string" and newrecamt == 0 and newcaseamt == 0):
             return jsonify({"message": "No inputs entered. No query executed."})
 
         update_query = "UPDATE ingredients SET "
         if (newname != "string"):
             update_query += "ingredientname = '{inputnewname}',".format(inputnewname=newname)
-        if (newcount > 0):
+        if (newcount >= 0):
             update_query += "count = {inputnewcount},".format(inputnewcount=newcount)
         if (newppu > 0):
             update_query += "ppu = {inputnewppu},".format(inputnewppu=newppu)
