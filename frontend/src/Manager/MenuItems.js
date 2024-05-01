@@ -213,7 +213,7 @@ function MenuItems() {
         return customizations.map(customization => (
             <div key={customization.customizationid}>
                 {customization.customizationname} - {customization.ingredientname}
-                <button className='menu-item-button' onClick={() => handleDeleteCustomization(customization.ingredientid)}><img src="/Images/deleteIcon.png" alt="Delete" className="delete-icon" /></button>
+                <button className='menu-item-icon-button' onClick={() => handleDeleteCustomization(customization.ingredientid)}><img src="/Images/deleteIcon.png" alt="Delete" className="delete-icon" /></button>
             </div>
         ));
     };
@@ -274,7 +274,7 @@ function MenuItems() {
                                 {checkedItems.map((ingredient, index) => (
                                     <li key={index}>
                                         {ingredient.ingredientname}
-                                        <button className='menu-item-button-delete' onClick={() => handleDeleteIngredient(ingredient.ingredientid)}><img src="/Images/deleteIcon.png" alt="Delete" className="delete-icon" /></button>
+                                        <button className='menu-item-icon-button' onClick={() => handleDeleteIngredient(ingredient.ingredientid)}><img src="/Images/deleteIcon.png" alt="Delete" className="delete-icon" /></button>
                                     </li>
                                 ))}
                             </ul>
@@ -284,7 +284,7 @@ function MenuItems() {
                                     <option value="">Select Ingredient</option>
                                     {renderIngredientOptions()}
                                 </select>
-                                <button className='menu-item-button-delete' onClick={handleAddIngredient}><img src="/Images/addIcon.png" alt="Add" className="delete-icon" /></button>
+                                <button className='menu-item-icon-button' onClick={handleAddIngredient}><img src="/Images/addIcon.png" alt="Add" className="delete-icon" /></button>
                             </div>
                             <h3>Customizations:</h3>
                             <div>
@@ -296,7 +296,7 @@ function MenuItems() {
                                     <option value="">Select Customization</option>
                                     {renderIngredientOptions()}
                                 </select>
-                                <button className='menu-item-button' onClick={() => handleAddCustomization(selectedCustomization)}><img src="/Images/addIcon.png" alt="Add" className="delete-icon" /></button>
+                                <button className='menu-item-icon-button' onClick={() => handleAddCustomization(selectedCustomization)}><img src="/Images/addIcon.png" alt="Add" className="delete-icon" /></button>
                             </div>
                         </>
                     )}
