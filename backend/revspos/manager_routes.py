@@ -171,7 +171,7 @@ class Employee(Resource):
             result = conn.execution_options(stream_results=True).execute(text("select * from employee"))
             employeelist = []
             for row in result:
-                employeelist.append({"employeeid":row.employeeid, "employeename":row.employeename, "ismanager":row.ismanager, "salary":row.salary, "password":row.password})
+                employeelist.append({"employeeid":row.employeeid, "employeename":row.employeename, "employeeemail":row.employeeemail,"ismanager":row.ismanager, "salary":row.salary, "password":row.password})
         return jsonify(employeelist)
 
     @api.expect(AddEmployee_model, validate=True)
