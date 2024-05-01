@@ -56,9 +56,9 @@
 }
 
 /* Buttons */
-.ingredient-button {
+.manager-inventory button {
     padding: 10px 20px;
-    background-color: #077a8e;
+    background-color: hsl(189, 91%, 29%);
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -68,7 +68,7 @@
     font-family: "Chakra Petch", sans-serif;
 }
 
-.ingredient-button:hover {
+.manager-inventory button:hover {
     background-color: #0056b3;
 }
 
