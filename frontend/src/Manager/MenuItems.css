@@ -85,6 +85,15 @@
     background-color: #0056b3;
 }
 
+.menu-item-icon-button {
+    font-size: 20px;
+    background-color: transparent;
+    border: 3px solid #fff; /* Add white border */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-family: "Chakra Petch", sans-serif;
+}
+
 .manager-menu.high-contrast,
 .manager-menu.high-contrast *,
 .manager-menu-items.high-contrast,
