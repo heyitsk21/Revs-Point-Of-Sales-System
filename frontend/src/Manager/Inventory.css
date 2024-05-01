@@ -128,7 +128,16 @@
     padding: 7px;
 }
 
+.manager-inventory.high-contrast,
+.manager-restock.high-contrast *,
+.inventory-details.high-contrast,
+.inventory-list.high-contrast,
+.new-ingredient.high-contrast *:not(img) {
+    color: #ffffff;
+    background-color: #000000;
+}
 
-
-/* ManagerBottomBar styles */
-/* Assuming ManagerBottomBar is styled elsewhere or you can add styles here */
+.manager-inventory.high-contrast button,
+.inventory-details.high-contrast button {
+    outline: 2px solid white;
+}

@@ -128,7 +128,17 @@
     padding: 7px;
 }
 
+.manager-employee.high-contrast, .employeemanagement-topbar.high-contrast {
+    background-color: #000000;
+    color: #ffffff; 
+}
 
+.employeemanager-topbar.high-contrast * {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
 
-/* ManagerBottomBar styles */
-/* Assuming ManagerBottomBar is styled elsewhere or you can add styles here */
+.employeemanager-topbar.high-contrast button,
+.manager-employee.high-contrast button {
+    outline: 2px solid white;
+}

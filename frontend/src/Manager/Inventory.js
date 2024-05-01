@@ -19,7 +19,7 @@ function Inventory() {
         recommendedamount: 0,
         caseamount: 0
     });
-    const [speakEnabled] = useState(false);
+    const [highContrast, setHighContrast] = useState(false); // State variable for High Contrast mode
     const { textSize } = useTextSize();
 
     const fetchInventory = async () => {
@@ -105,47 +105,13 @@ function Inventory() {
         }));
     };
 
-    const speakText = (text) => {
-        const utterance = new SpeechSynthesisUtterance();
-        utterance.text = text;
-        window.speechSynthesis.speak(utterance);
+    const toggleHighContrast = () => {
+        setHighContrast(prevState => !prevState);
     };
-
-    const debounce = (func, wait) => {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                timeout = null;
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    };
-
-    const handleMouseOver = debounce((event) => {
-        let hoveredElementText = '';
-        if (speakEnabled) {
-            if (event.target.innerText) {
-                hoveredElementText = event.target.innerText;
-            } else if (event.target.value) {
-                hoveredElementText = event.target.value;
-            } else if (event.target.getAttribute('aria-label')) {
-                hoveredElementText = event.target.getAttribute('aria-label');
-            } else if (event.target.getAttribute('aria-labelledby')) {
-                const id = event.target.getAttribute('aria-labelledby');
-                const labelElement = document.getElementById(id);
-                if (labelElement) {
-                    hoveredElementText = labelElement.innerText;
-                }
-            }
-            speakText(hoveredElementText);
-        }
-    }, 1000);
 
     const renderInventoryItems = () => {
         return inventory.map(item => (
-            <div key={item.ingredientid} className="inventory-item" onClick={() => handleItemSelected(item)}>
+            <div key={item.ingredientid} className={`inventory-item ${highContrast ? 'high-contrast' : ''}`} onClick={() => handleItemSelected(item)}>
                 <div className='ingredient-name'><span>{item.ingredientname}</span></div>
                 <span>Price Per Unit: ${item.ppu}</span>
                 <span>Count: {item.count}</span>
@@ -162,8 +128,8 @@ function Inventory() {
     }, []);
 
     return (
-        <div className={`this-inventory ${textSize === 'large' ? 'large-text' : ''}`}>
-            <ManagerTopBar />
+        <div className={`this-inventory ${textSize === 'large' ? 'large-text' : ''} ${highContrast ? 'high-contrast' : ''}`}>
+            <ManagerTopBar toggleHighContrast={toggleHighContrast} />
             <div className='manager-inventory'>
                 <div className="inventory-details">
                     <h2>Selected Item Details</h2>
