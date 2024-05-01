@@ -1,25 +1,49 @@
+"""
+This module defines RESTful API resources for managing menu items and placing orders in the RevsPos application.
+
+It imports necessary modules from Flask, Flask-RESTx, and SQLAlchemy.
+
+Classes:
+    - GetMenuItems: Defines a resource for retrieving menu items based on a menu group.
+    - PlaceOrder: Defines a resource for placing an order with menu items and customizations.
+
+Attributes:
+    - api: Represents the Flask-RESTx API instance.
+    - db: Represents the database instance.
+
+Models:
+    - menuGet_model: Defines a model for the request payload of the 'GetMenuItems' resource.
+    - customization_model: Defines a model for representing customization data.
+    - placeOrder_model: Defines a model for the request payload of the 'PlaceOrder' resource.
+
+Methods:
+    - GetDatabaseURL: Retrieves the database URL from a configuration file.
+    - __init__: Initializes the database URL and engine using SQLAlchemy.
+
+"""
+
 from flask import request, jsonify
 from flask_restx import  Resource, fields
-from sqlalchemy import text
-# import os, decimal, datetime
+from sqlalchemy import Text, text
 from .api_master import api, db
-print("got here")
+
 menuGet_model = api.model('GetMenuModel', {"menugroup": fields.Integer(required=True)}) #String:     , min_length=1, max_length=64
 customization_model = api.model('CustomizationModel', {'menuid': fields.Integer(required=True), 'customizationids': fields.List(fields.Integer)})
 placeOrder_model = api.model('PlaceOrderModel',{'menuitems': fields.List(fields.Nested(customization_model)),
                                                 'customername':fields.String(required=True),
                                                 'employeeid':fields.Integer(required=True)})
-# def alchemyencoder(obj):
-#     """JSON encoder function for SQLAlchemy special classes."""
-#     if isinstance(obj, datetime.date):
-#         return obj.isoformat()
-#     elif isinstance(obj, decimal.Decimal):
-#         return float(obj)
 
 @api.route('/api/employee/getmenuitems')
 class GetMenuItems(Resource):
+    """
+    Resource for retrieving menu items based on a menu group.
+    """
+
     @api.expect(menuGet_model, validate=True)
     def post(self):
+        """
+        POST method for retrieving menu items.
+        """
         menugroup = request.get_json().get("menugroup")
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(text("select * from menuitems"))
@@ -31,14 +55,18 @@ class GetMenuItems(Resource):
 
 @api.route('/api/employee/placeorder')
 class PlaceOrder(Resource):
+    """
+    Resource for placing an order with menu items and customizations.
+    """
+
     @api.expect(placeOrder_model, validate=True)
     def post(self):
+        """
+        POST method for placing an order.
+        """
         name = request.get_json().get("customername")
         employeeid = request.get_json().get("employeeid")
         menuitems = request.get_json().get("menuitems", [])
-        # print('name: '+str(name))
-        # print('empl id: '+str(employeeid))
-        # print('menuitems: '+str(menuitems))
         
         allmenuids = '('
         allcustomizationids = {}
@@ -55,12 +83,9 @@ class PlaceOrder(Resource):
                     allcustomizationids[cust] = 1
                 else:
                     allcustomizationids[cust] += 1
-        
-        # for thing in allcustomizationids:
-        #     print('allcust: '+str(thing) + '::'+str(allcustomizationids[thing]))
         allmenuids = allmenuids[:-1]
         allmenuids += ')'
-        # print(str(allmenuids))
+        
         totalprice = 0
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(text("SELECT SUM(Price) FROM MenuItems WHERE MenuID IN " + allmenuids + ";")) 
@@ -110,8 +135,10 @@ class PlaceOrder(Resource):
                     for cust in allmenuidcustomizations[item]:
                         conn.connection.cursor().execute("INSERT INTO CustomizationOrderMenu (customizationordermenuid,ingredientid) VALUES ("+str(getJoinID)+","+str(cust)+")")
             conn.connection.commit()
-        # print(totalprice)
         return None
     
 def init():
+    """
+    Initialization function.
+    """
     return 

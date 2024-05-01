@@ -109,6 +109,7 @@ CREATE TABLE OrderMenuItems (
         ON DELETE CASCADE
 );
 
+-- Create CustomizationOrderMenu junction table
 CREATE TABLE CustomizationOrderMenu (
     CustomizationOrderMenuID INT,
     IngredientID INT,

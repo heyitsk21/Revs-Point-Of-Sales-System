@@ -1,8 +1,70 @@
+"""
+This module defines RESTful API resources for managing menu items, orders, employee information, and other related operations in the RevsPos application.
+
+It imports necessary modules from Flask, Flask-RESTx, and SQLAlchemy.
+
+Classes:
+    - CompleteOrder: Defines a resource for marking an order as completed.
+    - GetInProgressOrders: Defines a resource for retrieving in-progress orders.
+    - Employee: Defines a resource for retrieving employee information.
+    - MenuItems: Defines a resource for managing menu items.
+    - Ingredients: Defines a resource for managing ingredients.
+    - MenuItemIngredients: Defines a resource for managing ingredients for menu items.
+    - MenuItemCustomizations: Defines a resource for managing customizations for menu items.
+    - OrderHistory: Defines a resource for managing order history.
+    - OrderStatusCompleted: Defines API routes for updating the status of completed orders managed by managers.
+    - OrderStatusInprogress: Defines API routes for updating the status of in-progress orders managed by managers.
+    - OrderStatusDeleted: Defines API routes for updating the status of deleted orders managed by managers.
+    - OrderStatusCanceled: Defines API routes for updating the status of canceled orders managed by managers.
+    - RestockAll: Defines API routes for restocking all ingredients below the recommended amount.
+    - RestockSome: Defines API routes for restocking specified ingredients below the recommended amount.
+    - RestockByLocation: Defines API routes for restocking ingredients below the recommended amount in a specified location.
+    - GenerateProductUsage: Defines API routes for generating a product usage report (ingredients' change in inventory amounts over a period of time).
+    - GenerateSalesReport: Defines API routes for generating a sales report (menu items' change in sale over a period of time).
+    - GenerateExcessReport: Defines API routes for generating an excess report (menu items' that have ingredients that have sold less than 10% over a period of time).
+    - GenerateRestockReport: Defines API routes for generating a restock report (ingredients that have less than the their minimum amount).
+    - GenerateOrderTrend: Defines API routes for generating an order trend report (top ten menu items ordered together).
+    
+Attributes:
+    - api: Represents the Flask-RESTx API instance.
+    - db: Represents the database instance.
+
+Models:
+    - AddMenuItem_model: Defines a model for adding a menu item.
+    - UpdateMenuItem_model: Defines a model for updating a menu item.
+    - DeleteMenuItem_model: Defines a model for deleting a menu item.
+    - AddIngredient_model: Defines a model for adding an ingredient.
+    - UpdateIngredient_model: Defines a model for updating an ingredient.
+    - DeleteIngredient_model: Defines a model for deleting an ingredient.
+    - GetIngredientsFromMenuItem_model: Defines a model for retrieving ingredients from a menu item.
+    - AddIngredientToMenuItem_model: Defines a model for adding an ingredient to a menu item.
+    - DeleteIngredientFromMenuItem_model: Defines a model for deleting an ingredient from a menu item.
+    - GetCustomizationsFromMenuItem_model: Defines a model for retrieving customizations from a menu item.
+    - AddCustomizationToMenuItem_model: Defines a model for adding a customization to a menu item.
+    - DeleteCustomizationFromMenuItem_model: Defines a model for deleting a customization from a menu item.
+    - UpdateOrder_model: Defines a model for updating an order.
+    - DeleteOrder_model: Defines a model for deleting an order.
+    - OrderStatus_model: Defines a model for representing order status.
+    - RestockSome_model: Defines a model for restocking some ingredients.
+    - RestockByLocation_model: Defines a model for restocking ingredients by location.
+    - GenerateExcessReport_model: Defines a model for generating an excess report.
+    - GenerateProductUsage_model: Defines a model for generating a product usage report.
+    - GenerateSalesReport_model: Defines a model for generating a sales report.
+    - GenerateOrderTrend_model: Defines a model for generating an order trend report.
+    - CompleteOrder_model: Defines a model for marking an order as completed.
+
+Methods:
+    - post: Handles HTTP POST requests.
+    - get: Handles HTTP GET requests.
+    - put: Handles HTTP PUT requests.
+    - delete: Handles HTTP DELETE requests.
+
+"""
+
 from flask import request, jsonify
 from flask_restx import  Resource, fields
 from sqlalchemy import text
 from sqlalchemy.exc import ObjectNotExecutableError
-# import os, decimal, datetime
 from .api_master import api, db
 
 AddMenuItem_model = api.model('AddMenuItem', {"category":fields.Integer(required=True), "itemname":fields.String(required=True, min_length=3, max_length=30), "price":fields.Float(required=True)})
@@ -37,12 +99,19 @@ GenerateOrderTrend_model = api.model('GenerateOrderTrend',{"startdate": fields.D
 
 CompleteOrder_model = api.model('CompleteOrder',{"orderid":fields.Integer(required=True)})
 
+DeleteEmployee_model = api.model('DeleteEmployee',{'employeeid':fields.Integer(required=True)})
+
 @api.route('/api/kitchen/completeorder')
 class CompleteOrder(Resource):
-
+    """
+    Resource for marking an order as completed.
+    """
 
     @api.expect(CompleteOrder_model, validate=True)
     def post(self):
+        """
+        POST method for marking an order as completed.
+        """
         data = request.get_json()
         orderid = data.get("orderid")
         with db.engine.connect() as conn:
@@ -52,7 +121,14 @@ class CompleteOrder(Resource):
 
 @api.route('/api/kitchen/getinprogressorders')
 class GetInProgressOrders(Resource):
+    """
+    Resource for retrieving in-progress orders.
+    """
+
     def get(self):
+        """
+        GET method for retrieving in-progress orders.
+        """
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(text("SELECT * FROM ORDERS WHERE ORDERSTAT = 'inprogress' ORDER BY ORDERID;"))
             orderlist = []
@@ -80,7 +156,14 @@ class GetInProgressOrders(Resource):
 
 @api.route('/api/manager/employee')
 class Employee(Resource):
+    """
+    Resource for retrieving employee information.
+    """
+
     def get(self):
+        """
+        GET method for retrieving employee information.
+        """
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(text("select * from employee"))
             employeelist = []
@@ -88,9 +171,35 @@ class Employee(Resource):
                 employeelist.append({"employeeid":row.employeeid, "employeename":row.employeename, "ismanager":row.ismanager, "salary":row.salary, "password":row.password})
         return jsonify(employeelist)
 
+    def post(self):
+        with db.engine.connect() as conn:
+            pass
+    
+    def put(self):
+        with db.engine.connect() as conn:
+            pass
+
+    @api.expect(DeleteEmployee_model, validate=True)
+    def delete(self):
+        employeeid = request.get_json().get("employeeid")
+
+        delete_employee_query = "DELETE FROM employee WHERE EmployeeID = {inputempid}".format(inputempid=employeeid)
+        with db.engine.connect() as conn:
+            conn.connection.cursor().execute(delete_employee_query)
+            conn.connection.commit()
+        
+        return jsonify({"message": "Sucessfully deleted employee with employeeid = {inputempid}".format(inputempid=employeeid)})
+
 @api.route('/api/manager/menuitems')
 class MenuItems(Resource):
+    """
+    Resource for retrieving menu item information.
+    """
+
     def get(self): #GetMenuItem
+        """
+        GET method for retrieving menu item information.
+        """
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(text("select * from menuitems"))
             menuitemlist = []
@@ -100,6 +209,9 @@ class MenuItems(Resource):
     
     @api.expect(AddMenuItem_model, validate=False)
     def post(self): #AddMenuItem
+        """
+        POST method for creating menu item information.
+        """
         # print("GOT HERE")
         data = request.get_json()
         category = data.get("category")
@@ -126,6 +238,9 @@ class MenuItems(Resource):
     
     @api.expect(UpdateMenuItem_model, validate=True)
     def put(self): #UpdateMenuItem
+        """
+        PUT method for updating menu item information.
+        """
         data = request.get_json()
         menuid = data.get("menuid")
         itemname = data.get("itemname")
@@ -152,6 +267,9 @@ class MenuItems(Resource):
 
     @api.expect(DeleteMenuItem_model, validate=True)
     def delete(self): #DeleteMenuItem #TODO: need to do a check where the menuid actually exists first before doing queries. Success msg is wrongfully shown when deleting menuid that doesnt exist in the db
+        """
+        DELETE method for deleting menu item information.
+        """
         menuid = request.get_json().get("menuid")
 
         delete_menuitemingredients_query = "DELETE FROM menuitemIngredients WHERE MenuID = {inputmenuid}".format(inputmenuid=menuid)
@@ -168,7 +286,14 @@ class MenuItems(Resource):
 
 @api.route('/api/manager/ingredients')
 class Ingredients(Resource):
+    """
+    Resource for retrieving ingredient information.
+    """
+
     def get(self): #GetIngredients
+        """
+        GET method for retrieving ingredient information.
+        """
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(text("select * from ingredients"))
             menuitemlist = []
@@ -178,6 +303,9 @@ class Ingredients(Resource):
     
     @api.expect(AddIngredient_model, validate=True)
     def post(self): #AddIngredient
+        """
+        POST method for creating menu item information.
+        """
         data = request.get_json()
 
         ingredientname = data.get("ingredientname")
@@ -200,6 +328,9 @@ class Ingredients(Resource):
 
     @api.expect(UpdateIngredient_model, validate=True)
     def put(self): #UpdateIngredient
+        """
+        PUT method for updating menu item information.
+        """
         data = request.get_json()
         ingredientid = data.get("ingredientid")
         newname = data.get("ingredientname")
@@ -243,6 +374,9 @@ class Ingredients(Resource):
     
     @api.expect(DeleteIngredient_model, validate=True)
     def delete(self): #DeleteIngredient #TODO: FIX THIS ONE. THERE'S A TON OF EXECUTES AND NO ERROR CHECKING, 
+        """
+        DELETE method for deleting menu item information.
+        """
         data = request.get_json()
         ingredientid = data.get("ingredientid")
         count = data.get("count")
@@ -271,8 +405,14 @@ class Ingredients(Resource):
 
 @api.route('/api/manager/menuitemingredients')
 class MenuItemIngredients(Resource):
+    """
+    Resource for retrieving menuitem-ingredient join table information.
+    """
     @api.expect(GetIngredientsFromMenuItem_model, validate=True)
     def put(self): #GetIngredientFromMenuItem
+        """
+        PUT method for retrieving ingredient information from a menu item.
+        """
         with db.engine.connect() as conn:
             menuitemid = request.get_json().get("menuitemid") 
             result = conn.execution_options(stream_results=True).execute(text("SELECT Ingredients.IngredientID, Ingredients.IngredientName " +
@@ -286,6 +426,9 @@ class MenuItemIngredients(Resource):
     
     @api.expect(AddIngredientToMenuItem_model, validate=True)
     def post(self): #AddIngredientToMenuItem
+        """
+        POST method for creating ingredient information for a menu item.
+        """
         menuitemid = request.get_json().get("menuitemid") 
         ingredientid = request.get_json().get("ingredientid") 
 
@@ -304,6 +447,9 @@ class MenuItemIngredients(Resource):
     
     @api.expect(DeleteIngredientFromMenuItem_model, validate=True)
     def delete(self): 
+        """
+        DELETE method for deleting ingredient information from a menu item.
+        """
         menuitemid = request.get_json().get("menuitemid") 
         ingredientid = request.get_json().get("ingredientid") 
 
@@ -316,8 +462,14 @@ class MenuItemIngredients(Resource):
 
 @api.route('/api/manager/menuitemcustomizations')
 class MenuItemCustomizations(Resource):
+    """
+    Resource for retrieving menuitem-customizations join table information.
+    """
     @api.expect(GetCustomizationsFromMenuItem_model, validate=True)
     def put(self): #GetCustomizationsFromMenuItem
+        """
+        PUT method for retrieving customization information from a menu item.
+        """
         with db.engine.connect() as conn:
             menuitemid = request.get_json().get("menuitemid") 
             result = conn.execution_options(stream_results=True).execute(text("SELECT Ingredients.IngredientID, Ingredients.IngredientName " +
@@ -331,6 +483,9 @@ class MenuItemCustomizations(Resource):
     
     @api.expect(AddCustomizationToMenuItem_model, validate=True)
     def post(self): #AddCustomizationToMenuItem
+        """
+        POST method for creating customization information for a menu item.
+        """
         menuitemid = request.get_json().get("menuitemid") 
         customizationid = request.get_json().get("customizationid") 
 
@@ -349,6 +504,9 @@ class MenuItemCustomizations(Resource):
     
     @api.expect(DeleteCustomizationFromMenuItem_model, validate=True)
     def delete(self): #DeleteCustomizationFromMenuItem
+        """
+        DELETE method for deleting customization information from a menu item.
+        """
         menuitemid = request.get_json().get("menuitemid") 
         customizationid = request.get_json().get("customizationid") 
 
@@ -361,7 +519,13 @@ class MenuItemCustomizations(Resource):
 
 @api.route('/api/manager/orderhistory')
 class OrderHistory(Resource):
+    """
+    Resource for retrieving order history information.
+    """
     def get(self):
+        """
+        GET method for retrieving order history information.
+        """
         with db.engine.connect() as conn:
             limit_query = "LIMIT 100"
             get_order_query = "SELECT * FROM orders {inputquery}".format(inputquery=limit_query)
@@ -373,6 +537,9 @@ class OrderHistory(Resource):
     
     @api.expect(UpdateOrder_model, validate=True)
     def put(self): 
+        """
+        PUT method for updating order history information.
+        """
         orderid = request.get_json().get("orderid") 
         customername = request.get_json().get("customername")
         baseprice = request.get_json().get("baseprice") 
@@ -401,6 +568,9 @@ class OrderHistory(Resource):
     
     @api.expect(DeleteOrder_model, validate=True)
     def delete(self): 
+        """
+        DELETE method for deleting order history information.
+        """
         orderid = request.get_json().get("orderid") #
         if (orderid >= 0):
             delete_order_query = "DELETE FROM Orders WHERE orderid = {inputorderid}".format(inputorderid = orderid)
@@ -424,8 +594,14 @@ class OrderHistory(Resource):
 
 @api.route('/api/manager/orderstatuscompleted')
 class OrderStatusCompleted(Resource):
+    """
+    Defines API routes for updating the status of completed orders managed by managers.
+    """
     @api.expect(OrderStatus_model, validate=True)
     def put(self): 
+        """
+        PUT method for updating the status of an order to 'completed'.
+        """
         orderid = request.get_json().get("orderid") 
 
         if (orderid == 0):
@@ -440,8 +616,14 @@ class OrderStatusCompleted(Resource):
 
 @api.route('/api/manager/orderstatusinprogress')
 class OrderStatusInprogress(Resource):
+    """
+    Defines API routes for updating the status of in-progress orders managed by managers.
+    """
     @api.expect(OrderStatus_model, validate=True)
     def put(self): 
+        """
+        PUT method for updating the status of an order to 'inprogress'.
+        """
         orderid = request.get_json().get("orderid") 
 
         if (orderid == 0):
@@ -456,8 +638,14 @@ class OrderStatusInprogress(Resource):
 
 @api.route('/api/manager/orderstatusdeleted')
 class OrderStatusDeleted(Resource):
+    """
+    Defines API routes for updating the status of deleted orders managed by managers.
+    """
     @api.expect(OrderStatus_model, validate=True)
     def put(self): 
+        """
+        PUT method for updating the status of an order to 'deleted'.
+        """
         orderid = request.get_json().get("orderid") 
 
         if (orderid == 0):
@@ -472,8 +660,14 @@ class OrderStatusDeleted(Resource):
 
 @api.route('/api/manager/orderstatuscanceled')
 class OrderStatusCanceled(Resource):
+    """
+    Defines API routes for updating the status of canceled orders managed by managers.
+    """
     @api.expect(OrderStatus_model, validate=True)
     def put(self): 
+        """
+        PUT method for updating the status of an order to 'canceled'.
+        """
         orderid = request.get_json().get("orderid") 
 
         if (orderid == 0):
@@ -492,7 +686,13 @@ class OrderStatusCanceled(Resource):
 
 @api.route('/api/manager/restockall')
 class RestockAll(Resource):
+    """
+    Defines API routes for restocking all ingredients below the recommended amount.
+    """
     def get(self): #get all that needs to be restocked
+        """
+        GET method for retrieving all ingredients that need to be restocked.
+        """
         with db.engine.connect() as conn:
             get_stmt = "select * from ingredients where count < recommendedamount"
             result = conn.execution_options(stream_results=True).execute(text(get_stmt))
@@ -512,6 +712,9 @@ class RestockAll(Resource):
     
     # @api.expect(RestockAll_model, validate=True)
     def put(self): #"update" restock all
+        """
+        PUT method for updating all ingredients that need to be restocked.
+        """
         with db.engine.connect() as conn:
             get_stmt = "select * from ingredients where count < recommendedamount"
             result = conn.execution_options(stream_results=True).execute(text(get_stmt))
@@ -539,8 +742,14 @@ class RestockAll(Resource):
 
 @api.route('/api/manager/restocksome')
 class RestockSome(Resource):
+    """
+    Defines API routes for restocking specified ingredients below the recommended amount.
+    """
     @api.expect(RestockSome_model, validate=True)
     def post(self): #get restock some
+        """
+        POST method for retrieving ingredients that need to be restocked from a specified list.
+        """
         ingr_list = request.get_json().get("ingredientids", [])
         allingredients = ""
         for id in ingr_list:
@@ -565,6 +774,9 @@ class RestockSome(Resource):
     
     @api.expect(RestockSome_model, validate=True)
     def put(self): #"update" restock some
+        """
+        PUT method for updating ingredients that need to be restocked from a specified list.
+        """
         ingr_list = request.get_json().get("ingredientids", [])
         allingredients = ""
         for id in ingr_list:
@@ -599,8 +811,14 @@ class RestockSome(Resource):
 
 @api.route('/api/manager/restockbylocation')
 class RestockByLocation(Resource):
+    """
+    Defines API routes for restocking ingredients below the recommended amount in a specified location.
+    """
     @api.expect(RestockByLocation_model, validate=True)
     def post(self): #get restock by location
+        """
+        POST method for retrieving ingredients that need to be restocked from a specified location.
+        """
         location = request.get_json().get("location")
         # print("location: "+str(location))
         if ((location != 'fridge') and (location != 'freezer') and (location != 'pantry')):
@@ -620,6 +838,9 @@ class RestockByLocation(Resource):
 
     @api.expect(RestockByLocation_model, validate=True)
     def put(self): #"update" restock by location
+        """
+        PUT method for updating ingredients that need to be restocked from a specified location.
+        """
         location = request.get_json().get("location")
         # print("location: "+str(location))
         if ((location != 'fridge') and (location != 'freezer') and (location != 'pantry')):
@@ -658,8 +879,14 @@ class RestockByLocation(Resource):
 '''Manager Reports'''
 @api.route('/api/manager/reports/generateproductusage')
 class GenerateProductUsage(Resource):
+    """
+    Defines API routes for generating a product usage report (ingredients' change in inventory amounts over a period of time).
+    """
     @api.expect(GenerateProductUsage_model, validate=True)
     def post(self): 
+        """
+        POST method for retrieving ingredients' change in inventory amounts over a period of time.
+        """
         startdate = request.get_json().get("startdate") 
         startdate_str = text(startdate)
         enddate = request.get_json().get("enddate") 
@@ -675,8 +902,14 @@ class GenerateProductUsage(Resource):
     
 @api.route('/api/manager/reports/generatesalesreport')
 class GenerateSalesReport(Resource):
+    """
+    Defines API routes for generating a sales report (menu items' change in sale over a period of time).
+    """
     @api.expect(GenerateSalesReport_model, validate=True)
     def post(self): 
+        """
+        POST method for retrieving menu items' change in sale over a period of time.
+        """
         startdate = request.get_json().get("startdate") 
         startdate_str = text(startdate)
         enddate = request.get_json().get("enddate")
@@ -691,8 +924,14 @@ class GenerateSalesReport(Resource):
 
 @api.route('/api/manager/reports/generateexcessreport')
 class GenerateExcessReport(Resource):
+    """
+    Defines API routes for generating an excess report (menu items that have ingredients that have sold less than 10% over a period of time).
+    """
     @api.expect(GenerateExcessReport_model, validate=True)
     def post(self): 
+        """
+        POST method for retrieving menu items that have ingredients that have sold less than 10% over a period of time.
+        """
         startdate = request.get_json().get("startdate") 
         startdate_str = text(startdate)
         excess_query = "SELECT DISTINCT mi.MenuID, mi.ItemName FROM ingredients i JOIN menuitemingredients mii ON i.ingredientid = mii.ingredientid JOIN menuitems mi ON mii.menuid = mi.menuid LEFT JOIN ( SELECT ingredientid, SUM(amountchanged) AS total_sold FROM InventoryLog WHERE amountchanged < 1 AND logdatetime BETWEEN CAST('{inputdate}' AS TIMESTAMP) AND NOW() GROUP BY ingredientid ) il ON i.ingredientid = il.ingredientid WHERE (il.total_sold IS NULL OR -1*il.total_sold < 0.1 * i.count)".format(inputdate = startdate_str)
@@ -705,7 +944,13 @@ class GenerateExcessReport(Resource):
 
 @api.route('/api/manager/reports/generaterestockreport')
 class GenerateRestockReport(Resource):
+    """
+    Defines API routes for generating a restock report (ingredients that have less than the their minimum amount).
+    """
     def get(self): 
+        """
+        GET method for retrieving ingredients that have less than the their minimum amount.
+        """
         restock_query = "SELECT * FROM ingredients WHERE count < minamount"
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(text(restock_query))
@@ -717,8 +962,14 @@ class GenerateRestockReport(Resource):
 
 @api.route('/api/manager/reports/generateordertrend')
 class GenerateOrderTrend(Resource):
+    """
+    Defines API routes for generating an order trend report (top ten menu items ordered together).
+    """
     @api.expect(GenerateOrderTrend_model, validate=True)
     def post(self): 
+        """
+        POST method for retrieving the top ten menu items ordered together.
+        """
         startdate = request.get_json().get("startdate") 
         startdate_str = text(startdate)
         enddate = request.get_json().get("enddate") 
@@ -736,4 +987,7 @@ class GenerateOrderTrend(Resource):
 
 
 def init():
+    """
+    Initialization function.
+    """
     return 

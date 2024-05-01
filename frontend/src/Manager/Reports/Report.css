@@ -1,13 +1,13 @@
-/* Product Usage */
+
 .report-body {
     position: fixed;
     top: 10%;
     left: 0;
     width: 100%;
-    height: auto;
+    max-height: 80%;
     overflow-y: auto;
     font-family: "Chakra Petch", sans-serif;
-    background-color: #ffffff; /* Adjust background color as needed */
+    background-color: #ffffff; 
     padding: 20px;
 }
 
@@ -18,7 +18,6 @@
     height: auto;
     margin-top: 20px;
 }
-
 
 .date-fields{
     display: flex;
@@ -60,90 +59,15 @@
     text-align: left;
 }
 
-/* Order Trend */
 .order-trend {
     font-family: Arial, sans-serif;
     padding: 20px;
 }
 
-
-
 .order-trend h2 {
     margin-bottom: 20px;
 }
 
-.report-list {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    overflow: hidden;
-}
-
-.report-header {
-    display: flex;
-    background-color: #f0f0f0;
-    padding: 10px;
-    font-weight: bold;
-}
-
-.header-item {
-    flex: 1;
-    text-align: center;
-}
-
-.report-item {
-    display: flex;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-}
-
-.report-item:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.report-item span {
-    flex: 1;
-    text-align: center;
-}
-
-/* Excess Report */
-.excess-report {
-    margin: 20px;
-}
-
-
-
-.excess-report h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-
-.report-table {
-    border: 1px solid #ccc;
-    border-collapse: collapse;
-}
-
-.report-row {
-    display: flex;
-    border-top: 1px solid #ccc;
-}
-
-.report-row.header {
-    font-weight: bold;
-    background-color: #f2f2f2;
-}
-
-.report-cell {
-    flex: 1;
-    padding: 10px;
-    border-right: 1px solid #ccc;
-    overflow-wrap: break-word;
-}
-
-.report-cell:last-child {
-    border-right: none;
-}
-
-/* Restock Report */
 .restock-report {
     margin: 20px;
     padding: 20px;
@@ -158,59 +82,16 @@
     margin-bottom: 20px;
 }
 
-.report-list {
-    margin-top: 20px;
-}
-
-.report-header {
-    display: flex;
-    justify-content: space-between;
-    font-weight: bold;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 10px;
-}
-
-.report-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-}
-
-.report-item:nth-child(even) {
-    background-color: #f0f0f0;
-}
-
 .header-item {
-    flex-basis: 30%; /* Adjust as needed */
+    flex-basis: 30%;
     text-align: center;
 }
-
-.report-item .report-item {
-    flex-basis: 30%; /* Adjust as needed */
-    text-align: center;
-}
-    
-/* Restock Report */
+  
 .sales-report {
     padding: 20px;
 }
 
 .report-list {
-    margin-top: 20px;
-}
-
-.report-item {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-.report-item span {
-    display: block;
-    margin-bottom: 5px;
-}
-
-.report-item span:last-child {
-    margin-bottom: 0;
+    align-content: center;
+    justify-content: center;
 }
