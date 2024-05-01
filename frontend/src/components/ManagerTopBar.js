@@ -3,6 +3,7 @@ import { useTextSize } from './TextSizeContext';
 import './ManagerTopBar.css';
 import './../Common.css';
 import { useNavigate } from 'react-router-dom';
+import Translate from './translate.js';
 
 function ManagerTopBar({ toggleHighContrast }) {
     const navigate = useNavigate();
