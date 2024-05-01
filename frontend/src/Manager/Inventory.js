@@ -162,9 +162,9 @@ function Inventory() {
     }, []);
 
     return (
-        <div>
+        <div className={`this-inventory ${textSize === 'large' ? 'large-text' : ''}`}>
             <ManagerTopBar />
-            <div className={`manager-inventory ${textSize === 'large' ? 'large-text' : ''}`}>
+            <div className='manager-inventory'>
                 <div className="inventory-details">
                     <h2>Selected Item Details</h2>
                     {selectedItem && (
