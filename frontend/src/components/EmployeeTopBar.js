@@ -4,13 +4,12 @@ import './EmployeeTopBar.css';
 import './../Common.css';
 import { useNavigate } from 'react-router-dom';
 
-function EmployeeTopBar() {
+function EmployeeTopBar({ toggleHighContrast }) {
     const navigate = useNavigate();
     const { toggleTextSize } = useTextSize();
     const [loggedIn, setLoggedIn] = useState(false);
     const [username, setUsername] = useState('');
     const [currentTime, setCurrentTime] = useState('');
-    const [speakEnabled, setSpeakEnabled] = useState(false);
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [leftdropdownVisible, setLeftdropdownVisible] = useState(false);
 
@@ -27,27 +26,6 @@ function EmployeeTopBar() {
         const interval = setInterval(updateTime, 100);
         return () => clearInterval(interval);
     }, []);
-
-    const speakText = (text) => {
-        const utterance = new SpeechSynthesisUtterance();
-        utterance.text = text;
-        window.speechSynthesis.speak(utterance);
-    };
-
-    const handleMouseOver = (text) => {
-        if (speakEnabled) {
-            setTimeout(() => {
-                speakText(text);
-            }, 1000); // 1-second delay
-        }
-    };
-
-    const toggleSpeak = () => {
-        if (speakEnabled) {
-            window.speechSynthesis.cancel();
-        }
-        setSpeakEnabled(!speakEnabled);
-    };
 
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
@@ -84,8 +62,8 @@ function EmployeeTopBar() {
                     <span>{`Welcome, ${localStorage.getItem('username')}`}</span>
                     <span>{currentTime}</span>
                 </div>
-                <button onClick={handleLogout} className = "manager-top-bar-button">Logout</button>
-            </div>   
+                <button onClick={handleLogout} className="manager-top-bar-button">Logout</button>
+            </div>
             <div className='placeholder-employee'></div>
             <div className="manager-dropdown-container">
                 <button className={`manager-dropdown-toggle ${dropdownVisible ? 'active' : ''}`} onClick={toggleDropdown}>
@@ -94,8 +72,8 @@ function EmployeeTopBar() {
                 </button>
                 {dropdownVisible && (
                     <div className="manager-dropdown-menu">
-                        <button className={`manager-speak-button ${speakEnabled ? 'speak-on' : 'speak-off'}`} onClick={toggleSpeak} onMouseOver={() => handleMouseOver('Speak button')}>{speakEnabled ? 'Speak On' : 'Speak Off'}</button>
-                        <button onClick={toggleTextSize} onMouseOver={() => handleMouseOver('Toggle Text Size button')}>Toggle Text Size</button>
+                        <button className="manager-high-contrast-button" onClick={toggleHighContrast}>Toggle High Contrast</button>
+                        <button onClick={toggleTextSize}>Toggle Text Size</button>
                     </div>
                 )}
             </div>

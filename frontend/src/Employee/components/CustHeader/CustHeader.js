@@ -31,8 +31,7 @@ const CustHeader = ({ onCatChange, toggleHighContrast }) => {
     };
 
     const handleToggleHighContrast = () => {
-        toggleHighContrast(); // Call the toggleHighContrast function
-        console.log('High contrast button clicked!'); // Log the button click
+        toggleHighContrast(); 
     };
 
     return (
