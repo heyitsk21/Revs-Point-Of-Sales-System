@@ -37,6 +37,8 @@ GenerateOrderTrend_model = api.model('GenerateOrderTrend',{"startdate": fields.D
 
 CompleteOrder_model = api.model('CompleteOrder',{"orderid":fields.Integer(required=True)})
 
+DeleteEmployee_model = api.model('DeleteEmployee',{'employeeid':fields.Integer(required=True)})
+
 @api.route('/api/kitchen/completeorder')
 class CompleteOrder(Resource):
 
@@ -87,6 +89,25 @@ class Employee(Resource):
             for row in result:
                 employeelist.append({"employeeid":row.employeeid, "employeename":row.employeename, "ismanager":row.ismanager, "salary":row.salary, "password":row.password})
         return jsonify(employeelist)
+
+    def post(self):
+        with db.engine.connect() as conn:
+            pass
+    
+    def put(self):
+        with db.engine.connect() as conn:
+            pass
+
+    @api.expect(DeleteEmployee_model, validate=True)
+    def delete(self):
+        employeeid = request.get_json().get("employeeid")
+
+        delete_employee_query = "DELETE FROM employee WHERE EmployeeID = {inputempid}".format(inputempid=employeeid)
+        with db.engine.connect() as conn:
+            conn.connection.cursor().execute(delete_employee_query)
+            conn.connection.commit()
+        
+        return jsonify({"message": "Sucessfully deleted employee with employeeid = {inputempid}".format(inputempid=employeeid)})
 
 @api.route('/api/manager/menuitems')
 class MenuItems(Resource):
