@@ -11,7 +11,7 @@ function EmployeeManagement() {
     const [newEmployee, setNewEmployee] = useState({
         employeeid: 0,
         employeename: "",
-        email: "",
+        employeeemail: "",
         ismanager: "False",
         salary: 0.0,
         password: "",
@@ -37,7 +37,7 @@ function EmployeeManagement() {
         try {
             const payload = {
                 employeename: selectedEmployee.employeename,
-                email: selectedEmployee.email,
+                employeeemail: selectedEmployee.employeeemail,
                 ismanager: selectedEmployee.ismanager,
                 salary: parseFloat(selectedEmployee.salary),
                 password: selectedEmployee.password,
@@ -56,7 +56,7 @@ function EmployeeManagement() {
             const newEmployeeData = {
                 ...newEmployee,
                 employeename: newEmployee.employeename,
-                email: newEmployee.email,
+                employeeemail: newEmployee.employeeemail,
                 ismanager: newEmployee.ismanager,
                 salary: parseFloat(newEmployee.salary),
                 password: newEmployee.password,
@@ -68,7 +68,7 @@ function EmployeeManagement() {
             setNewEmployee({
                 employeeid: 0,
                 employeename: "",
-                email: "",
+                employeeemail: "",
                 ismanager: "False",
                 salary: 0.0,
                 password: "",
@@ -140,7 +140,7 @@ function EmployeeManagement() {
         return employees.map(employee => (
             <div key={employee.employeeid} className="employee-item" onClick={() => handleEmployeeSelected(employee)}>
                 <div className='employee-name'><span>{employee.employeename}</span></div>
-                <span>Employee Email: {employee.email}</span>
+                <span>Employee Email: {employee.employeeemail}</span>
                 <span>Manager: { employee.ismanager ? 'Yes' : 'No' }</span>
                 <span>Salary: ${employee.salary}</span>
                 <span>Password: {employee.password}</span>
@@ -176,8 +176,8 @@ function EmployeeManagement() {
                                 <label>Email:</label>
                                 <input
                                     type="text"
-                                    value={selectedEmployee.email}
-                                    onChange={(e) => handleInputChange(e, 'email')}
+                                    value={selectedEmployee.employeeemail}
+                                    onChange={(e) => handleInputChange(e, 'employeeemail')}
                                 />
                             </div>
                             <div>
@@ -223,8 +223,8 @@ function EmployeeManagement() {
                         <label>Email:</label>
                         <input
                             type="text"
-                            value={newEmployee.email}
-                            onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })}
+                            value={newEmployee.employeeemail}
+                            onChange={(e) => setNewEmployee({ ...newEmployee, employeeemail: e.target.value })}
                         />
                     </div>
                     <div className='new-employee-user'>
