@@ -30,6 +30,7 @@ const Ordering = ({ onCatChange }) => {
 
     const fetchMenuSection = async (currentIdStart) => {
         try {
+            console.log("IM ORDERING");
             const response = await axios.post('https://team21revsbackend.onrender.com/api/employee/getmenuitems',  { menugroup: currentIdStart });
             switch (currentIdStart) {
                 case 100:

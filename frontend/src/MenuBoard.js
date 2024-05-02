@@ -49,6 +49,7 @@ const MenuBoard = ({ onPageChange }) => {
      */
     const fetchMenuGroup = async (group, title) => {
         try {
+            console.log("IM MENUBOARD");
             const response = await axios.post('https://team21revsbackend.onrender.com/api/employee/getmenuitems', { menugroup: group });
             return { title, items: response.data };
         } catch (error) {
