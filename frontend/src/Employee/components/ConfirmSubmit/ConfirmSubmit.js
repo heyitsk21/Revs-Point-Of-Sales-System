@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../ConfirmPopup.css'
 import axios from 'axios';
-import { Checkbox, useCheckboxState } from 'pretty-checkbox-react/dist-src/index';
+import { Checkbox } from 'pretty-checkbox-react/dist-src/index';
 import '@djthoms/pretty-checkbox';
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
@@ -149,7 +149,7 @@ function ConfirmSubmit(props) {
         <div className='confirm-popup-inner'>
             <button className='close' onClick={() => props.setTrigger(false)}>Not Yet</button>
             <h3>Please select any add-ons you would like.</h3>
-            <SimpleBar style={{ height: 400, width: 600}}>
+            <SimpleBar style={{ height: 200, width: 600}}>
               {props.trigger.items.map(item => (
                 <div key={item.uniqueID}>
                   <div>{item.name}</div>
@@ -173,7 +173,8 @@ function ConfirmSubmit(props) {
                   {options.some(option => option.id === item.id && option.options.length > 0) && (
                     <p>Selected items: {Object.keys(checkboxState[item.uniqueID] || {}).filter(option => checkboxState[item.uniqueID][option]).join(', ')}</p>
                   )}
-                  <p> - - - </p>
+                  {/* <p> - - - </p> */}
+                  <hr></hr>
                 </div>
               ))}
             </SimpleBar>
