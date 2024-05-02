@@ -92,7 +92,6 @@ export default function Weather() {
     <div className="Wheater">
         {(typeof data.main != 'undefined') ? (
         <div>
-        <p>Temperature {data.main.temp} &deg;C</p>
         {renderRev()}
         </div>
       ): (
