@@ -116,7 +116,7 @@ class PlaceOrder(Resource):
             conn.connection.commit()
             conn.connection.cursor().execute("INSERT INTO Orders (CustomerName, TaxPrice, BasePrice, OrderDateTime, EmployeeID, OrderStat) VALUES ( '"+name+"', "+str(float(totalprice) * 0.0825)+", "+str(totalprice)+", NOW(), "+str(employeeid)+", 'inprogress') RETURNING orderid")
             conn.connection.commit()
-            result = conn.execution_options(stream_results=True).execute(text(f"SELECT ORDERID FROM ORDERS WHERE CUSTOMERNAME = '{name}' ORDER BY ORDERDATETIME DESC LIMIT 1;"))
+            result = conn.execution_options(stream_results=True).execute(text(f"SELECT ORDERID FROM ORDERS WHERE CUSTOMERNAME = '{name}' ORDER BY ORDERID DESC LIMIT 1;"))
             
             for row in result:
                 getOrderID = row.orderid
