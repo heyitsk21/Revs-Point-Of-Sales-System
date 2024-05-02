@@ -1086,7 +1086,7 @@ class GenerateZReport(Resource):
             for row in result:
                 totalprice +=row.totalsales
                 menuitemlist.append({"menuid":row.menuid, "itemname":row.itemname, "totalsales":row.totalsales, "ordercount":row.ordercount})
-        return jsonify({"totalprice":totalprice,"totaltax":(round((float(totalprice) *0.825),2)),"data":menuitemlist})
+        return jsonify({"totalprice":totalprice,"totaltax":(round((float(totalprice) *0.0825),2)),"data":menuitemlist})
 
 
 @api.route('/api/manager/reports/generatexreport')
@@ -1102,7 +1102,7 @@ class GenerateXReport(Resource):
             for row in result:
                 totalprice +=row.totalsales
                 menuitemlist.append({"menuid":row.menuid, "itemname":row.itemname, "totalsales":row.totalsales, "ordercount":row.ordercount})
-        return jsonify({"totalprice":totalprice,"totaltax":(round((float(totalprice) *0.825),2)),"data":menuitemlist})
+        return jsonify({"totalprice":totalprice,"totaltax":(round((float(totalprice) *0.0825),2)),"data":menuitemlist})
 
 
 def init():
