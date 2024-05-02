@@ -16,8 +16,8 @@ import 'simplebar-react/dist/simplebar.min.css';
 const Ordering = ({ onCatChange }) => {
     const { textSize, toggleTextSize } = useTextSize();
     const [category, setCategory] = useState('Value Meals');
-    const [selectedMenuSection] = useState(null);  // setSelectedMenuSection
-    const [initialFetchDone, setInitialFetchDone] = useState(false);
+    // const [selectedMenuSection] = useState(null);  // setSelectedMenuSection
+    // const [initialFetchDone, setInitialFetchDone] = useState(false);
     const [burgerList, setBurgerList] = useState([]);
     const [sandwichList, setSandwichList] = useState([]);
     const [saladList, setSaladList] = useState([]);
@@ -62,24 +62,28 @@ const Ordering = ({ onCatChange }) => {
         }
     };
 
-    const fetchMenuSectionsPeriodically = useCallback(() => {
-        fetchMenuSection(100); // Fetch Burger menu items
-        fetchMenuSection(200); // Fetch Sandwiches menu items
-        fetchMenuSection(300);
-        fetchMenuSection(400);
-        fetchMenuSection(500);
-        fetchMenuSection(600);
-        fetchMenuSection(700);
-    }, []);
+    // const fetchMenuSectionsPeriodically = useCallback(() => {
+    //     fetchMenuSection(100); // Fetch Burger menu items
+    //     fetchMenuSection(200); // Fetch Sandwiches menu items
+    //     fetchMenuSection(300);
+    //     fetchMenuSection(400);
+    //     fetchMenuSection(500);
+    //     fetchMenuSection(600);
+    //     fetchMenuSection(700);
+    // }, []);
 
     useEffect(() => {
-        if (!initialFetchDone) {
-            fetchMenuSectionsPeriodically(); // Fetch menu sections initially
-            setInitialFetchDone(true);
-        }
-        const intervalId = setInterval(fetchMenuSectionsPeriodically, 2 * 60 * 1000); // Fetch menu sections every 2 minutes
-        return () => clearInterval(intervalId); // Clear interval on component unmount
-    }, [fetchMenuSectionsPeriodically, initialFetchDone]);
+        fetchMenuSection(600);
+    }, []);
+
+    // useEffect(() => {
+    //     if (!initialFetchDone) {
+    //         fetchMenuSectionsPeriodically(); // Fetch menu sections initially
+    //         setInitialFetchDone(true);
+    //     }
+    //     const intervalId = setInterval(fetchMenuSectionsPeriodically, 2 * 60 * 1000); // Fetch menu sections every 2 minutes
+    //     return () => clearInterval(intervalId); // Clear interval on component unmount
+    // }, [fetchMenuSectionsPeriodically, initialFetchDone]);
 
     /**
      * Function to handle category change and fetch corresponding menu section.
