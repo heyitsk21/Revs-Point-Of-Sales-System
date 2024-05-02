@@ -128,7 +128,7 @@ const OrderHistory = () => {
                 <div>ID: {order.orderid}</div>
                 <div>Customer: {order.customername}</div>
                 <div>Price: ${(parseFloat(order.baseprice) + parseFloat(order.taxprice)).toFixed(2)}</div>
-                <div>Date/Time: {order.orderdatetime}</div>
+                <div>Date/Time: {formatDate(order.orderdatetime)}</div>
                 <div>Status: {order.status}</div>
             </div>
         ));
@@ -141,9 +141,18 @@ const OrderHistory = () => {
      */
     const formatDate = (dateTime) => {
         const date = new Date(dateTime);
-        return date.toLocaleString();
+        const options = {
+            timeZone: 'America/Chicago', // Set the timezone to US Central Time
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: true // Use 12-hour format
+        };
+        return date.toLocaleString('en-US', options);
     };
-
     /**
      * Triggers a browser-based text search within the component.
      * Uses the current value from the search input reference.
