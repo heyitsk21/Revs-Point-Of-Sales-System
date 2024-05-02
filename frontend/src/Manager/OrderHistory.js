@@ -71,6 +71,27 @@ const OrderHistory = () => {
         }
     };
 
+    const handleDeleteButton = async () => {
+        if (!selectedOrder) return;
+        try {
+            await axios.put('https://team21revsbackend.onrender.com/api/manager/orderstatusdeleted', { orderid: selectedOrder.orderid  });
+            fetchOrderHistory();
+        } catch (error) {
+            console.error('Error deleting menu item:', error);
+        }
+    };
+
+    const handleCancelButton = async () => {
+        if (!selectedOrder) return;
+        try {
+            await axios.put('https://team21revsbackend.onrender.com/api/manager/orderstatuscanceled', {  orderid: selectedOrder.orderid  });
+            fetchOrderHistory();
+        } catch (error) {
+            console.error('Error deleting menu item:', error);
+        }
+    };
+
+
     useEffect(() => {
         fetchOrderHistory();
     }, []);
@@ -170,6 +191,8 @@ const OrderHistory = () => {
                             <div>Date/Time: {formatDate(selectedOrder.orderdatetime)}</div>
                             <div>Employee ID: {selectedOrder.employeeid}</div>
                             <div>Status: {selectedOrder.status}</div>
+                            <button className='order-history-button' onClick={handleDeleteButton}>Delete</button>
+                            <button className='order-history-button' onClick={handleCancelButton}>Cancel</button>
                         </div>
                     )}
                 </div>
