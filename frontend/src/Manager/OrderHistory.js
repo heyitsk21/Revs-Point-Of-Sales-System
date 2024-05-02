@@ -41,6 +41,12 @@ const OrderHistory = () => {
      * @type {[boolean, function]} Boolean indicating whether HighContrast mode is enabled and a function to update it
      */
     const [highContrast, setHighContrast] = useState(false);
+
+    /**
+     * State variable for HighContrast mode.
+     * @type {[Object, function]} Boolean indicating whether HighContrast mode is enabled and a function to update it
+     */
+    const { textSize } = useTextSize();
     
     /**
      * Reference to the search input element.
