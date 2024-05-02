@@ -128,12 +128,12 @@ const Ordering = ({ onCatChange }) => {
 
         if (selectedList) { 
             return selectedList.map(menuitem => (
-                <React.Fragment key={menuitem.menuid}>
+                <div key={menuitem.menuid}>
                     <button className='employee-item-button' onClick={() => { console.log('Adding item:', menuitem); addItem({ id: menuitem.menuid, name: menuitem.itemname, price: menuitem.price, picturepath: menuitem.picturepath });}}>
                         <div>{menuitem.itemname}</div>
                         <div>${menuitem.price}</div>
                     </button>
-                </React.Fragment>
+                </div>
             ));
         } else {
             return null;
