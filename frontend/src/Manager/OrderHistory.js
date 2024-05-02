@@ -1,8 +1,9 @@
 /**
- * React component for managing orderhistory.
- * @returns {JSX.Element} OrderHistory component
+ * Represents the OrderHistory component that manages the display and interaction with historical orders.
+ * This component integrates a date picker to filter orders, a search function, and visualization of selected order details.
+ *
+ * @component
  */
-
 import React, { useState, useEffect, useRef } from 'react';
 import './OrderHistory.css';
 import './../Common.css';
@@ -13,55 +14,52 @@ import RevThankYou from '../components/RevThankYou';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 
-/**
- * React component for managing order history.
- * @returns {JSX.Element} OrderHistory component
- */
 const OrderHistory = () => {
     /**
-     * State variable for orders data.
-     * @type {[Object[], function]} Array containing orders data and a function to update it
+     * Stores the list of orders.
+     * @type {Array<Object>} // Specify the type of elements if known
      */
     const [orders, setOrders] = useState([]);
-    
+
     /**
-     * State variable for the selected order.
-     * @type {[Object, function]} Object representing the selected order and a function to update it
+     * Stores the currently selected order for detail viewing.
+     * @type {?Object} // Use ? to indicate that it can also be null
      */
     const [selectedOrder, setSelectedOrder] = useState(null);
-    
+
     /**
-     * State variable to control displaying the RevThankYou component.
-     * @type {[boolean, function]} Boolean indicating whether to show the RevThankYou component and a function to update it
+     * Controls the visibility of the 'Thank You' review modal.
+     * @type {boolean}
      */
     const [showRevThankYou, setShowRevThankYou] = useState(false);
-    
+
     /**
-     * State variable for HighContrast mode.
-     * @type {[boolean, function]} Boolean indicating whether HighContrast mode is enabled and a function to update it
+     * Controls the application of a high contrast theme for accessibility.
+     * @type {boolean}
      */
     const [highContrast, setHighContrast] = useState(false);
 
     /**
-     * State variable for HighContrast mode.
-     * @type {[Object, function]} Boolean indicating whether HighContrast mode is enabled and a function to update it
+     * Retrieves text size settings from context.
      */
-    const { textSize } = useTextSize();
-    
+    const { textSize, updateTextSize } = useTextSize();
+
     /**
-     * Reference to the search input element.
-     * @type {React.RefObject<HTMLInputElement>} Reference to the search input element
+     * Reference to the search input field.
+     * @type {React.RefObject<HTMLInputElement>}
      */
     const searchInputRef = useRef(null);
-    
+
     /**
-     * State variable for orders date.
-     * @type {[string, function]} String representing the date of orders and a function to update it
+     * State for managing the date selection for order filtering.
+     * @type {Date|string}
      */
     const [ordersDate, setOrdersDate] = useState('');
-    
+
     /**
-     * Fetches order history from the backend.
+     * Fetches the order history from the backend API.
+     * Asynchronously retrieves orders and updates the orders state.
+     * @async
      */
     const fetchOrderHistory = async () => {
         try {
@@ -85,21 +83,25 @@ const OrderHistory = () => {
                 console.error('Error fetching filtered orders:', error);
             }
         };
-        fetchFilteredOrders();
+        if (ordersDate) {
+            fetchFilteredOrders();
+        }
         console.log("Orders would be grabbed here");
     }, [ordersDate]);
 
     /**
-     * Handles the click event on an order.
-     * @param {Object} order - The order object that was clicked
+     * Handles click events on individual order items.
+     * Updates the selectedOrder state with the clicked order's details.
+     * @param {Object} order - The order data object.
      */
     const handleOrderClick = (order) => {
         setSelectedOrder(order);
     };
 
     /**
-     * Renders the order items.
-     * @returns {JSX.Element[]} Array of JSX Elements representing order items
+     * Renders the list of order items.
+     * Maps each order to an HTML element structure displaying the order details.
+     * @returns {Array<JSX.Element>} The list of order elements.
      */
     const renderOrderItems = () => {
         return orders.map(order => (
@@ -113,9 +115,9 @@ const OrderHistory = () => {
     };
 
     /**
-     * Formats the date and time.
-     * @param {string} dateTime - The date and time string to format
-     * @returns {string} Formatted date and time string
+     * Formats a date/time string into a more readable format.
+     * @param {string} dateTime - The date/time string to format.
+     * @returns {string} The formatted date/time string.
      */
     const formatDate = (dateTime) => {
         const date = new Date(dateTime);
@@ -123,7 +125,8 @@ const OrderHistory = () => {
     };
 
     /**
-     * Handles the search action.
+     * Triggers a browser-based text search within the component.
+     * Uses the current value from the search input reference.
      */
     const handleSearch = () => {
         const searchText = searchInputRef.current.value;
@@ -131,14 +134,14 @@ const OrderHistory = () => {
     };
 
     /**
-     * Handles the action to show RevThankYou component.
+     * Toggles the visibility of the 'Thank You' modal.
      */
     const handleShowRevThankYou = () => {
         setShowRevThankYou(true);
     };
 
     /**
-     * Toggles the high contrast mode.
+     * Toggles the high contrast theme.
      */
     const toggleHighContrast = () => {
         setHighContrast(!highContrast);
@@ -176,7 +179,7 @@ const OrderHistory = () => {
                     </div>
                 </div>
             </div>
-            {showRevThankYou && <RevThankYou onAnimationEnd={() => setShowRevThankYou(false)} />} {/* Pass onAnimationEnd event to handle reset */}
+            {showRevThankYou && <RevThankYou onAnimationEnd={() => setShowRevThankYou(false)} />}
         </div>
     );
 };
