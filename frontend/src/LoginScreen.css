@@ -62,8 +62,6 @@ input[type="password"] {
     display: flex;
     justify-content: center;
     margin-top: 15px;
-    font-size: 24px;
-    
 }
 
 .LoginScreen button[type="submit"],
@@ -74,4 +72,5 @@ input[type="password"] {
     background-color: #011b37;
     color: #ffffff; 
     cursor: pointer;
+    font-size: 18px;
 }
