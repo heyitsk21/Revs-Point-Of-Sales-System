@@ -1,9 +1,5 @@
-/**
- * Component that defines the application routes.
- * @returns {JSX.Element} The component defining application routes
- */
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Employee from './Employee/pages/Employee';
 import Customer from './Employee/pages/Customer';
 import LoginScreen from './LoginScreen';
@@ -19,170 +15,29 @@ import ZReport from './Manager/Reports/zreport';
 import XReport from './Manager/Reports/xreport';
 import OrderTrend from './Manager/Reports/OrderTrend';
 import MenuBoard from './MenuBoard';
-import KitchenBoard from './Manager/KitchenBoard'
+import KitchenBoard from './Manager/KitchenBoard';
 import EmployeeManagement from './Manager/EmployeeManagement';
 
 function AppRoutes() {
-
   return (
     <Routes>
       <Route path="/" element={<LoginScreen />} />
-
-      <Route
-        path="/manager"
-        element={
-          localStorage.getItem('authority') >= 3 ? (
-            <Navigate to="/manager/trends" replace />
-          ) : (
-            <Navigate to="/unauthorized" replace />
-          )
-        }
-      />
-
-      <Route
-        path="/manager/inventory"
-        element={
-          localStorage.getItem('authority') >= 3 ? (
-            <Inventory />
-          ) : (
-            <Navigate to="/unauthorized" replace />
-          )
-        }
-      />
-      <Route
-        path="/manager/menuitems"
-        element={
-          localStorage.getItem('authority') >= 3 ? (
-            <MenuItems />
-          ) : (
-            <Navigate to="/unauthorized" replace />
-          )
-        }
-      />
-      <Route
-        path="/manager/orderhistory"
-        element={
-          localStorage.getItem('authority') >= 3 ? (
-            <OrderHistory />
-          ) : (
-            <Navigate to="/unauthorized" replace />
-          )
-        }
-      />
-      <Route
-        path="/manager/trends"
-        element={
-          localStorage.getItem('authority') >= 3 ? (
-            <Trends />
-          ) : (
-            <Navigate to="/unauthorized" replace />
-          )
-        }
-      />
-      <Route
-        path="/manager/trends/sales"
-        element={
-          localStorage.getItem('authority') >= 3 ? (
-            <SalesReport />
-          ) : (
-            <Navigate to="/unauthorized" replace />
-          )
-        }
-      />
-      <Route
-        path="/manager/trends/zreport"
-        element={
-          localStorage.getItem('authority') >= 3 ? (
-            <ZReport />
-          ) : (
-            <Navigate to="/unauthorized" replace />
-          )
-        }
-      />
-      <Route
-        path="/manager/trends/xreport"
-        element={
-          localStorage.getItem('authority') >= 3 ? (
-            <XReport />
-          ) : (
-            <Navigate to="/unauthorized" replace />
-          )
-        }
-      />
-      <Route
-        path="/manager/trends/productusage"
-        element={
-          localStorage.getItem('authority') >= 3 ? (
-            <ProdUsage />
-          ) : (
-            <Navigate to="/unauthorized" replace />
-          )
-        }
-      />
-      <Route
-        path="/manager/trends/excess"
-        element={
-          localStorage.getItem('authority') >= 3 ? (
-            <ExcessReport />
-          ) : (
-            <Navigate to="/unauthorized" replace />
-          )
-        }
-      />
-      <Route
-        path="/manager/trends/restock"
-        element={
-          localStorage.getItem('authority') >= 3 ? (
-            <RestockReport />
-          ) : (
-            <Navigate to="/unauthorized" replace />
-          )
-        }
-      />
-      <Route
-        path="/manager/trends/ordertrend"
-        element={
-          localStorage.getItem('authority') >= 3 ? (
-            <OrderTrend />
-          ) : (
-            <Navigate to="/unauthorized" replace />
-          )
-        }
-      />
-      <Route
-        path="/manager/employeemanagement"
-        element={
-          localStorage.getItem('authority') >= 3 ? (
-            <EmployeeManagement />
-          ) : (
-            <Navigate to="/unauthorized" replace />
-          )
-        }
-      />
-
-      <Route path="/employee" 
-        element={
-          localStorage.getItem('authority') >= 2 ? (
-            <Employee />
-          ) : (
-            <Navigate to="/unauthorized" replace />
-          )
-        }
-      />
-
-      <Route path="/kitchen"
-        element={
-          localStorage.getItem('authority') >= 2 ? (
-            <KitchenBoard />
-          ) : (
-            <Navigate to="/unauthorized" replace />
-          )
-        }
-      />
-
+      <Route path="/manager/inventory" element={<Inventory />} />
+      <Route path="/manager/menuitems" element={<MenuItems />} />
+      <Route path="/manager/orderhistory" element={<OrderHistory />} />
+      <Route path="/manager/trends" element={<Trends />} />
+      <Route path="/manager/trends/sales" element={<SalesReport />} />
+      <Route path="/manager/trends/zreport" element={<ZReport />} />
+      <Route path="/manager/trends/xreport" element={<XReport />} />
+      <Route path="/manager/trends/productusage" element={<ProdUsage />} />
+      <Route path="/manager/trends/excess" element={<ExcessReport />} />
+      <Route path="/manager/trends/restock" element={<RestockReport />} />
+      <Route path="/manager/trends/ordertrend" element={<OrderTrend />} />
+      <Route path="/manager/employeemanagement" element={<EmployeeManagement />} />
+      <Route path="/employee" element={<Employee />} />
+      <Route path="/kitchen" element={<KitchenBoard />} />
       <Route path="/menuboard" element={<MenuBoard />} />
       <Route path="/customer" element={<Customer />} />
-
       <Route path="/unauthorized" element={<div>Unauthorized Access</div>} />
     </Routes>
   );
