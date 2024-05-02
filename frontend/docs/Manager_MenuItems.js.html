@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Manager/MenuItems.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Manager/MenuItems.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Menu Items Component.
+ * @module MenuItems
+ * @component
+ * @example
+ * return &lt;MenuItems />
+ */
+import React, { useState, useEffect } from 'react';
+import './MenuItems.css';
+import { useTextSize } from '../components/TextSizeContext';
+import axios from 'axios';
+import ManagerTopBar from '../components/ManagerTopBar';
+
+/**
+ * Menu Items functional component.
+ * @returns {JSX.Element} Menu Items component
+ */
+function MenuItems() {
+    const [menu, setMenu] = useState([]);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [checkedItems, setCheckedItems] = useState([]);
+    const [newMenuItem, setNewMenuItem] = useState({ category: null, name: '', price: '', ingredients: [] });
+    const [ingredients, setIngredients] = useState([]);
+    const [selectedIngredient, setSelectedIngredient] = useState('');
+    const [selectedCustomization, setSelectedCustomization] = useState('');
+    const [customizations, setCustomizations] = useState([]);
+    const [highContrast, setHighContrast] = useState(false); // State variable for HighContrast mode
+    const { textSize } = useTextSize();
+
+    useEffect(() => {
+        fetchMenuItems();
+        fetchIngredients();
+        fetchCustomizations();
+    }, []);
+
+    /**
+     * Fetches the menu items from the API.
+     */
+    const fetchMenuItems = async () => {
+        try {
+            const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/menuitems');
+            setMenu(response.data);
+        } catch (error) {
+            console.error('Error fetching menu items:', error);
+        }
+    };
+
+    /**
+     * Fetches the ingredients from the API.
+     */
+    const fetchIngredients = async () => {
+        try {
+            const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/ingredients');
+            setIngredients(response.data);
+        } catch (error) {
+            console.error('Error fetching ingredients:', error);
+        }
+    };
+
+    /**
+     * Fetches the customizations from the API.
+     */
+    const fetchCustomizations = async () => {
+        try {
+            if (selectedItem) {
+                const response = await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitemcustomizations', { menuitemid: selectedItem.menuid });
+                setCustomizations(response.data);
+            }
+        } catch (error) {
+            console.error('Error fetching customizations:', error);
+        }
+    };
+
+    const [categories] = useState([
+        { value: 100, label: 'Burgers' },
+        { value: 200, label: 'Sandwiches' },
+        { value: 400, label: 'Desserts' },
+        { value: 700, label: 'Limited Time' },
+        { value: 500, label: 'Drinks &amp; Fries' },
+        { value: 300, label: 'Salads' },
+        { value: 600, label: 'Value Meals' }
+    ]);
+
+    /**
+     * Handles the category change event.
+     * @param {Event} event - The event object
+     */
+    const handleCategoryChange = (event) => {
+        setNewMenuItem({ ...newMenuItem, category: event.target.value });
+    };
+
+    /**
+     * Handles the row click event.
+     * @param {Event} event - The event object
+     * @param {Object} item - The selected menu item
+     */
+    const rowClicked = async (event, item) => {
+        setSelectedItem(item);
+        try {
+            const response = await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', { menuitemid: item.menuid });
+            setCheckedItems(response.data);
+            await fetchCustomizations();
+        } catch (error) {
+            console.error('Error fetching ingredients:', error);
+        }
+    };
+
+    /**
+     * Handles the delete button click event.
+     */
+    const handleDeleteButtonClick = async () => {
+        if (!selectedItem) return;
+        try {
+            await axios.delete('https://team21revsbackend.onrender.com/api/manager/menuitems', { data: { menuid: selectedItem.menuid } });
+            setMenu(prevMenu => prevMenu.filter(item => item.menuid !== selectedItem.menuid));
+            setSelectedItem(null);
+            setCheckedItems([]);
+        } catch (error) {
+            console.error('Error deleting menu item:', error);
+        }
+    };
+
+    /**
+     * Handles the input change event.
+     * @param {Event} event - The event object
+     */
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setSelectedItem(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    /**
+     * Handles the update menu item event.
+     */
+    const handleUpdateMenuItem = async () => {
+        try {
+            const payload = {
+                menuid: selectedItem.menuid,
+                itemname: selectedItem.itemname,
+                price: parseFloat(selectedItem.price)
+            };
+
+            await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitems', payload);
+
+            fetchMenuItems();
+        } catch (error) {
+            console.error('Error updating menu item:', error);
+        }
+    };
+
+    /**
+     * Handles the add menu item event.
+     */
+    const handleAddMenuItem = async () => {
+        try {
+            console.log('Name:', newMenuItem.name, 'Type:', typeof newMenuItem.name);
+            console.log('Category:', newMenuItem.category, 'Type:', typeof newMenuItem.category);
+            console.log('Price:', newMenuItem.price, 'Type:', typeof newMenuItem.price);
+
+            const itemName = newMenuItem.name.toString();
+
+            await axios.post('https://team21revsbackend.onrender.com/api/manager/menuitems', { category: newMenuItem.category, itemname: itemName, price: newMenuItem.price });
+
+            alert('New menu item added successfully.');
+
+            setNewMenuItem({ category: null, name: '', price: '', ingredients: [] });
+        }
+        catch (error) {
+            console.error("Error adding menu item:", error);
+        }
+        fetchMenuItems();
+    };
+
+    /**
+     * Handles the ingredient change event.
+     * @param {Event} event - The event object
+     */
+    const handleIngredientChange = (event) => {
+        setSelectedIngredient(event.target.value);
+    };
+
+    /**
+     * Handles the add ingredient event.
+     */
+    const handleAddIngredient = async () => {
+        try {
+            const ingredientId = parseInt(selectedIngredient);
+            console.log('Selected Menu Item ID:', selectedItem.menuid);
+            console.log('Selected Ingredient ID:', ingredientId);
+            await axios.post('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid, ingredientid: ingredientId });
+
+            const response = await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid });
+            setCheckedItems(response.data);
+
+        } catch (error) {
+            console.error('Error adding ingredient:', error);
+        }
+    };
+
+    /**
+     * Handles the delete ingredient event.
+     * @param {number} ingredientIdToDelete - The ID of the ingredient to delete
+     */
+    const handleDeleteIngredient = async (ingredientIdToDelete) => {
+        try {
+            await axios.delete('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', {
+                data: {
+                    menuitemid: selectedItem.menuid,
+                    ingredientid: ingredientIdToDelete
+                }
+            });
+
+            const response = await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', { menuitemid: selectedItem.menuid });
+            setCheckedItems(response.data);
+
+        } catch (error) {
+            console.error('Error deleting ingredient:', error);
+        }
+    };
+
+    /**
+     * Handles the add customization event.
+     * @param {number} customizationId - The ID of the customization to add
+     */
+    const handleAddCustomization = async (customizationId) => {
+        try {
+            const payload = { menuitemid: selectedItem.menuid, customizationid: Number(customizationId) };
+            await axios.post('https://team21revsbackend.onrender.com/api/manager/menuitemcustomizations', payload);
+            fetchCustomizations();
+        } catch (error) {
+            console.error('Error adding customization:', error);
+        }
+    };
+
+    /**
+     * Handles the delete customization event.
+     * @param {number} customizationId - The ID of the customization to delete
+     */
+    const handleDeleteCustomization = async (customizationId) => {
+        try {
+            console.log('Customization ID:', customizationId); // Logging the value inside the function
+            const payload = { menuitemid: selectedItem.menuid, customizationid: Number(customizationId) };
+            console.log('Delete Payload:', payload); // Logging the payload
+            await axios.delete(`https://team21revsbackend.onrender.com/api/manager/menuitemcustomizations`, { data: payload });
+            fetchCustomizations();
+        } catch (error) {
+            console.error('Error deleting customization:', error);
+        }
+    };
+
+    /**
+     * Renders the menu items.
+     * @returns {JSX.Element[]} Array of JSX Elements representing menu items
+     */
+    const renderMenuItems = () => {
+        return menu.map(item => (
+            &lt;tr key={item.menuid} onClick={(event) => rowClicked(event, item)} className={selectedItem &amp;&amp; selectedItem.menuid === item.menuid ? 'selected' : ''}>
+                &lt;td>{item.menuid}&lt;/td>
+                &lt;td>{item.itemname}&lt;/td>
+                &lt;td>${item.price}&lt;/td>
+            &lt;/tr>
+        ));
+    };
+
+    /**
+     * Renders the ingredient options.
+     * @returns {JSX.Element[]} Array of JSX Elements representing ingredient options
+     */
+    const renderIngredientOptions = () => {
+        return ingredients.map(ingredient => (
+            &lt;option key={ingredient.ingredientid} value={ingredient.ingredientid}>{ingredient.ingredientname}&lt;/option>
+        ));
+    };
+    
+    /**
+     * Renders the customizations.
+     * @returns {JSX.Element[]} Array of JSX Elements representing customizations
+     */
+    const renderCustomizations = () => {
+        console.log('Customizations:', customizations);
+        return customizations.map(customization => (
+            &lt;div key={customization.customizationid}>
+                {customization.customizationname} - {customization.ingredientname}
+                &lt;button className='menu-item-icon-button' onClick={() => handleDeleteCustomization(customization.ingredientid)}>&lt;img src="/Images/deleteIcon.png" alt="Delete" className="delete-icon" />&lt;/button>
+            &lt;/div>
+        ));
+    };
+
+    /**
+     * Toggles the high contrast mode.
+     */
+    const toggleHighContrast = () => {
+        setHighContrast(!highContrast);
+    };
+
+    return (
+        &lt;div className={`manager-menu ${textSize === 'large' ? 'large-text' : ''} ${highContrast ? 'high-contrast' : ''}`}>
+            &lt;ManagerTopBar toggleHighContrast={toggleHighContrast} />
+            &lt;div className='manager-menu-items'>
+                &lt;div className="add-item-section">
+                    &lt;h2>Add New Menu Item&lt;/h2>
+                    &lt;div className='add-item-object'>
+                        &lt;label>Item Name:&lt;/label>
+                        &lt;input className='menu-item-input'
+                            type="text"
+                            value={newMenuItem.name}
+                            onChange={(e) => setNewMenuItem({ ...newMenuItem, name: e.target.value })}
+                        />
+                    &lt;/div>
+                    &lt;div className='add-item-object'>
+                        &lt;label>Price:&lt;/label>
+                        &lt;input className='menu-item-input'
+                            type="number"
+                            value={newMenuItem.price}
+                            onChange={(e) => setNewMenuItem({ ...newMenuItem, price: e.target.value })}
+                        />
+                    &lt;/div>
+                    &lt;div className='add-item-object'>
+                        &lt;label>Category:&lt;/label>
+                        &lt;select className='menu-item-input'
+                            value={newMenuItem.category}
+                            onChange={handleCategoryChange}
+                        >
+                            &lt;option value="">Select Category&lt;/option>
+                            {categories.map(category => (
+                                &lt;option key={category.value} value={category.value}>
+                                    {category.label}
+                                &lt;/option>
+                            ))}
+                        &lt;/select>
+                    &lt;/div>
+                    &lt;button className='menu-item-button' onClick={handleAddMenuItem}>Submit&lt;/button>
+                &lt;/div>
+                &lt;div className="edit-item-section">
+                    &lt;h2>{selectedItem ? `Edit Menu Item ${selectedItem.menuid}` : 'Select a Menu Item to Edit'}&lt;/h2>
+                    {selectedItem &amp;&amp; (
+                        &lt;>
+                            &lt;label htmlFor="editName">Name:&lt;/label>
+                            &lt;input type="text" id="editName" name="itemname" value={selectedItem.itemname} onChange={handleInputChange} />
+                            &lt;label htmlFor="editPrice">Price:&lt;/label>
+                            &lt;input type="text" id="editPrice" name="price" value={selectedItem.price} onChange={handleInputChange} />
+                            &lt;button className='menu-item-button' onClick={handleUpdateMenuItem}>Update&lt;/button>
+                            &lt;h3>Ingredients:&lt;/h3>
+                            &lt;ul>
+                                {checkedItems.map((ingredient, index) => (
+                                    &lt;li key={index}>
+                                        {ingredient.ingredientname}
+                                        &lt;button className='menu-item-icon-button' onClick={() => handleDeleteIngredient(ingredient.ingredientid)}>&lt;img src="/Images/deleteIcon.png" alt="Delete" className="delete-icon" />&lt;/button>
+                                    &lt;/li>
+                                ))}
+                            &lt;/ul>
+                            &lt;div>
+                                &lt;h3 htmlFor="ingredientSelect">Add New Ingredient:&lt;/h3>
+                                &lt;select id="ingredientSelect" value={selectedIngredient} onChange={handleIngredientChange}>
+                                    &lt;option value="">Select Ingredient&lt;/option>
+                                    {renderIngredientOptions()}
+                                &lt;/select>
+                                &lt;button className='menu-item-icon-button' onClick={handleAddIngredient}>&lt;img src="/Images/addIcon.png" alt="Add" className="delete-icon" />&lt;/button>
+                            &lt;/div>
+                            &lt;h3>Customizations:&lt;/h3>
+                            &lt;div>
+                                {renderCustomizations()}
+                            &lt;/div>
+                            &lt;div className="edit-customization-section">
+                                &lt;h3 htmlFor="customizationSelect">Add Customization:&lt;/h3>
+                                &lt;select id="customizationSelect" value={selectedCustomization} onChange={(e) => setSelectedCustomization(e.target.value)}>
+                                    &lt;option value="">Select Customization&lt;/option>
+                                    {renderIngredientOptions()}
+                                &lt;/select>
+                                &lt;button className='menu-item-icon-button' onClick={() => handleAddCustomization(selectedCustomization)}>&lt;img src="/Images/addIcon.png" alt="Add" className="delete-icon" />&lt;/button>
+                            &lt;/div>
+                        &lt;/>
+                    )}
+                &lt;/div>
+                &lt;div className='item-list'>
+                    &lt;h2>Menu Items&lt;/h2>
+                    &lt;table>
+                        &lt;thead>
+                            &lt;tr>
+                                &lt;th>ID&lt;/th>
+                                &lt;th>Name&lt;/th>
+                                &lt;th>Price&lt;/th>
+                            &lt;/tr>
+                        &lt;/thead>
+                        &lt;tbody>
+                            {renderMenuItems()}
+                        &lt;/tbody>
+                    &lt;/table>
+                &lt;/div>
+                &lt;div className="button-panel">
+                    &lt;button className='menu-item-button' onClick={handleDeleteButtonClick} disabled={!selectedItem}>Delete&lt;/button>
+                &lt;/div>
+            &lt;/div>
+        &lt;/div>
+    );
+};
+
+export default MenuItems;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-EmployeeManagement.html">EmployeeManagement</a></li><li><a href="module-Inventory.html">Inventory</a></li><li><a href="module-KitchenBoard.html">KitchenBoard</a></li><li><a href="module-MenuItems.html">MenuItems</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Cart">Cart</a></li><li><a href="global.html#ConfirmClearOrder">ConfirmClearOrder</a></li><li><a href="global.html#ConfirmSubmit">ConfirmSubmit</a></li><li><a href="global.html#CustCart">CustCart</a></li><li><a href="global.html#CustHeader">CustHeader</a></li><li><a href="global.html#CustOrdering">CustOrdering</a></li><li><a href="global.html#EmpHeader">EmpHeader</a></li><li><a href="global.html#Employee">Employee</a></li><li><a href="global.html#EmployeeTopBar">EmployeeTopBar</a></li><li><a href="global.html#GoogleTranslate">GoogleTranslate</a></li><li><a href="global.html#ManagerTopBar">ManagerTopBar</a></li><li><a href="global.html#OrderTrend">OrderTrend</a></li><li><a href="global.html#Ordering">Ordering</a></li><li><a href="global.html#ProdUsage">ProdUsage</a></li><li><a href="global.html#RestockReport">RestockReport</a></li><li><a href="global.html#RevThankYou">RevThankYou</a></li><li><a href="global.html#SalesReport">SalesReport</a></li><li><a href="global.html#TextSizeProvider">TextSizeProvider</a></li><li><a href="global.html#UserContext">UserContext</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#reportWebVitals">reportWebVitals</a></li><li><a href="global.html#setIngredientsFunctiontoupdatetheingredientsdata.">setIngredients Function to update the ingredients data.</a></li><li><a href="global.html#setSelectedIngredientFunctiontoupdatetheselectedingredient.">setSelectedIngredient Function to update the selected ingredient.</a></li><li><a href="global.html#setSelectedLocationFunctiontoupdatetheselectedlocation.">setSelectedLocation Function to update the selected location.</a></li><li><a href="global.html#useTextSize">useTextSize</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed May 01 2024 22:39:07 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
