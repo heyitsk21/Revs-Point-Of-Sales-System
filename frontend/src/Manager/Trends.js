@@ -57,6 +57,12 @@ function Trends() {
                     <button className="trends-button" onClick={() => navigate('/manager/trends/ordertrend')}>
                         Generate Order Trend Report
                     </button>
+                    <button className="trends-button" onClick={() => navigate('/manager/trends/zreport')}>
+                        Generate Z Report
+                    </button>
+                    <button className="trends-button" onClick={() => navigate('/manager/trends/xreport')}>
+                        Generate X Report
+                    </button>
                 </div>
             </div>
         </div>

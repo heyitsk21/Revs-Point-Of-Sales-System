@@ -10,7 +10,7 @@ import SortedTable from '../../components/SortedTable';
  * Component for displaying the sales report.
  * @returns {JSX.Element} - The JSX element representing the SalesReport component.
  */
-function ZReport () {
+function XReport () {
     const navigate = useNavigate();
     const [reportData, setReportData] = useState([]);
     const { textSize, toggleTextSize } = useTextSize();
@@ -50,7 +50,7 @@ function ZReport () {
         }, [])
         downloadFile({
           data: [...headers, ...usersCsv].join('\n'),
-          fileName: 'ZReport.csv',
+          fileName: 'XReport.csv',
           fileType: 'text/csv',
         })
       }
@@ -87,7 +87,7 @@ function ZReport () {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/reports/generatezreport');
+            const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/reports/generatexreport');
             console.log('Response from API:', response.data);
             setReportData(response.data);
         } catch (error) {
@@ -101,7 +101,7 @@ function ZReport () {
             <div className='report-body'>
 
                 <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
-                <h2  className="trends-header">Z Report</h2>
+                <h2  className="trends-header">X Report</h2>
                 <div className="date-fields">
                 </div>
                 <div className='generate-trend-buttons'>
@@ -116,7 +116,7 @@ function ZReport () {
                          <SortedTable columns={columns} data={reportData.data} />
                          </div>
                     ) : (
-                        <p>No data to display</p>
+                        <p>No data to display, no sales for the current hour. </p>
                     )}
                 </div>
             </div>
@@ -124,4 +124,4 @@ function ZReport () {
     );
 };
 
-export default ZReport;
+export default XReport;

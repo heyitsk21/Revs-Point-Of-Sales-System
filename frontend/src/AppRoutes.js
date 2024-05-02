@@ -16,6 +16,7 @@ import ProdUsage from './Manager/Reports/ProdUsage';
 import ExcessReport from './Manager/Reports/ExcessReport';
 import RestockReport from './Manager/Reports/RestockReport';
 import ZReport from './Manager/Reports/zreport';
+import XReport from './Manager/Reports/xreport';
 import OrderTrend from './Manager/Reports/OrderTrend';
 import MenuBoard from './MenuBoard';
 import KitchenBoard from './Manager/KitchenBoard'
@@ -93,6 +94,16 @@ function AppRoutes() {
         element={
           localStorage.getItem('authority') >= 3 ? (
             <ZReport />
+          ) : (
+            <Navigate to="/unauthorized" replace />
+          )
+        }
+      />
+      <Route
+        path="/manager/trends/xreport"
+        element={
+          localStorage.getItem('authority') >= 3 ? (
+            <XReport />
           ) : (
             <Navigate to="/unauthorized" replace />
           )
