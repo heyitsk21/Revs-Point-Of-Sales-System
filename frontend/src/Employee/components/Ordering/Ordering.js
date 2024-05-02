@@ -3,14 +3,20 @@ import './Ordering.css';
 import { useCart } from "react-use-cart";
 import { useTextSize } from '../../../components/TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
-import Cart from '../Cart/Cart'
+import Cart from '../Cart/Cart';
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 
+/**
+ * Component for employee ordering interface.
+ * @param {object} props - Props passed to the component.
+ * @param {function} props.onCatChange - Function to handle category change.
+ * @returns {JSX.Element} - The JSX element representing the Ordering component.
+ */
 const Ordering = ({ onCatChange }) => {
     const { textSize, toggleTextSize } = useTextSize();
     const [category, setCategory] = useState('Value Meals');
-    const [selectedMenuSection] = useState(null);  //setSelectedMenuSection
+    const [selectedMenuSection] = useState(null);  // setSelectedMenuSection
     const [initialFetchDone, setInitialFetchDone] = useState(false);
     const [burgerList, setBurgerList] = useState([]);
     const [sandwichList, setSandwichList] = useState([]);
@@ -20,8 +26,7 @@ const Ordering = ({ onCatChange }) => {
     const [valueList, setValueList] = useState([]);
     const [limitedList, setLimitedList] = useState([]);
 
-    const {addItem} = useCart();
-    console.log('Cart Hook:', useCart());
+    const { addItem } = useCart();
 
     const fetchMenuSection = async (currentIdStart) => {
         try {
@@ -75,11 +80,19 @@ const Ordering = ({ onCatChange }) => {
         return () => clearInterval(intervalId); // Clear interval on component unmount
     }, [fetchMenuSectionsPeriodically, initialFetchDone]);
 
-    const handleCategories = (categoryName, currentIdStart) => {
-        fetchMenuSection(currentIdStart); // Fetch menu section immediately when category is changed
+    /**
+     * Function to handle category change and fetch corresponding menu section.
+     * @param {string} categoryName - Name of the category.
+     */
+    const handleCategories = (categoryName) => {
+        fetchMenuSection(getMenuGroupId(categoryName)); // Fetch menu section immediately when category is changed
         setCategory(categoryName);
     };
 
+    /**
+     * Function to render menu section based on selected category.
+     * @returns {JSX.Element[]} - Array of JSX elements representing menu items.
+     */
     const renderMenuSection = () => {
         let selectedList;
         switch (category) {
@@ -117,20 +130,44 @@ const Ordering = ({ onCatChange }) => {
                     </button>
                 </React.Fragment>
             ));
-            
-        }
-        else {
+        } else {
             return null;
         }
     };	  
+
+    /**
+     * Function to get menu group ID based on category name.
+     * @param {string} categoryName - Name of the category.
+     * @returns {number} - ID of the menu group.
+     */
+    const getMenuGroupId = (categoryName) => {
+        switch (categoryName) {
+            case 'Value Meals':
+                return 600;
+            case 'Burgers':
+                return 100;
+            case 'Sandwiches':
+                return 200;
+            case 'Salads':
+                return 300;
+            case 'Desserts':
+                return 400;
+            case 'Drinks & Fries':
+                return 500;
+            case 'Limited Time':
+                return 700;
+            default:
+                return 0;
+        }
+    };
 
     return (
         <div className={`Ordering ${textSize === 'large' ? 'large-text' : ''}`}>
             <div className="employee-middle-content">
                 <div className="employee-leftSide">
-                        <div className='employee-categoryName'>
-                            {category}
-                        </div>
+                    <div className='employee-categoryName'>
+                        {category}
+                    </div>
                     <div className='employee-items'>
                         {renderMenuSection()}
                     </div>

@@ -6,12 +6,30 @@ import '@djthoms/pretty-checkbox';
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 
+/**
+ * ConfirmSubmit component to confirm submitting the order.
+ * @param {object} props - Props passed to the component.
+ * @param {object} props.trigger - Trigger state to control the visibility of the confirmation popup.
+ * @param {function} props.setTrigger - Function to set the trigger state.
+ * @param {function} props.emptyCart - Function to empty the cart.
+ * @returns {JSX.Element} - The JSX element representing the ConfirmSubmit component.
+ */
 function ConfirmSubmit(props) {
   const [options, setOptions] = useState([]);
   const [checkboxState, setCheckboxState] = useState({});
 
+  /**
+   * Function to generate a unique ID for each item.
+   * @param {object} item - The item object.
+   * @param {number} index - The index of the item.
+   * @returns {string} - The unique ID.
+   */
   const generateUniqueId = (item, index) => `${item.id}_${index}`;
 
+  /**
+   * Function to send the order to the database.
+   * @param {string} name - The name of the customer.
+   */
   const sendToDatabase = async (name) => {
     try {
       const orderData = {
@@ -33,6 +51,10 @@ function ConfirmSubmit(props) {
     }
   };
 
+  /**
+   * Function to fetch customization options.
+   * @param {number} id - The ID of the menu item.
+   */
   const fetchOptions = async (id) => {
     const payload = {
       menuitemid:id
@@ -56,6 +78,10 @@ function ConfirmSubmit(props) {
     }
   }, [props.trigger, props.trigger.items]);
 
+  /**
+   * Function to handle form submission.
+   * @param {Event} event - The form submission event.
+   */
   function handleSubmit(event) {
     event.preventDefault();
     props.setTrigger(false);
@@ -64,6 +90,11 @@ function ConfirmSubmit(props) {
     props.emptyCart();
   }
 
+  /**
+   * Function to handle checkbox change.
+   * @param {string} uniqueID - The unique ID of the item.
+   * @param {string} optionName - The name of the customization option.
+   */
   function handleCheckboxChange(uniqueID, optionName) {
     setCheckboxState(prevState => ({
       ...prevState,
@@ -75,8 +106,8 @@ function ConfirmSubmit(props) {
   }
 
   return (props.trigger) ? (
-    <div className = 'confirm-popup'>
-        <div className= 'confirm-popup-inner'>
+    <div className='confirm-popup'>
+        <div className='confirm-popup-inner'>
             <button className='close' onClick={() => props.setTrigger(false)}>Not Yet</button>
             <h3>Please select any add-ons you would like.</h3>
             <SimpleBar style={{ height: 400, width: 600}}>
@@ -113,18 +144,18 @@ function ConfirmSubmit(props) {
             </SimpleBar>
 
             <h3>Please enter your name and press Submit to finalize your order.</h3>
-            <form>
+            <form onSubmit={handleSubmit}>
               <label className='label'>
                 <div className='prompt'>
                   Name: 
                   <input type="text" name="name" />
                 </div>
               </label>
-              <input type="submit" className='confirm' value="Submit" onClick={() => handleSubmit()}/>
+              <input type="submit" className='confirm' value="Submit" />
             </form>
         </div>
     </div>
-  ) : "";
+  ) : null;
 }
 
 export default ConfirmSubmit

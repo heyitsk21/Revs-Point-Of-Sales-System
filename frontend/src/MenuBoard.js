@@ -1,3 +1,8 @@
+/**
+ * Component for displaying the menu board.
+ * @param {Object} props - The props object containing the onPageChange function.
+ * @returns {JSX.Element} The JSX element representing the menu board.
+ */
 import React, { useState, useEffect } from 'react';
 import './MenuBoard.css';
 import axios from 'axios';
@@ -9,10 +14,16 @@ const MenuBoard = ({ onPageChange }) => {
     const [menuGroups, setMenuGroups] = useState([]);
     const [marqueeText, setMarqueeText] = useState('WELCOME TO REVS COME CHECK OUT OUR MENU!');
 
+    /**
+     * Fetches menu groups and their corresponding menu items from the backend upon component mount.
+     */
     useEffect(() => {
         fetchMenuGroups();
     }, []);
 
+    /**
+     * Fetches menu groups and their corresponding menu items from the backend.
+     */
     const fetchMenuGroups = async () => {
         try {
             const menuGroupsData = await Promise.all([
@@ -30,6 +41,12 @@ const MenuBoard = ({ onPageChange }) => {
         }
     };
 
+    /**
+     * Fetches menu items for a specific menu group from the backend.
+     * @param {number} group - The ID of the menu group.
+     * @param {string} title - The title of the menu group.
+     * @returns {Object} An object containing the title of the menu group and its corresponding menu items.
+     */
     const fetchMenuGroup = async (group, title) => {
         try {
             const response = await axios.post('https://team21revsbackend.onrender.com/api/employee/getmenuitems', { menugroup: group });
@@ -40,10 +57,18 @@ const MenuBoard = ({ onPageChange }) => {
         }
     };
 
+    /**
+     * Handles the change of marquee text.
+     * @param {Object} event - The input change event.
+     */
     const handleMarqueeTextChange = (event) => {
         setMarqueeText(event.target.innerText);
     };
 
+    /**
+     * Renders the menu items for each menu group.
+     * @returns {JSX.Element} The JSX element representing the menu items.
+     */
     const renderMenuItems = () => {
         return menuGroups.map(group => (
             <div key={group.title} className="menu-group">

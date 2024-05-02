@@ -3,10 +3,16 @@ import './CustOrdering.css';
 import { useCart } from "react-use-cart";
 import { useTextSize } from '../../../components/TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
-import CustCart from '../Cart/CustCart'
+import CustCart from '../Cart/CustCart';
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 
+/**
+ * Component for customer ordering interface.
+ * @param {object} props - Props passed to the component.
+ * @param {function} props.onCatChange - Function to handle category change.
+ * @returns {JSX.Element} - The JSX element representing the CustOrdering component.
+ */
 const CustOrdering = ({ onCatChange }) => {
     const { textSize, toggleTextSize } = useTextSize();
     const [category, setCategory] = useState('Value Meals');
@@ -20,9 +26,12 @@ const CustOrdering = ({ onCatChange }) => {
     const [valueList, setValueList] = useState([]);
     const [limitedList, setLimitedList] = useState([]);
 
-    const {addItem} = useCart();
-    console.log('Cart Hook:', useCart());
+    const { addItem } = useCart();
 
+    /**
+     * Function to fetch menu items based on menu group ID.
+     * @param {number} currentIdStart - ID of the menu group to fetch.
+     */
     const fetchMenuSection = async (currentIdStart) => {
         try {
             const response = await axios.post('https://team21revsbackend.onrender.com/api/employee/getmenuitems',  { menugroup: currentIdStart });
@@ -75,11 +84,20 @@ const CustOrdering = ({ onCatChange }) => {
         return () => clearInterval(intervalId); // Clear interval on component unmount
     }, [fetchMenuSectionsPeriodically, initialFetchDone]);
 
+    /**
+     * Function to handle category change and fetch corresponding menu section.
+     * @param {string} categoryName - Name of the category.
+     * @param {number} currentIdStart - ID of the menu group to fetch.
+     */
     const handleCategories = (categoryName, currentIdStart) => {
         fetchMenuSection(currentIdStart); // Fetch menu section immediately when category is changed
         setCategory(categoryName);
     };
 
+    /**
+     * Function to render menu section based on selected category.
+     * @returns {JSX.Element[]} - Array of JSX elements representing menu items.
+     */
     const renderMenuSection = () => {
         let selectedList;
         switch (category) {
@@ -113,34 +131,26 @@ const CustOrdering = ({ onCatChange }) => {
                 <React.Fragment key={menuitem.menuid}>
                     <button className='customer-item-button' onClick={() => { console.log('Adding item:', menuitem); addItem({ id: menuitem.menuid, name: menuitem.itemname, price: menuitem.price, picturepath: menuitem.picturepath });}}>
                         <div>
-                                <img id='menuitemimage' src={menuitem.picturepath ? menuitem.picturepath : '/default_tamu_dining_logo.jpg'} alt={menuitem.itemname} />
-                            </div>
+                            <img id='menuitemimage' src={menuitem.picturepath ? menuitem.picturepath : '/default_tamu_dining_logo.jpg'} alt={menuitem.itemname} />
+                        </div>
                         <div>{menuitem.itemname}</div>
                         <div>${menuitem.price}</div>
                     </button>
                 </React.Fragment>
             ));
-            
         }
         else {
             return null;
         }
     };	  
 
-    const btnEmpCatList = document.querySelectorAll('.customer-category-button');
-    btnEmpCatList.forEach(btnEmpCat => {
-        btnEmpCat.addEventListener('click', () => {
-            document.querySelector('.CustOrderingSpecial')?.classList.remove('CustOrderingSpecial');
-            btnEmpCat.classList.add('CustOrderingSpecial');
-        })
-    });
     return (
         <div className={`Ordering ${textSize === 'large' ? 'large-text' : ''}`}>
             <div className="customer-middle-content">
                 <div className="customer-leftSide">
-                        <div className='customer-categoryName'>
-                            {category}
-                        </div>
+                    <div className='customer-categoryName'>
+                        {category}
+                    </div>
                     <div className='customer-items'>
                         {renderMenuSection()}
                     </div>
@@ -150,13 +160,13 @@ const CustOrdering = ({ onCatChange }) => {
                 </div>                    
             </div>
             <div className="customer-bottom-nav">
-                <button className='customer-category-button' onClick={() => handleCategories('Value Meals')}>Value Meals</button>
-                <button className='customer-category-button' onClick={() => handleCategories('Burgers')}>Burgers</button>
-                <button className='customer-category-button' onClick={() => handleCategories('Sandwiches')}>Sandwiches</button>
-                <button className='customer-category-button' onClick={() => handleCategories('Salads')}>Salads</button>
-                <button className='customer-category-button' onClick={() => handleCategories('Desserts')}>Desserts</button>
-                <button className='customer-category-button' onClick={() => handleCategories('Drinks & Fries')}>Drinks & Fries</button>
-                <button className='customer-category-button' onClick={() => handleCategories('Limited Time')}>Limited Time</button>
+                <button className='customer-category-button' onClick={() => handleCategories('Value Meals', 600)}>Value Meals</button>
+                <button className='customer-category-button' onClick={() => handleCategories('Burgers', 100)}>Burgers</button>
+                <button className='customer-category-button' onClick={() => handleCategories('Sandwiches', 200)}>Sandwiches</button>
+                <button className='customer-category-button' onClick={() => handleCategories('Salads', 300)}>Salads</button>
+                <button className='customer-category-button' onClick={() => handleCategories('Desserts', 400)}>Desserts</button>
+                <button className='customer-category-button' onClick={() => handleCategories('Drinks & Fries', 500)}>Drinks & Fries</button>
+                <button className='customer-category-button' onClick={() => handleCategories('Limited Time', 700)}>Limited Time</button>
             </div>
         </div>
     );

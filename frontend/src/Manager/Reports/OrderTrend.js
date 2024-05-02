@@ -9,6 +9,10 @@ import DatePicker from "react-datepicker";
 import SortedTable from '../../components/SortedTable';
 import "react-datepicker/dist/react-datepicker.css";
 
+/**
+ * Component for displaying order trend report.
+ * @returns {JSX.Element} - The JSX element representing the OrderTrend component.
+ */
 function OrderTrend () {
     const navigate = useNavigate();
     const [menuData, setMenuData] = useState([]);
@@ -16,6 +20,9 @@ function OrderTrend () {
     const [endDate, setEndDate] = useState('');
     const { textSize, toggleTextSize } = useTextSize();
 
+    /**
+     * Column configuration for the table.
+     */
     const columns = React.useMemo(
         () => [
           {
@@ -34,7 +41,13 @@ function OrderTrend () {
         []
       )
 
-      const downloadFile = ({ data, fileName, fileType }) => {
+    /**
+     * Function to download a file.
+     * @param {object} data - Data to be downloaded.
+     * @param {string} fileName - Name of the file.
+     * @param {string} fileType - Type of the file.
+     */
+    const downloadFile = ({ data, fileName, fileType }) => {
         const blob = new Blob([data], { type: fileType })
         const a = document.createElement('a')
         a.download = fileName
@@ -48,6 +61,10 @@ function OrderTrend () {
         a.remove()
       }
 
+    /**
+     * Function to export data to CSV format.
+     * @param {object} e - Event object.
+     */
     const exportToCsv = e => {
         e.preventDefault()
         let headers = ['MenuItem1,MenuItem2,Amount']
@@ -63,12 +80,11 @@ function OrderTrend () {
         })
       }
 
-    useEffect(() => {
-        if (startDate && endDate) {
-            fetchData(startDate, endDate);
-        }
-    }, [startDate, endDate]);
-
+    /**
+     * Function to fetch data from the backend.
+     * @param {Date} startDate - Start date.
+     * @param {Date} endDate - End date.
+     */
     const fetchData = async (startDate, endDate) => {
         try {
             const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/reports/generateordertrend', {

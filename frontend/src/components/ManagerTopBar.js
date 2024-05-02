@@ -5,13 +5,21 @@ import './../Common.css';
 import { useNavigate } from 'react-router-dom';
 import Translate from './translate.js';
 
+/**
+ * Functional component representing the top bar for manager navigation.
+ * @param {Object} props - The props object containing the toggleHighContrast function.
+ * @returns {JSX.Element} - The JSX element representing the manager top bar.
+ */
 function ManagerTopBar({ toggleHighContrast }) {
     const navigate = useNavigate();
     const { toggleTextSize } = useTextSize();
-    const [currentTime, setCurrentTime] = useState('');
-    const [dropdownVisible, setDropdownVisible] = useState(false);
-    const [leftdropdownVisible, setLeftdropdownVisible] = useState(false);
+    const [currentTime, setCurrentTime] = useState(''); // State for storing current time
+    const [dropdownVisible, setDropdownVisible] = useState(false); // State for controlling dropdown visibility
+    const [leftdropdownVisible, setLeftdropdownVisible] = useState(false); // State for controlling left dropdown visibility
 
+    /**
+     * Function to update the current time every second.
+     */
     const updateTime = () => {
         const date = new Date();
         const hours = date.getHours().toString().padStart(2, '0');
@@ -22,18 +30,27 @@ function ManagerTopBar({ toggleHighContrast }) {
     };
 
     useEffect(() => {
-        const interval = setInterval(updateTime, 100);
-        return () => clearInterval(interval);
+        const interval = setInterval(updateTime, 1000); // Update time every second
+        return () => clearInterval(interval); // Cleanup interval on component unmount
     }, []);
 
+    /**
+     * Function to toggle the visibility of the main dropdown menu.
+     */
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
     };
 
+    /**
+     * Function to toggle the visibility of the left dropdown menu.
+     */
     const toggleLeftDropdown = () => {
         setLeftdropdownVisible(!leftdropdownVisible);
     };
 
+    /**
+     * Function to handle user logout.
+     */
     const handleLogout = () => {
         console.log('Button clicked!');
         localStorage.setItem('authority', 0);
@@ -42,6 +59,10 @@ function ManagerTopBar({ toggleHighContrast }) {
         navigate('/');
     };
 
+    /**
+     * Function to handle button clicks.
+     * @param {string} buttonName - The name of the button clicked.
+     */
     const handleButtonClick = (buttonName) => {
         // Perform actions based on which button is clicked
         switch (buttonName) {
@@ -76,11 +97,13 @@ function ManagerTopBar({ toggleHighContrast }) {
 
     return (
         <div className='manager-bar'>
+            {/* Left navigation dropdown */}
             <div className="manager-navigation-container">
                 <button className={`manager-dropdown-toggle ${leftdropdownVisible ? 'active' : ''}`} onClick={toggleLeftDropdown}>
                     <img src="/Images/navigationIcon.png" alt="Accessibility" className="manager-dropdown-icon" />
                     <i className="fa fa-cog"></i>
                 </button>
+                {/* Left dropdown menu */}
                 {leftdropdownVisible && (
                     <div className="manager-navigation-menu">
                         <button onClick={() => navigate('/employee')} >Employee</button>
@@ -90,6 +113,7 @@ function ManagerTopBar({ toggleHighContrast }) {
                     </div>
                 )}
             </div>
+            {/* User options section */}
             <div className='user-options'>
                 <div className="manager-user-info">
                     <span>{`Welcome, ${localStorage.getItem('username')}`}</span>
@@ -97,6 +121,7 @@ function ManagerTopBar({ toggleHighContrast }) {
                 </div>
                 <button onClick={handleLogout} className="manager-top-bar-button">Logout</button>
             </div>
+            {/* Bottom navigation buttons */}
             <div className="manager-bar-nav">
                 <button className="manager-bottom-bar-button" onClick={() => handleButtonClick('trends')}>Trends</button>
                 <button className="manager-bottom-bar-button" onClick={() => handleButtonClick('inventory')}>Inventory</button>
@@ -104,11 +129,13 @@ function ManagerTopBar({ toggleHighContrast }) {
                 <button className="manager-bottom-bar-button" onClick={() => handleButtonClick('orderHistory')}>Order History</button>
                 <button className="manager-bottom-bar-button" onClick={() => handleButtonClick('employeeManagement')}>Employees</button>
             </div>
+            {/* Main dropdown container */}
             <div className="manager-dropdown-container">
                 <button className={`manager-dropdown-toggle ${dropdownVisible ? 'active' : ''}`} onClick={toggleDropdown}>
                     <img src="/Images/accessibilityIcon.png" alt="Accessibility" className="manager-dropdown-icon" />
                     <i className="fa fa-cog"></i>
                 </button>
+                {/* Main dropdown menu */}
                 {dropdownVisible && (
                     <div className="manager-dropdown-menu">
                         <button onClick={toggleTextSize}>Toggle Text Size</button>

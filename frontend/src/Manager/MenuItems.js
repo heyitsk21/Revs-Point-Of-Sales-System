@@ -1,9 +1,20 @@
+/**
+ * Menu Items Component.
+ * @module MenuItems
+ * @component
+ * @example
+ * return <MenuItems />
+ */
 import React, { useState, useEffect } from 'react';
 import './MenuItems.css';
 import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
 
+/**
+ * Menu Items functional component.
+ * @returns {JSX.Element} Menu Items component
+ */
 function MenuItems() {
     const [menu, setMenu] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -22,6 +33,9 @@ function MenuItems() {
         fetchCustomizations();
     }, []);
 
+    /**
+     * Fetches the menu items from the API.
+     */
     const fetchMenuItems = async () => {
         try {
             const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/menuitems');
@@ -31,6 +45,9 @@ function MenuItems() {
         }
     };
 
+    /**
+     * Fetches the ingredients from the API.
+     */
     const fetchIngredients = async () => {
         try {
             const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/ingredients');
@@ -40,6 +57,9 @@ function MenuItems() {
         }
     };
 
+    /**
+     * Fetches the customizations from the API.
+     */
     const fetchCustomizations = async () => {
         try {
             if (selectedItem) {
@@ -61,10 +81,19 @@ function MenuItems() {
         { value: 600, label: 'Value Meals' }
     ]);
 
+    /**
+     * Handles the category change event.
+     * @param {Event} event - The event object
+     */
     const handleCategoryChange = (event) => {
         setNewMenuItem({ ...newMenuItem, category: event.target.value });
     };
 
+    /**
+     * Handles the row click event.
+     * @param {Event} event - The event object
+     * @param {Object} item - The selected menu item
+     */
     const rowClicked = async (event, item) => {
         setSelectedItem(item);
         try {
@@ -76,6 +105,9 @@ function MenuItems() {
         }
     };
 
+    /**
+     * Handles the delete button click event.
+     */
     const handleDeleteButtonClick = async () => {
         if (!selectedItem) return;
         try {
@@ -88,6 +120,10 @@ function MenuItems() {
         }
     };
 
+    /**
+     * Handles the input change event.
+     * @param {Event} event - The event object
+     */
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setSelectedItem(prevState => ({
@@ -96,7 +132,9 @@ function MenuItems() {
         }));
     };
 
-
+    /**
+     * Handles the update menu item event.
+     */
     const handleUpdateMenuItem = async () => {
         try {
             const payload = {
@@ -113,6 +151,9 @@ function MenuItems() {
         }
     };
 
+    /**
+     * Handles the add menu item event.
+     */
     const handleAddMenuItem = async () => {
         try {
             console.log('Name:', newMenuItem.name, 'Type:', typeof newMenuItem.name);
@@ -133,11 +174,17 @@ function MenuItems() {
         fetchMenuItems();
     };
 
-
+    /**
+     * Handles the ingredient change event.
+     * @param {Event} event - The event object
+     */
     const handleIngredientChange = (event) => {
         setSelectedIngredient(event.target.value);
     };
 
+    /**
+     * Handles the add ingredient event.
+     */
     const handleAddIngredient = async () => {
         try {
             const ingredientId = parseInt(selectedIngredient);
@@ -153,6 +200,10 @@ function MenuItems() {
         }
     };
 
+    /**
+     * Handles the delete ingredient event.
+     * @param {number} ingredientIdToDelete - The ID of the ingredient to delete
+     */
     const handleDeleteIngredient = async (ingredientIdToDelete) => {
         try {
             await axios.delete('https://team21revsbackend.onrender.com/api/manager/menuitemingredients', {
@@ -170,6 +221,10 @@ function MenuItems() {
         }
     };
 
+    /**
+     * Handles the add customization event.
+     * @param {number} customizationId - The ID of the customization to add
+     */
     const handleAddCustomization = async (customizationId) => {
         try {
             const payload = { menuitemid: selectedItem.menuid, customizationid: Number(customizationId) };
@@ -180,6 +235,10 @@ function MenuItems() {
         }
     };
 
+    /**
+     * Handles the delete customization event.
+     * @param {number} customizationId - The ID of the customization to delete
+     */
     const handleDeleteCustomization = async (customizationId) => {
         try {
             console.log('Customization ID:', customizationId); // Logging the value inside the function
@@ -192,6 +251,10 @@ function MenuItems() {
         }
     };
 
+    /**
+     * Renders the menu items.
+     * @returns {JSX.Element[]} Array of JSX Elements representing menu items
+     */
     const renderMenuItems = () => {
         return menu.map(item => (
             <tr key={item.menuid} onClick={(event) => rowClicked(event, item)} className={selectedItem && selectedItem.menuid === item.menuid ? 'selected' : ''}>
@@ -202,12 +265,20 @@ function MenuItems() {
         ));
     };
 
+    /**
+     * Renders the ingredient options.
+     * @returns {JSX.Element[]} Array of JSX Elements representing ingredient options
+     */
     const renderIngredientOptions = () => {
         return ingredients.map(ingredient => (
             <option key={ingredient.ingredientid} value={ingredient.ingredientid}>{ingredient.ingredientname}</option>
         ));
     };
     
+    /**
+     * Renders the customizations.
+     * @returns {JSX.Element[]} Array of JSX Elements representing customizations
+     */
     const renderCustomizations = () => {
         console.log('Customizations:', customizations);
         return customizations.map(customization => (
@@ -218,6 +289,9 @@ function MenuItems() {
         ));
     };
 
+    /**
+     * Toggles the high contrast mode.
+     */
     const toggleHighContrast = () => {
         setHighContrast(!highContrast);
     };

@@ -1,3 +1,10 @@
+/**
+ * Inventory Component.
+ * @module Inventory
+ * @component
+ * @example
+ * return <Inventory />
+ */
 import React, { useState, useEffect } from 'react';
 import './Inventory.css';
 import './../Common.css';
@@ -6,6 +13,10 @@ import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
 import Restock from './Restock.js';
 
+/**
+ * Inventory functional component.
+ * @returns {JSX.Element} Inventory component
+ */
 function Inventory() {
     const [inventory, setInventory] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -22,6 +33,9 @@ function Inventory() {
     const [highContrast, setHighContrast] = useState(false); // State variable for High Contrast mode
     const { textSize } = useTextSize();
 
+    /**
+     * Fetches the inventory items from the API.
+     */
     const fetchInventory = async () => {
         try {
             const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/ingredients');
@@ -31,10 +45,17 @@ function Inventory() {
         }
     };
 
+    /**
+     * Sets the selected inventory item.
+     * @param {Object} item - The selected inventory item
+     */
     const handleItemSelected = (item) => {
         setSelectedItem(item);
     };
 
+    /**
+     * Updates the selected inventory item.
+     */
     const handleItemUpdate = async () => {
         try {
             const payload = {
@@ -56,6 +77,9 @@ function Inventory() {
         }
     };
 
+    /**
+     * Submits a new ingredient to be added to the inventory.
+     */
     const handleIngredientSubmit = async () => {
         try {
             const newIngredientData = {
@@ -86,6 +110,11 @@ function Inventory() {
         }
     };
 
+    /**
+     * Deletes the selected inventory item.
+     * @param {number} itemId - The ID of the item to be deleted
+     * @param {number} deleteCount - The count of the item to be deleted
+     */
     const handleIngredientDelete = async (itemId, deleteCount) => {
         if (window.confirm("Are you sure you want to delete this ingredient?")) {
             try {
@@ -98,6 +127,11 @@ function Inventory() {
         }
     };
 
+    /**
+     * Handles input change for the selected inventory item.
+     * @param {Object} e - The event object
+     * @param {string} field - The field to update
+     */
     const handleInputChange = (e, field) => {
         const value = e.target.value;
         setSelectedItem(prevState => ({
@@ -106,10 +140,17 @@ function Inventory() {
         }));
     };
 
+    /**
+     * Toggles the high contrast mode.
+     */
     const toggleHighContrast = () => {
         setHighContrast(prevState => !prevState);
     };
 
+    /**
+     * Renders the inventory items.
+     * @returns {JSX.Element[]} List of inventory item elements
+     */
     const renderInventoryItems = () => {
         return inventory.map(item => (
             <div key={item.ingredientid} className={`inventory-item ${highContrast ? 'high-contrast' : ''}`} onClick={() => handleItemSelected(item)}>

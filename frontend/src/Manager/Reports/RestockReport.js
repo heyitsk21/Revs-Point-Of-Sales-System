@@ -7,6 +7,10 @@ import ManagerTopBar from '../../components/ManagerTopBar';
 
 import SortedTable from '../../components/SortedTable';
 
+/**
+ * Component for displaying the restock report.
+ * @returns {JSX.Element} - The JSX element representing the RestockReport component.
+ */
 function RestockReport () {
     const navigate = useNavigate();
     const [reportData, setReportData] = useState([]);
@@ -30,6 +34,12 @@ function RestockReport () {
         []
       )
 
+      /**
+     * Function to download a file.
+     * @param {object} data - Data to be downloaded.
+     * @param {string} fileName - Name of the file.
+     * @param {string} fileType - Type of the file.
+     */
       const downloadFile = ({ data, fileName, fileType }) => {
         const blob = new Blob([data], { type: fileType })
         const a = document.createElement('a')
@@ -44,6 +54,10 @@ function RestockReport () {
         a.remove()
       }
 
+      /**
+     * Function to export data to CSV format.
+     * @param {object} e - Event object.
+     */
     const exportToCsv = e => {
         e.preventDefault()
         let headers = ['IngredientName,Count,MinAmount']
@@ -59,7 +73,9 @@ function RestockReport () {
         })
       }
 
-
+    /**
+     * Function to fetch data from the backend.
+     */
     useEffect(() => {
         fetchData();
     }, []);

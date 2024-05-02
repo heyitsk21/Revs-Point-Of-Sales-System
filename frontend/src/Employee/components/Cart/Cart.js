@@ -7,7 +7,12 @@ import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 import './Cart.css';
 
+/**
+ * Cart component to display and manage the items in the cart.
+ * @returns {JSX.Element} - The JSX element representing the Cart component.
+ */
 const Cart = () => {
+    // Hook to manage cart state
     const { 
         isEmpty,
         items,
@@ -17,10 +22,15 @@ const Cart = () => {
         emptyCart,
     } = useCart();
 
+    // State variables for submit and clear order popups
     const [submitPopup, setSubmitPopup] = useState(false);
     const [clearOrderPopup, setClearOrderPopup] = useState(false);
 
+    /**
+     * Function to handle confirm submit action.
+     */
     const handleConfirmSubmit = () => {
+        // Prepare data for submission
         const data = {
             items: items.map((item, index) => ({ 
                 id: item.id, 
@@ -33,7 +43,7 @@ const Cart = () => {
         setSubmitPopup(data);
     };
 
-    
+    // Render the Cart component
     return (
         <div className='employee-cart'>
             <div className='employee-cartTitle'>
@@ -91,16 +101,17 @@ const Cart = () => {
                 </div>
             )}
 
+            {/* Confirm clear order popup */}
             <ConfirmClearOrder trigger={clearOrderPopup} setTrigger={setClearOrderPopup} emptyCart={emptyCart}>
                 <h3>Are you sure you want to cancel your order?</h3>
             </ConfirmClearOrder>
-            <ConfirmSubmit trigger = {submitPopup} setTrigger = {setSubmitPopup} emptyCart = {emptyCart}>
+
+            {/* Confirm submit popup */}
+            <ConfirmSubmit trigger={submitPopup} setTrigger={setSubmitPopup} emptyCart={emptyCart}>
                 <h3>Would you like to order now?</h3>
             </ConfirmSubmit>
         </div>
     );
-    
 }
 
 export default Cart;
-        
