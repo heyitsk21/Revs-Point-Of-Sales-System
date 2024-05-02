@@ -97,9 +97,6 @@ CREATE TABLE OrderMenuItems (
     MenuID INT,
     CustomizationID INT,
     PRIMARY KEY (JoinID),
-    CONSTRAINT fk_menu
-        FOREIGN KEY(MenuID) 
-        REFERENCES MenuItems(MenuID),
     CONSTRAINT fk_order
         FOREIGN KEY(OrderID) 
         REFERENCES Orders(OrderID)   

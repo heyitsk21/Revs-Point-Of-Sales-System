@@ -111,7 +111,7 @@ function MenuItems() {
     const handleDeleteButtonClick = async () => {
         if (!selectedItem) return;
         try {
-            await axios.delete('https://team21revsbackend.onrender.com/api/manager/menuitems', { data: { menuid: selectedItem.menuid } });
+            await axios.delete('http://127.0.0.1:5000/api/manager/menuitems', { data: { menuid: selectedItem.menuid } });
             setMenu(prevMenu => prevMenu.filter(item => item.menuid !== selectedItem.menuid));
             setSelectedItem(null);
             setCheckedItems([]);

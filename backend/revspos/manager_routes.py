@@ -336,6 +336,12 @@ class MenuItems(Resource):
             conn.connection.cursor().execute(delete_menuitemingredients_query)
             conn.connection.commit()
         
+        delete_menuitemingredients_query = "DELETE FROM menuitemcustomizations WHERE MenuID = {inputmenuid}".format(inputmenuid=menuid)
+        with db.engine.connect() as conn:
+            conn.connection.cursor().execute(delete_menuitemingredients_query)
+            conn.connection.commit()
+        
+        
         delete_menuitem_query = "DELETE FROM menuitems WHERE MenuID = {inputmenuid}".format(inputmenuid=menuid)
         with db.engine.connect() as conn:
             conn.connection.cursor().execute(delete_menuitem_query)

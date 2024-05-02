@@ -64,6 +64,7 @@ const OrderHistory = () => {
     const fetchOrderHistory = async () => {
         try {
             const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/orderhistory');
+            console.log(response.data);
             setOrders(response.data);
         } catch (error) {
             console.error('Error fetching order history:', error);
@@ -164,6 +165,7 @@ const OrderHistory = () => {
                             <div>Total Price: ${(parseFloat(selectedOrder.baseprice) + parseFloat(selectedOrder.taxprice)).toFixed(2)}</div>
                             <div>Date/Time: {formatDate(selectedOrder.orderdatetime)}</div>
                             <div>Employee ID: {selectedOrder.employeeid}</div>
+                            <div>Status: {selectedOrder.status}</div>
                         </div>
                     )}
                 </div>
