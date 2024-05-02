@@ -10,7 +10,6 @@ import './../Common.css';
 import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
-import RevThankYou from '../components/RevThankYou';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 
@@ -26,12 +25,6 @@ const OrderHistory = () => {
      * @type {?Object} // Use ? to indicate that it can also be null
      */
     const [selectedOrder, setSelectedOrder] = useState(null);
-
-    /**
-     * Controls the visibility of the 'Thank You' review modal.
-     * @type {boolean}
-     */
-    const [showRevThankYou, setShowRevThankYou] = useState(false);
 
     /**
      * Controls the application of a high contrast theme for accessibility.
@@ -161,13 +154,6 @@ const OrderHistory = () => {
     };
 
     /**
-     * Toggles the visibility of the 'Thank You' modal.
-     */
-    const handleShowRevThankYou = () => {
-        setShowRevThankYou(true);
-    };
-
-    /**
      * Toggles the high contrast theme.
      */
     const toggleHighContrast = () => {
@@ -179,7 +165,6 @@ const OrderHistory = () => {
             <ManagerTopBar toggleHighContrast={toggleHighContrast} />
             <div className='manager-order-history'>
                 <div className="order-details">
-                    <button onClick={handleShowRevThankYou}>SUBMIT ORDER</button>
                     <h2>{selectedOrder ? `Order Details: ${selectedOrder.orderid}` : 'Select an Order to View Details'}</h2>
                     {selectedOrder && (
                         <div className="selected-order">
@@ -209,7 +194,6 @@ const OrderHistory = () => {
                     </div>
                 </div>
             </div>
-            {showRevThankYou && <RevThankYou onAnimationEnd={() => setShowRevThankYou(false)} />}
         </div>
     );
 };
