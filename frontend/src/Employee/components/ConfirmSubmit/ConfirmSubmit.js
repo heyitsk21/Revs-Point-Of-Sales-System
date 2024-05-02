@@ -23,8 +23,12 @@ function ConfirmSubmit(props) {
    * @param {object} item - The item object.
    * @param {number} index - The index of the item.
    * @returns {string} - The unique ID.
-   */
-  const generateUniqueId = (item, index) => `${item.id}_${index}`;
+   *
+  const generateUniqueId = (item, index) => {
+    const id = `${item.id}_${index}`;
+    setUniqueIds(prevState => ({ ...prevState, [id]: id })); // Store unique ID
+    return id;
+  };*/
 
   /**
    * Function to send the order to the database.
@@ -46,14 +50,13 @@ function ConfirmSubmit(props) {
       console.log("Trigger items:", props.trigger.items);
       const orderData = {
         menuitems: props.trigger.items.flatMap((item) => 
-          Array.from({ length: item.quantity }, (_, index) => {
-            const uniqueID = generateUniqueId(item, index);
+          [...Array(item.quantity)].map(() => {
+            const uniqueID = item.uniqueID;
             console.log("Logging checkboxState[uniqueID] when constructing orderData:", checkboxState[uniqueID]);
             return {
-              key: generateUniqueId(item, index),
+              key: uniqueID,
               menuid: item.id,
-              customizationids: Object.keys(checkboxState[uniqueID] || {}).filter((option) => checkboxState[uniqueID][option]
-              ) || [],
+              customizationids: Object.keys(checkboxState[uniqueID] || {}).map(Number) || [],
             };
           })
         ),
@@ -124,7 +127,7 @@ function ConfirmSubmit(props) {
    * @param {string} uniqueID - The unique ID of the item.
    * @param {string} optionName - The name of the customization option.
    */
-  function handleCheckboxChange(uniqueID, optionName) {
+  function handleCheckboxChange(uniqueID, optionID) {
     console.log("Before updating checkboxState:");
     console.log("uniqueID:", uniqueID);
     console.log("checkboxState[uniqueID]:", checkboxState[uniqueID]);
@@ -132,7 +135,11 @@ function ConfirmSubmit(props) {
     setCheckboxState(prevState => {
       const newState = { ...prevState };
       newState[uniqueID] = { ...(newState[uniqueID] || {}) };
-      newState[uniqueID][optionName] = !prevState[uniqueID]?.[optionName];
+      if (newState[uniqueID][optionID]) {
+        delete newState[uniqueID][optionID];
+      } else {
+        newState[uniqueID][optionID] = true;
+      }
 
       console.log("After updating checkboxState:");
       console.log("uniqueID:", uniqueID);
@@ -150,32 +157,28 @@ function ConfirmSubmit(props) {
             <SimpleBar style={{ height: 400, width: 600}}>
               {props.trigger.items.map(item => (
                 <div key={item.uniqueID}>
-                  {[...Array(item.quantity)].map((_, i) => (
-                    <div key={generateUniqueId(item, i)}>
-                      <div>{item.name}</div>
-                      <div>${(1 * item.price).toFixed(2)}</div>
-                      {options.map(option => {
-                        if (option.id === item.id) {
-                          return option.options.map((customization, idx) => (
-                            <div key={idx} className="customization">
-                              <Checkbox
-                                color="primary"
-                                checked={checkboxState[`${generateUniqueId(item, props.trigger.items.indexOf(item))}_${i}`]?.[customization.ingredientname] || false}
-                                onChange={() => handleCheckboxChange(`${generateUniqueId(item, props.trigger.items.indexOf(item))}_${i}`, customization.ingredientname)}
-                              >
-                                {customization.ingredientname}
-                              </Checkbox>
-                            </div>
-                          ));
-                        }
-                        return null;
-                      })}
-                      {options.some(option => option.id === item.id && option.options.length > 0) && (
-                        <p>Selected items: {Object.keys(checkboxState[`${generateUniqueId(item, props.trigger.items.indexOf(item))}_${i}`] || {}).filter(option => checkboxState[`${generateUniqueId(item, props.trigger.items.indexOf(item))}_${i}`][option]).join(', ')}</p>
-                      )}
-                      <p> - - - </p>
-                    </div>
-                  ))}
+                  <div>{item.name}</div>
+                  <div>${(1 * item.price).toFixed(2)}</div>
+                  {options.map(option => {
+                    if (option.id === item.id) {
+                      return option.options.map((customization, idx) => (
+                        <div key={idx} className="customization">
+                          <Checkbox
+                            color="primary"
+                            checked={checkboxState[item.uniqueID]?.[customization.ingredientid] || false}
+                            onChange={() => handleCheckboxChange(item.uniqueID, customization.ingredientid)}
+                          >
+                            {customization.ingredientname}
+                          </Checkbox>
+                        </div>
+                      ));
+                    }
+                    return null;
+                  })}
+                  {options.some(option => option.id === item.id && option.options.length > 0) && (
+                    <p>Selected items: {Object.keys(checkboxState[item.uniqueID] || {}).filter(option => checkboxState[item.uniqueID][option]).join(', ')}</p>
+                  )}
+                  <p> - - - </p>
                 </div>
               ))}
             </SimpleBar>

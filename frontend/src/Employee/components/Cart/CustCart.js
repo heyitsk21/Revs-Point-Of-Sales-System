@@ -32,12 +32,15 @@ const CustCart = () => {
     const handleConfirmSubmit = () => {
         // Prepare data for submission
         const data = {
-            items: items.map((item, index) => ({ 
-                id: item.id, 
-                quantity: item.quantity, 
-                name: item.name, 
-                price: item.price
-            }))
+            items: items.flatMap(item => 
+                Array.from({ length: item.quantity }, (_, index) => ({ 
+                    id: item.id, 
+                    quantity: 1, 
+                    name: item.name, 
+                    price: item.price,
+                    uniqueID: `${item.id}_${index}`
+                }))
+            )
         };
         console.log('Data passed to ConfirmSubmit: ', data);
         setSubmitPopup(data);
