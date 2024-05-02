@@ -1094,7 +1094,7 @@ class GenerateXReport(Resource):
 
     def get(self): 
         totalprice = 0
-        sales_query = "SELECT menuitems.MenuID,  menuitems.ItemName, SUM(menuitems.Price) AS TotalSales, COUNT(*) AS OrderCount FROM orders JOIN ordermenuitems ON orders.OrderID = ordermenuitems.OrderID JOIN menuitems ON ordermenuitems.MenuID = menuitems.MenuID WHERE orders.OrderDateTime >= CURRENT_DATE AND orders.OrderDateTime < CURRENT_DATE + INTERVAL '1 hour' GROUP BY menuitems.MenuID, menuitems.ItemName ORDER BY TotalSales DESC;"
+        sales_query = "SELECT menuitems.MenuID,  menuitems.ItemName, SUM(menuitems.Price) AS TotalSales, COUNT(*) AS OrderCount FROM orders JOIN ordermenuitems ON orders.OrderID = ordermenuitems.OrderID JOIN menuitems ON ordermenuitems.MenuID = menuitems.MenuID WHERE orders.OrderDateTime >= CURRENT_TIMESTAMP AND orders.OrderDateTime < CURRENT_TIMESTAMP + INTERVAL '1 hour' GROUP BY menuitems.MenuID, menuitems.ItemName ORDER BY TotalSales DESC;"
 
         with db.engine.connect() as conn:
             result = conn.execution_options(stream_results=True).execute(text(sales_query))
