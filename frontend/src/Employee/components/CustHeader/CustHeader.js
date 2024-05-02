@@ -6,12 +6,22 @@ import { useNavigate } from 'react-router-dom';
 import Translate from '../../../components/translate';
 import Wheater from '../../../components/Wheater';
 
+/**
+ * Header component for the customer view.
+ * @param {object} props - Props passed to the component.
+ * @param {function} props.onCatChange - Function to handle category change.
+ * @param {function} props.toggleHighContrast - Function to toggle high contrast mode.
+ * @returns {JSX.Element} - The JSX element representing the CustHeader component.
+ */
 const CustHeader = ({ onCatChange, toggleHighContrast }) => {
     const navigate = useNavigate();
     const { toggleTextSize } = useTextSize();
     const [currentTime, setCurrentTime] = useState('');
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
+    /**
+     * Function to update current time every second.
+     */
     const updateTime = () => {
         const date = new Date();
         const hours = date.getHours().toString().padStart(2, '0');
@@ -20,6 +30,9 @@ const CustHeader = ({ onCatChange, toggleHighContrast }) => {
         setCurrentTime(timeString);
     };
 
+    /**
+     * Function to toggle the visibility of the dropdown menu.
+     */
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
     };
@@ -29,6 +42,9 @@ const CustHeader = ({ onCatChange, toggleHighContrast }) => {
         return () => clearInterval(interval);
     }, []);
 
+    /**
+     * Function to handle user logout.
+     */
     const handleLogout = () => {
         console.log('Logout button clicked!');
         localStorage.setItem('authority', 0);
@@ -37,6 +53,9 @@ const CustHeader = ({ onCatChange, toggleHighContrast }) => {
         navigate('/');
     };
 
+    /**
+     * Function to handle toggling high contrast mode.
+     */
     const handleToggleHighContrast = () => {
         toggleHighContrast(); 
     };

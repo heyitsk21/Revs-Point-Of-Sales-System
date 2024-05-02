@@ -8,6 +8,10 @@ import ManagerTopBar from '../../components/ManagerTopBar';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 
+/**
+ * Component for displaying product usage report.
+ * @returns {JSX.Element} - The JSX element representing the ProdUsage component.
+ */
 function ProdUsage() {
     const navigate = useNavigate();
     const [startDate, setStartDate] = useState('');
@@ -15,6 +19,12 @@ function ProdUsage() {
     const [ingredientData, setIngredientData] = useState([]);
     const { textSize, toggleTextSize } = useTextSize();
 
+    /**
+     * Function to download a file.
+     * @param {object} data - Data to be downloaded.
+     * @param {string} fileName - Name of the file.
+     * @param {string} fileType - Type of the file.
+     */
     const downloadFile = ({ data, fileName, fileType }) => {
         const blob = new Blob([data], { type: fileType })
         const a = document.createElement('a')
@@ -29,6 +39,10 @@ function ProdUsage() {
         a.remove()
       }
 
+    /**
+     * Function to export data to CSV format.
+     * @param {object} e - Event object.
+     */
     const exportToCsv = e => {
         e.preventDefault()
         let headers = ['IngredientName,Total Amount Used']
@@ -44,12 +58,11 @@ function ProdUsage() {
         })
       }
 
-    useEffect(() => {
-
-            fetchData(startDate, endDate);
-        
-    }, [startDate, endDate]);
-
+    /**
+     * Function to fetch data from the backend.
+     * @param {Date} startDate - Start date.
+     * @param {Date} endDate - End date.
+     */
     const fetchData = async (startDate, endDate) => {
         try {
             const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/reports/generateproductusage', {
@@ -64,10 +77,17 @@ function ProdUsage() {
         }
     };
 
+    /**
+     * Function to calculate the total amount of ingredients used.
+     * @returns {number} - The total amount of ingredients used.
+     */
     const calculateTotal = () => {
         return ingredientData.reduce((acc, ingredient) => acc + Math.abs(parseFloat(ingredient.totalamountchanged)), 0);
     };
 
+    /**
+     * Function to render the D3 chart.
+     */
     const renderChart = () => {
         const total = calculateTotal();
         const svgWidth = 1250;
@@ -132,6 +152,12 @@ function ProdUsage() {
         };
 
     useEffect(() => {
+        if (startDate && endDate) {
+            fetchData(startDate, endDate);
+        }
+    }, [startDate, endDate]);
+
+    useEffect(() => {
         if (ingredientData.length > 0) {
             d3.select('.chart').selectAll('*').remove();
             renderChart();
@@ -150,10 +176,10 @@ function ProdUsage() {
                     <label>End Date:</label>
                     <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
                 </div>
-                <button onClick={() => fetchData(startDate, endDate)}>Generate Product Usage</button>
-                <button type='button' onClick={exportToCsv}>
-                Export to CSV
-                </button>
+                <div className='generate-trend-buttons'>
+                    <button onClick={() => fetchData(startDate, endDate)}>Generate Product Usage</button>
+                    <button type='button' onClick={exportToCsv}>Export to CSV</button>
+                </div>
                 <div className="chart"></div>
             </div>
         </div>

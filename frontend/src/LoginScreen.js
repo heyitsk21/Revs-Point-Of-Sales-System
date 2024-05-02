@@ -1,3 +1,9 @@
+/**
+ * Component for the login screen of the application.
+ * Handles user authentication via email/password and Google OAuth.
+ * Redirects users based on their authority level.
+ * @returns {JSX.Element} The JSX element representing the login screen.
+ */
 import React, { useEffect, useState, useContext } from 'react';
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
@@ -9,10 +15,16 @@ function LoginScreen(){
 
     const [employees, setEmployees] = useState([]);
 
+    /**
+     * Fetches the list of employees from the backend upon component mount.
+     */
     useEffect(() => {
         fetchEmployees();
     }, []);
 
+    /**
+     * Fetches the list of employees from the backend.
+     */
     const fetchEmployees = async () => {
         try {
             const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/employee');
@@ -23,6 +35,11 @@ function LoginScreen(){
         }
     };
 
+    /**
+     * Determines the authority level of the user based on the provided user data.
+     * @param {Object} userData - The user data received from the Google OAuth.
+     * @returns {number} The authority level of the user.
+     */
     const getAuthority = (userData) => {
         const employee = employees.find(emp => emp.employeeemail === userData.email);
         console.log("authority: ", employee);
@@ -35,6 +52,9 @@ function LoginScreen(){
         }
     };
 
+    /**
+     * Redirects the user to the appropriate page based on their authority level.
+     */
     const redirect = () => {
         if (localStorage.getItem('authority') >= 3){
             console.log("Manager logged in");
@@ -48,6 +68,9 @@ function LoginScreen(){
         }
     };
 
+    /**
+     * Handles the Google OAuth login process.
+     */
     const googleLogin = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
@@ -76,14 +99,26 @@ function LoginScreen(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    /**
+     * Updates the email state based on user input.
+     * @param {Object} event - The input change event.
+     */
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
     };
 
+    /**
+     * Updates the password state based on user input.
+     * @param {Object} event - The input change event.
+     */
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
     };
     
+    /**
+     * Handles the form submission when using email/password authentication.
+     * @param {Object} event - The form submission event.
+     */
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(`Email: ${email}, Password: ${password}`);

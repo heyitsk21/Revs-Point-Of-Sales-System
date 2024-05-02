@@ -1,3 +1,10 @@
+/**
+ * Employee Management Component.
+ * @module EmployeeManagement
+ * @component
+ * @example
+ * return <EmployeeManagement />
+ */
 import React, { useState, useEffect } from 'react';
 import './EmployeeManagement.css';
 import './../Common.css';
@@ -5,6 +12,10 @@ import { useTextSize } from '../components/TextSizeContext.js';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar.js';
 
+/**
+ * Employee Management functional component.
+ * @returns {JSX.Element} EmployeeManagement component
+ */
 function EmployeeManagement() {
     const [employees, setEmployees] = useState([]);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
@@ -20,6 +31,9 @@ function EmployeeManagement() {
     const { textSize } = useTextSize();
     const [highContrast, setHighContrast] = useState(false);
 
+    /**
+     * Fetches the list of employees from the API.
+     */
     const fetchEmployees = async () => {
         try {
             const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/employee');
@@ -30,10 +44,17 @@ function EmployeeManagement() {
         }
     };
 
+    /**
+     * Sets the selected employee.
+     * @param {Object} item - The selected employee object
+     */
     const handleEmployeeSelected = (item) => {
         setSelectedEmployee(item);
     };
 
+    /**
+     * Updates the selected employee's details.
+     */
     const handleEmployeeUpdate = async () => {
         try {
             const payload = {
@@ -53,6 +74,9 @@ function EmployeeManagement() {
         }
     };
 
+    /**
+     * Submits a new employee to be added.
+     */
     const handleEmployeeSubmit = async () => { //TODO
         try {
             const newEmployeeData = {
@@ -80,6 +104,10 @@ function EmployeeManagement() {
         }
     };
 
+    /**
+     * Deletes the selected employee.
+     * @param {number} deleteID - The ID of the employee to be deleted
+     */
     const handleEmployeeDelete = async (deleteID) => {
         if (window.confirm("Are you sure you want to delete this Employee?")) {
             try {
@@ -92,6 +120,11 @@ function EmployeeManagement() {
         }
     };
 
+    /**
+     * Handles input change for the selected employee.
+     * @param {Object} e - The event object
+     * @param {string} field - The field to update
+     */
     const handleInputChange = (e, field) => {
         const value = e.target.value;
         setSelectedEmployee(prevState => ({
@@ -100,10 +133,17 @@ function EmployeeManagement() {
         }));
     };
 
+    /**
+     * Toggles the high contrast mode.
+     */
     const toggleHighContrast = () => {
         setHighContrast(prevState => !prevState);
     };
 
+    /**
+     * Renders the list of employees.
+     * @returns {JSX.Element[]} List of employee elements
+     */
     const renderEmployeeItems = () => {
         return employees.map(employee => (
             <div key={employee.employeeid} className="employee-item" onClick={() => handleEmployeeSelected(employee)}>

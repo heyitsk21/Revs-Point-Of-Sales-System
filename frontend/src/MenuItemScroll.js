@@ -1,17 +1,28 @@
+/**
+ * Component for scrolling menu items horizontally.
+ * @param {Object} props - The props object containing the menuGroups array.
+ * @returns {JSX.Element} The JSX element representing the scrolling menu items.
+ */
 import './MenuItemScroll.css';
 import React, { useEffect, useRef } from 'react';
 
 const MenuItemScroll = ({ menuGroups }) => {
     const scrollRef = useRef(null);
 
+    /**
+     * Effect hook to handle the horizontal scrolling animation.
+     */
     useEffect(() => {
+        /**
+         * Function to animate the horizontal scrolling of menu items.
+         */
         const marqueeAnimation = () => {
             if (scrollRef.current) {
                 const scrollWidth = scrollRef.current.scrollWidth;
                 const clientWidth = scrollRef.current.clientWidth;
                 const maxScrollLeft = scrollWidth - clientWidth;
                 let scrollAmount = scrollRef.current.scrollLeft;
-                const step = 3.5;
+                const step = 2;
                 if (scrollAmount >= maxScrollLeft) {
                     scrollAmount = 0;
                 } else {
