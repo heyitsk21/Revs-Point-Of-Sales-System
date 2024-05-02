@@ -593,7 +593,7 @@ class OrderHistory(Resource):
         """
         with db.engine.connect() as conn:
             limit_query = "LIMIT 100"
-            get_order_query = "SELECT * FROM orders {inputquery}".format(inputquery=limit_query)
+            get_order_query = "SELECT * FROM orders ORDER BY ORDERDATETIME DESC {inputquery} ".format(inputquery=limit_query)
             result = conn.execution_options(stream_results=True).execute(text(get_order_query))
             orderlist = []
             for row in result:
