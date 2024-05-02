@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Manager/EmployeeManagement.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Manager/EmployeeManagement.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Employee Management Component.
+ * @module EmployeeManagement
+ * @component
+ * @example
+ * return &lt;EmployeeManagement />
+ */
+import React, { useState, useEffect } from 'react';
+import './EmployeeManagement.css';
+import './../Common.css';
+import { useTextSize } from '../components/TextSizeContext.js';
+import axios from 'axios';
+import ManagerTopBar from '../components/ManagerTopBar.js';
+
+/**
+ * Employee Management functional component.
+ * @returns {JSX.Element} EmployeeManagement component
+ */
+function EmployeeManagement() {
+    const [employees, setEmployees] = useState([]);
+    const [selectedEmployee, setSelectedEmployee] = useState({
+        employeeid: 0,
+        employeename: "",
+        employeeemail: "",
+        ismanager: "",
+        salary: 0.0,
+        password: "",
+    });
+    const [newEmployee, setNewEmployee] = useState({
+        employeeid: 0,
+        employeename: "",
+        employeeemail: "",
+        ismanager: "",
+        salary: 0.0,
+        password: "",
+    });
+    const [speakEnabled] = useState(false);
+    const { textSize } = useTextSize();
+    const [highContrast, setHighContrast] = useState(false);
+
+    /**
+     * Fetches the list of employees from the API.
+     */
+    const fetchEmployees = async () => {
+        try {
+            const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/employee');
+            setEmployees(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching Employees:', error);
+        }
+    };
+
+    /**
+     * Sets the selected employee.
+     * @param {Object} item - The selected employee object
+     */
+    const handleEmployeeSelected = (item) => {
+        setSelectedEmployee(item);
+    };
+
+    /**
+     * Updates the selected employee's details.
+     */
+    const handleEmployeeUpdate = async () => {
+        try {
+            let tempIsManager = false;
+            if (selectedEmployee.ismanager === "True"){
+                tempIsManager = true;
+            }
+            
+            const payload = {
+                employeeid: selectedEmployee.employeeid,
+                employeeName: selectedEmployee.employeename,
+                employeeEmail: selectedEmployee.employeeemail,
+                isManager: tempIsManager,
+                salary: parseFloat(selectedEmployee.salary),
+                password: selectedEmployee.password,
+            };
+    
+            await axios.put('https://team21revsbackend.onrender.com/api/manager/employee', payload);
+            alert('Employee edited successfully:');
+            fetchEmployees();
+        } catch (error) {
+            console.error('Error updating Employee:', error);
+        }
+    };
+
+    /**
+     * Submits a new employee to be added.
+     */
+    const handleEmployeeSubmit = async () => { //TODO
+        try {
+            let tempIsManager = false;
+            if (newEmployee.ismanager === "True"){
+                tempIsManager = true;
+            }
+
+            const newEmployeeData = {
+                ...newEmployee,
+                employeeName: newEmployee.employeename,
+                employeeEmail: newEmployee.employeeemail,
+                isManager: tempIsManager,
+                salary: parseFloat(newEmployee.salary),
+                password: newEmployee.password,
+            };
+    
+            const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/employee', newEmployeeData);
+            alert('Employee added successfully:');
+            fetchEmployees();
+            setNewEmployee({
+                employeeid: 0,
+                employeename: "",
+                employeeemail: "",
+                ismanager: "False",
+                salary: 0.0,
+                password: "",
+            });
+        } catch (error) {
+            console.error('Error adding Employee:', error);
+        }
+    };
+
+    /**
+     * Deletes the selected employee.
+     * @param {number} deleteID - The ID of the employee to be deleted
+     */
+    const handleEmployeeDelete = async (deleteID) => {
+        if (window.confirm("Are you sure you want to delete this Employee?")) {
+            try {
+                const response = await axios.delete('https://team21revsbackend.onrender.com/api/manager/employee', { data: { employeeid: deleteID } });
+                alert('Item deleted successfully:');
+                fetchEmployees();
+            } catch (error) {
+                console.error('Error deleting item:', error);
+            }
+        }
+    };
+
+    /**
+     * Handles input change for the selected employee.
+     * @param {Object} e - The event object
+     * @param {string} field - The field to update
+     */
+    const handleInputChange = (e, field) => {
+        const value = e.target.value;
+        setSelectedEmployee(prevState => ({
+            ...prevState,
+            [field]: value
+        }));
+    };
+
+    /**
+     * Toggles the high contrast mode.
+     */
+    const toggleHighContrast = () => {
+        setHighContrast(prevState => !prevState);
+    };
+
+    /**
+     * Renders the list of employees.
+     * @returns {JSX.Element[]} List of employee elements
+     */
+    const renderEmployeeItems = () => {
+        return employees.map(employee => (
+            &lt;div key={employee.employeeid} className="employee-item" onClick={() => handleEmployeeSelected(employee)}>
+                &lt;div className='employee-name'>&lt;span>{employee.employeename}&lt;/span>&lt;/div>
+                &lt;span>Employee Email: {employee.employeeemail}&lt;/span>
+                &lt;span>Manager: { employee.ismanager ? 'Yes' : 'No' }&lt;/span>
+                &lt;span>Salary: ${employee.salary}&lt;/span>
+                &lt;span>Password: {employee.password}&lt;/span>
+            &lt;/div>
+        ));
+    };
+
+    useEffect(() => {
+        fetchEmployees();
+    }, []);
+
+    // Function to handle change in dropdown selection for selectedEmployee
+    const handleSelectDropdown = (event) => {
+        setSelectedEmployee(prevState => ({
+            ...prevState,
+            ismanager: event.target.value // Update selected option state
+        }));
+    };
+
+    // Function to handle change in dropdown selection for newEmployee
+    const handleNewDropdown = (event) => {
+        setNewEmployee(prevState => ({
+            ...prevState,
+            ismanager: event.target.value // Update selected option state
+        }));
+    };
+
+
+    return (
+        &lt;div className={`employeemanager-topbar ${textSize === 'large' ? 'large-text' : ''} ${highContrast ? 'high-contrast' : ''}`}>
+            &lt;ManagerTopBar toggleHighContrast={toggleHighContrast} />
+            &lt;div className={`manager-employee ${textSize === 'large' ? 'large-text' : ''} ${highContrast ? 'high-contrast' : ''}`}>
+                &lt;div className="employee-details">
+                    &lt;h2>Selected Employee Details&lt;/h2>
+                    {selectedEmployee &amp;&amp; (
+                        &lt;div className="selected-employee">
+                            &lt;h3>{selectedEmployee.employeename}&lt;/h3>
+                            &lt;div>
+                                &lt;label>Employee ID: {selectedEmployee.employeeid}&lt;/label>
+                            &lt;/div>
+                            &lt;div>
+                                &lt;label>Name:&lt;/label>
+                                &lt;input
+                                    type="text"
+                                    value={selectedEmployee.employeename}
+                                    onChange={(e) => handleInputChange(e, 'employeename')}
+                                />
+                            &lt;/div>
+                            &lt;div>
+                                &lt;label>Email:&lt;/label>
+                                &lt;input
+                                    type="text"
+                                    value={selectedEmployee.employeeemail}
+                                    onChange={(e) => handleInputChange(e, 'employeeemail')}
+                                />
+                            &lt;/div>
+                            &lt;div>
+                                &lt;label>Manager:&lt;/label>
+                                &lt;select id="dropdown" value={selectedEmployee.ismanager} onChange={handleSelectDropdown}>
+                                    &lt;option value="">Select...&lt;/option>
+                                    &lt;option value="True">True&lt;/option>
+                                    &lt;option value="False">False&lt;/option>
+                                &lt;/select>
+                            &lt;/div>
+                            &lt;div>
+                                &lt;label>Salary:&lt;/label>
+                                &lt;input
+                                    type="number"
+                                    value={selectedEmployee.salary}
+                                    onChange={(e) => handleInputChange(e, 'salary')}
+                                />
+                            &lt;/div>
+                            &lt;div>
+                                &lt;label>Password:&lt;/label>
+                                &lt;input
+                                    type="text"
+                                    value={selectedEmployee.password}
+                                    onChange={(e) => handleInputChange(e, 'password')}
+                                />
+                            &lt;/div>
+                            &lt;button onClick={handleEmployeeUpdate}>Submit&lt;/button>
+                            &lt;button onClick={() => handleEmployeeDelete(selectedEmployee.employeeid)}>Delete&lt;/button>
+                        &lt;/div>
+                    )}
+                &lt;/div>
+                &lt;div className="new-employee">
+                    &lt;h2>Add New Employee&lt;/h2>
+                    &lt;div className='new-employee-user'>
+                        &lt;label>Name:&lt;/label>
+                        &lt;input
+                            type="text"
+                            value={newEmployee.employeename}
+                            onChange={(e) => setNewEmployee({ ...newEmployee, employeename: e.target.value })}
+                        />
+                    &lt;/div>
+                    &lt;div className='new-employee-user'>
+                        &lt;label>Email:&lt;/label>
+                        &lt;input
+                            type="text"
+                            value={newEmployee.employeeemail}
+                            onChange={(e) => setNewEmployee({ ...newEmployee, employeeemail: e.target.value })}
+                        />
+                    &lt;/div>
+                    &lt;div className='new-employee-user'>
+                        &lt;label>Manager:&lt;/label>
+                        &lt;select id="dropdown" value={newEmployee.ismanager} onChange={handleNewDropdown}>
+                            &lt;option value="">Select...&lt;/option>
+                            &lt;option value="True">True&lt;/option>
+                            &lt;option value="False">False&lt;/option>
+                        &lt;/select>
+                    &lt;/div>
+                    &lt;div className='new-employee-user'>
+                        &lt;label>Salary:&lt;/label>
+                        &lt;input
+                            type="number"
+                            value={newEmployee.salary}
+                            onChange={(e) => setNewEmployee({ ...newEmployee, salary: e.target.value })}
+                        />
+                    &lt;/div>
+                    &lt;div className='new-employee-user'>
+                        &lt;label>Password:&lt;/label>
+                        &lt;input
+                            type="text"
+                            value={newEmployee.password}
+                            onChange={(e) => setNewEmployee({ ...newEmployee, password: e.target.value })}
+                        />
+                    &lt;/div>
+                    &lt;button onClick={handleEmployeeSubmit}>Submit&lt;/button>
+                &lt;/div>
+
+                &lt;div className="employee-list">
+                    &lt;h2>Employees&lt;/h2>
+                    {renderEmployeeItems()}
+                &lt;/div>
+            &lt;/div>
+        &lt;/div>
+    );
+};
+
+export default EmployeeManagement;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-EmployeeManagement.html">EmployeeManagement</a></li><li><a href="module-Inventory.html">Inventory</a></li><li><a href="module-KitchenBoard.html">KitchenBoard</a></li><li><a href="module-MenuItems.html">MenuItems</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Cart">Cart</a></li><li><a href="global.html#ConfirmClearOrder">ConfirmClearOrder</a></li><li><a href="global.html#ConfirmSubmit">ConfirmSubmit</a></li><li><a href="global.html#CustCart">CustCart</a></li><li><a href="global.html#CustHeader">CustHeader</a></li><li><a href="global.html#CustOrdering">CustOrdering</a></li><li><a href="global.html#EmpHeader">EmpHeader</a></li><li><a href="global.html#Employee">Employee</a></li><li><a href="global.html#EmployeeTopBar">EmployeeTopBar</a></li><li><a href="global.html#GoogleTranslate">GoogleTranslate</a></li><li><a href="global.html#ManagerTopBar">ManagerTopBar</a></li><li><a href="global.html#OrderTrend">OrderTrend</a></li><li><a href="global.html#Ordering">Ordering</a></li><li><a href="global.html#ProdUsage">ProdUsage</a></li><li><a href="global.html#RestockReport">RestockReport</a></li><li><a href="global.html#RevThankYou">RevThankYou</a></li><li><a href="global.html#SalesReport">SalesReport</a></li><li><a href="global.html#TextSizeProvider">TextSizeProvider</a></li><li><a href="global.html#UserContext">UserContext</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#reportWebVitals">reportWebVitals</a></li><li><a href="global.html#setIngredientsFunctiontoupdatetheingredientsdata.">setIngredients Function to update the ingredients data.</a></li><li><a href="global.html#setSelectedIngredientFunctiontoupdatetheselectedingredient.">setSelectedIngredient Function to update the selected ingredient.</a></li><li><a href="global.html#setSelectedLocationFunctiontoupdatetheselectedlocation.">setSelectedLocation Function to update the selected location.</a></li><li><a href="global.html#useTextSize">useTextSize</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed May 01 2024 22:39:07 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Manager/OrderHistory.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Manager/OrderHistory.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Represents the OrderHistory component that manages the display and interaction with historical orders.
+ * This component integrates a date picker to filter orders, a search function, and visualization of selected order details.
+ *
+ * @component
+ */
+import React, { useState, useEffect, useRef } from 'react';
+import './OrderHistory.css';
+import './../Common.css';
+import { useTextSize } from '../components/TextSizeContext';
+import axios from 'axios';
+import ManagerTopBar from '../components/ManagerTopBar';
+import RevThankYou from '../components/RevThankYou';
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
+
+const OrderHistory = () => {
+    /**
+     * Stores the list of orders.
+     * @type {Array&lt;Object>} // Specify the type of elements if known
+     */
+    const [orders, setOrders] = useState([]);
+
+    /**
+     * Stores the currently selected order for detail viewing.
+     * @type {?Object} // Use ? to indicate that it can also be null
+     */
+    const [selectedOrder, setSelectedOrder] = useState(null);
+
+    /**
+     * Controls the visibility of the 'Thank You' review modal.
+     * @type {boolean}
+     */
+    const [showRevThankYou, setShowRevThankYou] = useState(false);
+
+    /**
+     * Controls the application of a high contrast theme for accessibility.
+     * @type {boolean}
+     */
+    const [highContrast, setHighContrast] = useState(false);
+
+    /**
+     * Retrieves text size settings from context.
+     */
+    const { textSize, updateTextSize } = useTextSize();
+
+    /**
+     * Reference to the search input field.
+     * @type {React.RefObject&lt;HTMLInputElement>}
+     */
+    const searchInputRef = useRef(null);
+
+    /**
+     * State for managing the date selection for order filtering.
+     * @type {Date|string}
+     */
+    const [ordersDate, setOrdersDate] = useState('');
+
+    /**
+     * Fetches the order history from the backend API.
+     * Asynchronously retrieves orders and updates the orders state.
+     * @async
+     */
+    const fetchOrderHistory = async () => {
+        try {
+            const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/orderhistory');
+            console.log(response.data);
+            setOrders(response.data);
+        } catch (error) {
+            console.error('Error fetching order history:', error);
+        }
+    };
+
+    const handleDeleteButton = async () => {
+        if (!selectedOrder) return;
+        try {
+            await axios.put('https://team21revsbackend.onrender.com/api/manager/orderstatusdeleted', { orderid: selectedOrder.orderid  });
+            fetchOrderHistory();
+        } catch (error) {
+            console.error('Error deleting menu item:', error);
+        }
+    };
+
+    const handleCancelButton = async () => {
+        if (!selectedOrder) return;
+        try {
+            await axios.put('https://team21revsbackend.onrender.com/api/manager/orderstatuscanceled', {  orderid: selectedOrder.orderid  });
+            fetchOrderHistory();
+        } catch (error) {
+            console.error('Error deleting menu item:', error);
+        }
+    };
+
+
+    useEffect(() => {
+        fetchOrderHistory();
+    }, []);
+
+    useEffect(() => {
+        const fetchFilteredOrders = async () => {
+            try {
+                const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/orderhistorybydate', {
+                    startdate: ordersDate // Assuming your API expects the startdate field
+                });
+                console.log(response.data);
+                setOrders(response.data);
+                renderOrderItems();
+            } catch (error) {
+                console.error('Error fetching filtered orders:', error);
+            }
+        };
+        if (ordersDate) {
+            fetchFilteredOrders();
+        }
+        console.log("Orders would be grabbed here");
+    }, [ordersDate]);
+
+    /**
+     * Handles click events on individual order items.
+     * Updates the selectedOrder state with the clicked order's details.
+     * @param {Object} order - The order data object.
+     */
+    const handleOrderClick = (order) => {
+        setSelectedOrder(order);
+    };
+
+    /**
+     * Renders the list of order items.
+     * Maps each order to an HTML element structure displaying the order details.
+     * @returns {Array&lt;JSX.Element>} The list of order elements.
+     */
+    const renderOrderItems = () => {
+        return orders.map(order => (
+            &lt;div key={order.orderid} className={`order-item ${selectedOrder &amp;&amp; selectedOrder.orderid === order.orderid ? 'selected' : ''}`} onClick={() => handleOrderClick(order)}>
+                &lt;div>ID: {order.orderid}&lt;/div>
+                &lt;div>Customer: {order.customername}&lt;/div>
+                &lt;div>Price: ${(parseFloat(order.baseprice) + parseFloat(order.taxprice)).toFixed(2)}&lt;/div>
+                &lt;div>Date/Time: {order.orderdatetime}&lt;/div>
+                &lt;div>Status: {order.status}&lt;/div>
+            &lt;/div>
+        ));
+    };
+
+    /**
+     * Formats a date/time string into a more readable format.
+     * @param {string} dateTime - The date/time string to format.
+     * @returns {string} The formatted date/time string.
+     */
+    const formatDate = (dateTime) => {
+        const date = new Date(dateTime);
+        return date.toLocaleString();
+    };
+
+    /**
+     * Triggers a browser-based text search within the component.
+     * Uses the current value from the search input reference.
+     */
+    const handleSearch = () => {
+        const searchText = searchInputRef.current.value;
+        window.find(searchText);
+    };
+
+    /**
+     * Toggles the visibility of the 'Thank You' modal.
+     */
+    const handleShowRevThankYou = () => {
+        setShowRevThankYou(true);
+    };
+
+    /**
+     * Toggles the high contrast theme.
+     */
+    const toggleHighContrast = () => {
+        setHighContrast(!highContrast);
+    };
+
+    return (
+        &lt;div className={`order-manager ${textSize === 'large' ? 'large-text' : ''} ${highContrast ? 'high-contrast' : ''}`}>
+            &lt;ManagerTopBar toggleHighContrast={toggleHighContrast} />
+            &lt;div className='manager-order-history'>
+                &lt;div className="order-details">
+                    &lt;button onClick={handleShowRevThankYou}>SUBMIT ORDER&lt;/button>
+                    &lt;h2>{selectedOrder ? `Order Details: ${selectedOrder.orderid}` : 'Select an Order to View Details'}&lt;/h2>
+                    {selectedOrder &amp;&amp; (
+                        &lt;div className="selected-order">
+                            &lt;div>ID: {selectedOrder.orderid}&lt;/div>
+                            &lt;div>Customer: {selectedOrder.customername}&lt;/div>
+                            &lt;div>Base Price: ${parseFloat(selectedOrder.baseprice).toFixed(2)}&lt;/div>
+                            &lt;div>Tax Price: ${parseFloat(selectedOrder.taxprice).toFixed(2)}&lt;/div>
+                            &lt;div>Total Price: ${(parseFloat(selectedOrder.baseprice) + parseFloat(selectedOrder.taxprice)).toFixed(2)}&lt;/div>
+                            &lt;div>Date/Time: {formatDate(selectedOrder.orderdatetime)}&lt;/div>
+                            &lt;div>Employee ID: {selectedOrder.employeeid}&lt;/div>
+                            &lt;div>Status: {selectedOrder.status}&lt;/div>
+                            &lt;button className='order-history-button' onClick={handleDeleteButton}>Delete&lt;/button>
+                            &lt;button className='order-history-button' onClick={handleCancelButton}>Cancel&lt;/button>
+                        &lt;/div>
+                    )}
+                &lt;/div>
+                &lt;div className='order-history'>
+                    &lt;div className="search-bar">
+                        &lt;input className='order-history-input' type="text" placeholder="Search..." ref={searchInputRef} />
+                        &lt;button className='order-history-button' onClick={handleSearch}>Search&lt;/button>
+                    &lt;/div>
+                    &lt;div className="order-list">
+                        &lt;h2>Order History&lt;/h2>
+                        &lt;label>Find Orders for:&lt;/label>
+                        &lt;DatePicker selected={ordersDate} onChange={(date) => setOrdersDate(date)} />
+                        {renderOrderItems()}
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+            {showRevThankYou &amp;&amp; &lt;RevThankYou onAnimationEnd={() => setShowRevThankYou(false)} />}
+        &lt;/div>
+    );
+};
+
+export default OrderHistory;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-EmployeeManagement.html">EmployeeManagement</a></li><li><a href="module-Inventory.html">Inventory</a></li><li><a href="module-KitchenBoard.html">KitchenBoard</a></li><li><a href="module-MenuItems.html">MenuItems</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Cart">Cart</a></li><li><a href="global.html#ConfirmClearOrder">ConfirmClearOrder</a></li><li><a href="global.html#ConfirmSubmit">ConfirmSubmit</a></li><li><a href="global.html#CustCart">CustCart</a></li><li><a href="global.html#CustHeader">CustHeader</a></li><li><a href="global.html#CustOrdering">CustOrdering</a></li><li><a href="global.html#EmpHeader">EmpHeader</a></li><li><a href="global.html#Employee">Employee</a></li><li><a href="global.html#EmployeeTopBar">EmployeeTopBar</a></li><li><a href="global.html#GoogleTranslate">GoogleTranslate</a></li><li><a href="global.html#ManagerTopBar">ManagerTopBar</a></li><li><a href="global.html#OrderTrend">OrderTrend</a></li><li><a href="global.html#Ordering">Ordering</a></li><li><a href="global.html#ProdUsage">ProdUsage</a></li><li><a href="global.html#RestockReport">RestockReport</a></li><li><a href="global.html#RevThankYou">RevThankYou</a></li><li><a href="global.html#SalesReport">SalesReport</a></li><li><a href="global.html#TextSizeProvider">TextSizeProvider</a></li><li><a href="global.html#UserContext">UserContext</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#reportWebVitals">reportWebVitals</a></li><li><a href="global.html#setIngredientsFunctiontoupdatetheingredientsdata.">setIngredients Function to update the ingredients data.</a></li><li><a href="global.html#setSelectedIngredientFunctiontoupdatetheselectedingredient.">setSelectedIngredient Function to update the selected ingredient.</a></li><li><a href="global.html#setSelectedLocationFunctiontoupdatetheselectedlocation.">setSelectedLocation Function to update the selected location.</a></li><li><a href="global.html#useTextSize">useTextSize</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed May 01 2024 22:39:07 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

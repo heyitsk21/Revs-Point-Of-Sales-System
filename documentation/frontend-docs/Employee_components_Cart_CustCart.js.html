@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Employee/components/Cart/CustCart.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Employee/components/Cart/CustCart.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from 'react';
+import ConfirmSubmit from '../ConfirmSubmit/ConfirmSubmit';
+import ConfirmClearOrder from '../ConfirmClearOrder/ConfirmClearOrder';
+import { useCart } from 'react-use-cart';
+import { useState } from 'react'
+//import SimpleBar from 'simplebar-react';
+import 'simplebar-react/dist/simplebar.min.css';
+import './CustCart.css';
+
+/**
+ * Customer Cart component to display and manage items in the cart.
+ * @returns {JSX.Element} - The JSX element representing the Customer Cart component.
+ */
+const CustCart = () => {
+    // Hook to manage cart state
+    const { 
+        isEmpty,
+        items,
+        cartTotal,
+        updateItemQuantity,
+        removeItem,
+        emptyCart,
+    } = useCart();
+
+    // State variables for submit and clear order popups
+    const [submitPopup, setSubmitPopup] = useState(false);
+    const [clearOrderPopup, setClearOrderPopup] = useState(false);
+
+    /**
+     * Function to handle confirm submit action.
+     */
+    const handleConfirmSubmit = () => {
+        // Prepare data for submission
+        const data = {
+            items: items.map((item, index) => ({ 
+                id: item.id, 
+                quantity: item.quantity, 
+                name: item.name, 
+                price: item.price
+            }))
+        };
+        console.log('Data passed to ConfirmSubmit: ', data);
+        setSubmitPopup(data);
+    };
+
+    // Render the Customer Cart component
+    return (
+        &lt;section className='customer-section'>
+            &lt;h1>Your Cart&lt;/h1>
+            &lt;div className='customer-cart'>
+                &lt;div className='customer-cartTitle'>&lt;/div>
+                {isEmpty ? (
+                    &lt;div className='emptyMessage'>Your Cart is Empty&lt;/div>
+                ) : (
+                    &lt;>
+                        {items.map((item, index) => (
+                            &lt;details key={index}>
+                                &lt;summary>
+                                    &lt;h3>
+                                        &lt;div>&lt;strong>{item.name}&lt;/strong>&lt;/div>
+                                        &lt;div>&lt;small>${(item.quantity * item.price).toFixed(2)}&lt;/small>&lt;/div>
+                                        &lt;div>&lt;u>Modify&lt;/u>&lt;/div>
+                                    &lt;/h3>
+                                &lt;/summary>
+                                &lt;div className='customer-adjust'>
+                                    &lt;div className="changeQuantity">
+                                        &lt;button className="cart-button" onClick={() => updateItemQuantity(item.id, item.quantity - 1)} disabled={item.quantity === 1}>-&lt;/button>
+                                        &lt;span>{item.quantity}&lt;/span>
+                                        &lt;button className="cart-button" onClick={() => updateItemQuantity(item.id, item.quantity + 1)}>+&lt;/button>
+                                    &lt;/div>
+                                    &lt;div className="removeItem">
+                                        &lt;button className="cart-button" onClick={() => removeItem(item.id)}>Remove Item&lt;/button>
+                                    &lt;/div>
+                                &lt;/div>
+                            &lt;/details>
+                        ))}
+                    &lt;/>
+                )}
+                &lt;div className='customer-total'>
+                    &lt;div>Total Price: &lt;/div>
+                    &lt;div className='customer-total-price-value'>${cartTotal.toFixed(2)}&lt;/div>
+                &lt;/div>
+                    &lt;button className="customer-cart-button" onClick={() => setClearOrderPopup(true)} disabled={cartTotal === 0}>Clear Order&lt;/button>
+                    &lt;button className="customer-cart-button" onClick={handleConfirmSubmit} disabled={cartTotal === 0}>Customize &amp; Continue&lt;/button>
+            &lt;/div>
+            {/* Confirm clear order popup */}
+            &lt;ConfirmClearOrder trigger={clearOrderPopup} setTrigger={setClearOrderPopup} emptyCart={emptyCart} >
+                &lt;h3>Are you sure you want to cancel your order?&lt;/h3>
+            &lt;/ConfirmClearOrder>
+            {/* Confirm submit popup */}
+            &lt;ConfirmSubmit trigger={submitPopup} setTrigger={setSubmitPopup} emptyCart={emptyCart} >
+                &lt;h3>Would you like to order now?&lt;/h3>
+            &lt;/ConfirmSubmit>
+        &lt;/section>
+    
+    );
+}
+
+export default CustCart;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-EmployeeManagement.html">EmployeeManagement</a></li><li><a href="module-Inventory.html">Inventory</a></li><li><a href="module-KitchenBoard.html">KitchenBoard</a></li><li><a href="module-MenuItems.html">MenuItems</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Cart">Cart</a></li><li><a href="global.html#ConfirmClearOrder">ConfirmClearOrder</a></li><li><a href="global.html#ConfirmSubmit">ConfirmSubmit</a></li><li><a href="global.html#CustCart">CustCart</a></li><li><a href="global.html#CustHeader">CustHeader</a></li><li><a href="global.html#CustOrdering">CustOrdering</a></li><li><a href="global.html#EmpHeader">EmpHeader</a></li><li><a href="global.html#Employee">Employee</a></li><li><a href="global.html#EmployeeTopBar">EmployeeTopBar</a></li><li><a href="global.html#GoogleTranslate">GoogleTranslate</a></li><li><a href="global.html#ManagerTopBar">ManagerTopBar</a></li><li><a href="global.html#OrderTrend">OrderTrend</a></li><li><a href="global.html#Ordering">Ordering</a></li><li><a href="global.html#ProdUsage">ProdUsage</a></li><li><a href="global.html#RestockReport">RestockReport</a></li><li><a href="global.html#RevThankYou">RevThankYou</a></li><li><a href="global.html#SalesReport">SalesReport</a></li><li><a href="global.html#TextSizeProvider">TextSizeProvider</a></li><li><a href="global.html#UserContext">UserContext</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#reportWebVitals">reportWebVitals</a></li><li><a href="global.html#setIngredientsFunctiontoupdatetheingredientsdata.">setIngredients Function to update the ingredients data.</a></li><li><a href="global.html#setSelectedIngredientFunctiontoupdatetheselectedingredient.">setSelectedIngredient Function to update the selected ingredient.</a></li><li><a href="global.html#setSelectedLocationFunctiontoupdatetheselectedlocation.">setSelectedLocation Function to update the selected location.</a></li><li><a href="global.html#useTextSize">useTextSize</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed May 01 2024 22:39:07 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

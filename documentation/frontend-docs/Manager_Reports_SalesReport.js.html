@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Manager/Reports/SalesReport.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Manager/Reports/SalesReport.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
+import './Report.css';
+import { useTextSize } from '../../components/TextSizeContext';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import ManagerTopBar from '../../components/ManagerTopBar';
+import DatePicker from "react-datepicker";
+import SortedTable from '../../components/SortedTable';
+import "react-datepicker/dist/react-datepicker.css";
+
+/**
+ * Component for displaying the sales report.
+ * @returns {JSX.Element} - The JSX element representing the SalesReport component.
+ */
+function SalesReport () {
+    const navigate = useNavigate();
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [reportData, setReportData] = useState([]);
+    const { textSize, toggleTextSize } = useTextSize();
+
+
+    /**
+     * Function to download a file.
+     * @param {object} data - Data to be downloaded.
+     * @param {string} fileName - Name of the file.
+     * @param {string} fileType - Type of the file.
+     */
+    const downloadFile = ({ data, fileName, fileType }) => {
+        const blob = new Blob([data], { type: fileType })
+        const a = document.createElement('a')
+        a.download = fileName
+        a.href = window.URL.createObjectURL(blob)
+        const clickEvt = new MouseEvent('click', {
+          view: window,
+          bubbles: true,
+          cancelable: true,
+        })
+        a.dispatchEvent(clickEvt)
+        a.remove()
+      }
+
+      /**
+     * Function to export data to CSV format.
+     * @param {object} e - Event object.
+     */
+    const exportToCsv = e => {
+        e.preventDefault()
+        let headers = ['Itemname,MenuId,Ordercount,Totalsales']
+        let usersCsv = reportData.reduce((acc, user) => {
+          const { itemname,menuid,ordercount,totalsales } = user
+          acc.push([itemname,menuid,ordercount,totalsales].join(','))
+          return acc
+        }, [])
+        downloadFile({
+          data: [...headers, ...usersCsv].join('\n'),
+          fileName: 'SalesReport.csv',
+          fileType: 'text/csv',
+        })
+      }
+
+    const columns = React.useMemo(
+        () => [
+          {
+            Header: 'Menu ID',
+            accessor: 'menuid' 
+          },
+          {
+            Header: 'Item Name',
+            accessor: 'itemname' 
+          },
+          {
+            Header: 'Total Sales',
+            accessor: 'totalsales' 
+          },
+          {
+            Header: 'Amount Sold',
+            accessor: 'ordercount' 
+          },
+          
+          
+        ],
+        []
+      )
+
+    useEffect(() => {
+            fetchData(startDate, endDate);
+        
+    }, [startDate, endDate]);
+
+    /**
+     * Function to fetch data from the backend.
+     * @param {Date} startDate - The start date.
+     * @param {Date} endDate - The end date.
+     */
+    const fetchData = async (startDate, endDate) => {
+        try {
+            const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/reports/generatesalesreport', {
+                startdate: startDate,
+                enddate: endDate
+            });
+            console.log('Response from API:', response.data);
+            setReportData(response.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    return (
+        &lt;div className={`sales-report ${textSize === 'large' ? '' : ''}`} >
+            &lt;ManagerTopBar/>
+            &lt;div className='report-body'>
+
+                &lt;button className="trends-button" onClick={() => navigate('/manager/trends')}>Return&lt;/button>
+                &lt;h2  className="trends-header">Sales Report&lt;/h2>
+                &lt;div className="date-fields">
+                    &lt;label >Start Date:&lt;/label>
+                    &lt;DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
+                    &lt;label >End Date:&lt;/label>
+                    &lt;DatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
+                &lt;/div>
+                &lt;div className='generate-trend-buttons'>
+                  &lt;button onClick={() => fetchData(startDate, endDate)}>Generate Sales Report&lt;/button>
+                  &lt;button type='button' onClick={exportToCsv}> Export to CSV&lt;/button>
+                &lt;/div>
+                &lt;div className="report-list">
+                    {reportData.length > 0 ? (
+                         &lt;SortedTable columns={columns} data={reportData} />
+                    ) : (
+                        &lt;p>No data to display&lt;/p>
+                    )}
+                &lt;/div>
+            &lt;/div>
+        &lt;/div>
+    );
+};
+
+export default SalesReport;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-EmployeeManagement.html">EmployeeManagement</a></li><li><a href="module-Inventory.html">Inventory</a></li><li><a href="module-KitchenBoard.html">KitchenBoard</a></li><li><a href="module-MenuItems.html">MenuItems</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Cart">Cart</a></li><li><a href="global.html#ConfirmClearOrder">ConfirmClearOrder</a></li><li><a href="global.html#ConfirmSubmit">ConfirmSubmit</a></li><li><a href="global.html#CustCart">CustCart</a></li><li><a href="global.html#CustHeader">CustHeader</a></li><li><a href="global.html#CustOrdering">CustOrdering</a></li><li><a href="global.html#EmpHeader">EmpHeader</a></li><li><a href="global.html#Employee">Employee</a></li><li><a href="global.html#EmployeeTopBar">EmployeeTopBar</a></li><li><a href="global.html#GoogleTranslate">GoogleTranslate</a></li><li><a href="global.html#ManagerTopBar">ManagerTopBar</a></li><li><a href="global.html#OrderTrend">OrderTrend</a></li><li><a href="global.html#Ordering">Ordering</a></li><li><a href="global.html#ProdUsage">ProdUsage</a></li><li><a href="global.html#RestockReport">RestockReport</a></li><li><a href="global.html#RevThankYou">RevThankYou</a></li><li><a href="global.html#SalesReport">SalesReport</a></li><li><a href="global.html#TextSizeProvider">TextSizeProvider</a></li><li><a href="global.html#UserContext">UserContext</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#reportWebVitals">reportWebVitals</a></li><li><a href="global.html#setIngredientsFunctiontoupdatetheingredientsdata.">setIngredients Function to update the ingredients data.</a></li><li><a href="global.html#setSelectedIngredientFunctiontoupdatetheselectedingredient.">setSelectedIngredient Function to update the selected ingredient.</a></li><li><a href="global.html#setSelectedLocationFunctiontoupdatetheselectedlocation.">setSelectedLocation Function to update the selected location.</a></li><li><a href="global.html#useTextSize">useTextSize</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed May 01 2024 22:39:07 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
