@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Ordering.css';
 import { useCart } from "react-use-cart";
 import { useTextSize } from '../../../components/TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
 import Cart from '../Cart/Cart';
-import SimpleBar from 'simplebar-react';
+// import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 
 /**
@@ -14,7 +14,7 @@ import 'simplebar-react/dist/simplebar.min.css';
  * @returns {JSX.Element} - The JSX element representing the Ordering component.
  */
 const Ordering = ({ onCatChange }) => {
-    const { textSize, toggleTextSize } = useTextSize();
+    const { textSize } = useTextSize();
     const [category, setCategory] = useState('Value Meals');
     // const [selectedMenuSection] = useState(null);  // setSelectedMenuSection
     // const [initialFetchDone, setInitialFetchDone] = useState(false);
@@ -30,7 +30,7 @@ const Ordering = ({ onCatChange }) => {
 
     const fetchMenuSection = async (currentIdStart) => {
         try {
-            console.log("IM ORDERING");
+            // console.log("IM ORDERING");
             const response = await axios.post('https://team21revsbackend.onrender.com/api/employee/getmenuitems',  { menugroup: currentIdStart });
             switch (currentIdStart) {
                 case 100:
