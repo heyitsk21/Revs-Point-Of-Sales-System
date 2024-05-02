@@ -97,6 +97,8 @@ GenerateProductUsage_model = api.model('GenerateProductUsage',{"startdate": fiel
 GenerateSalesReport_model = api.model('GenerateSalesReport',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
 GenerateOrderTrend_model = api.model('GenerateOrderTrend',{"startdate": fields.Date(required=True), "enddate": fields.Date(required=True)})
 
+OrderHistoryByDate_model = api.model('OrderHistoryByDate',{"startdate": fields.Date(required=True)})
+
 CompleteOrder_model = api.model('CompleteOrder',{"orderid":fields.Integer(required=True)})
 
 
@@ -645,6 +647,29 @@ class OrderHistory(Resource):
             except:
                 return jsonify({"message":"failed to deleted order with orderid = {inputorderid}".format(inputorderid = orderid)})
 
+@api.route('/api/manager/orderhistorybydate')
+class OrderHistoryByDate(Resource):
+    """
+    Resource for retrieving order history information for a specified date.
+    """
+    @api.expect(OrderHistoryByDate_model, validate=True)
+    def post(self):
+        """
+        POST method for retrieving order history information.
+        """
+        startdate = request.get_json().get("startdate") 
+        startdate_str = text(startdate)
+        # date = request.args.get('date')  # Get the value of 'date' parameter from the query string
+        # if not date:
+        #     return jsonify({"error": "Date parameter is required."})
+        with db.engine.connect() as conn:
+            get_order_query = "SELECT * FROM orders WHERE  CAST(orderdatetime AS DATE) = '{x}'".format(x=startdate_str)
+            result = conn.execution_options(stream_results=True).execute(text(get_order_query))
+            orderlist = []
+            for row in result:
+                orderlist.append({"orderid":row.orderid, "customername":row.customername, "taxprice":row.taxprice,"baseprice":row.baseprice,"orderdatetime":row.orderdatetime,"employeeid":row.employeeid})
+        return jsonify(orderlist)
+    
 
 
 
