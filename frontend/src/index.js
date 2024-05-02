@@ -4,7 +4,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';
-import LoginScreen from './LoginScreen';
 import { UserProvider } from './UserContext';
 import reportWebVitals from './reportWebVitals';
 import AppRoutes from './AppRoutes';
@@ -12,9 +11,6 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
 import { TextSizeProvider } from './components/TextSizeContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
-// Check if the user is logged in
-const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 
 root.render(
   <React.StrictMode>
