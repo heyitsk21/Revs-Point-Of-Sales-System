@@ -99,7 +99,6 @@ const OrderHistory = () => {
     useEffect(() => {
         const fetchFilteredOrders = async () => {
             try {
-                process.memoryUsage();
                 const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/orderhistorybydate', {
                     startdate: ordersDate // Assuming your API expects the startdate field
                 });
