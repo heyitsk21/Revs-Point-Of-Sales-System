@@ -6,9 +6,9 @@ import React, { useEffect, useState } from "react";
  */
 export default function Weather() {
   // State variables to store latitude, longitude, and weather data
-  const [lat, setLat] = useState([]);
-  const [long, setLong] = useState([]);
-  const [data, setData] = useState([]);
+  const [lat, setLat] = useState(null);
+  const [long, setLong] = useState(null);
+  const [data, setData] = useState(null);
 
   /**
    * Function to render the appropriate image based on weather data.
@@ -16,52 +16,58 @@ export default function Weather() {
    */
   const renderRev = () => {
     let revpath = "/Images/Revs/rev.png";
-    if(data.weather[0].main){
-        switch(data.weather[0].main){
-            case 'Clouds':
-                revpath = "/Images/Revs/cloudRev.png"
-                break;
-            case 'Snow':
-                revpath = "/Images/Revs/coldRev.png"
-                break;           
-            case 'Clear':
-                revpath = "/Images/Revs/hotRev.png"
-                break;   
-            case 'Rain':
-                revpath = "/Images/Revs/wetRev.png"
-                break;     
-            case 'Thunderstorm':
-                revpath = "/Images/Revs/wetRev.png"
-                break; 
-            case 'Drizzle':
-                revpath = "/Images/Revs/wetRev.png"
-                break;    
-            case 'Mist':
-                revpath = "/Images/Revs/wetRev.png"
-                break;       
-            default:
-                break;
-        }
+    if (data && data.weather && data.weather[0].main) {
+      switch (data.weather[0].main) {
+        case 'Clouds':
+          revpath = "/Images/Revs/cloudRev.png";
+          break;
+        case 'Snow':
+          revpath = "/Images/Revs/coldRev.png";
+          break;
+        case 'Clear':
+          revpath = "/Images/Revs/hotRev.png";
+          break;
+        case 'Rain':
+          revpath = "/Images/Revs/wetRev.png";
+          break;
+        case 'Thunderstorm':
+        case 'Drizzle':
+        case 'Mist':
+          revpath = "/Images/Revs/wetRev.png";
+          break;
+        default:
+          break;
+      }
     }
 
-
-    return(
-    <img id='rev image' src={revpath} alt={'rev'} width="10%" />
+    return (
+      <img id='rev image' src={revpath} alt={'rev'} width="25%" />
     );
   };
 
   useEffect(() => {
-    /**
-     * Function to fetch weather data from OpenWeatherMap API based on user's location.
-     */
-    const fetchData = async () => {
+    let geoLocationWatcher;
+
+    const fetchData = async (latitude, longitude) => {
+      // Fetch weather data using latitude and longitude
+      await fetch(`https://api.openweathermap.org/data/2.5/weather/?lat=${latitude}&lon=${longitude}&units=metric&APPID=d735d8066386f83fe40b6fc4562811f6`)
+        .then(res => res.json())
+        .then(result => {
+          setData(result);
+          console.log(result);
+        });
+    };
+
+    const getLocation = () => {
       if (navigator.geolocation) {
-        // Get user's current location
-        navigator.geolocation.getCurrentPosition(
+        geoLocationWatcher = navigator.geolocation.watchPosition(
           (position) => {
             const { latitude, longitude } = position.coords;
-            setLong(longitude);
             setLat(latitude);
+            setLong(longitude);
+            // Once latitude and longitude are set, fetch weather data
+            fetchData(latitude, longitude);
+            navigator.geolocation.clearWatch(geoLocationWatcher);
           },
           (error) => {
             console.error('Error getting user location:', error);
@@ -70,34 +76,30 @@ export default function Weather() {
       } else {
         console.error('Geolocation is not supported by this browser.');
       }
-
-      // Fetch weather data using latitude and longitude
-      await fetch(`https://api.openweathermap.org/data/2.5/weather/?lat=${lat}&lon=${long}&units=metric&APPID=d735d8066386f83fe40b6fc4562811f6`)
-        .then(res => res.json())
-        .then(result => {
-          setData(result)
-          console.log(result);
-        });
     };
-    // Call fetchData function
-    fetchData();
 
-    // Log latitude and longitude to console
-    console.log("Latitude is:", lat)
-    console.log("Longitude is:", long)
-  }, [lat, long]);
+    // Attempt to get user's location continuously until successful
+    getLocation();
+
+    return () => {
+      if (geoLocationWatcher) {
+        navigator.geolocation.clearWatch(geoLocationWatcher);
+      }
+    };
+  }, []);
 
   // Render Weather component
   return (
-    <div className="Wheater">
-        {(typeof data.main != 'undefined') ? (
+    <div className="Weather">
+      {data ? (
         <div>
-        {renderRev()}
+        <div className="custheader-child">
+          {renderRev()}
         </div>
-      ): (
-        <div></div>
+        </div>
+      ) : (
+        <div>Loading...</div>
       )}
-
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { useState } from 'react'
 //import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 import './CustCart.css';
+import Weather from '../../../components/Wheater';
 
 /**
  * Customer Cart component to display and manage items in the cart.
@@ -49,7 +50,7 @@ const CustCart = () => {
     // Render the Customer Cart component
     return (
         <section className='customer-section'>
-            <h1>Your Cart</h1>
+            <div className='CustCardHeader'><div className='custheader-child'><h1>Your Cart</h1></div><div className='custheader-child'><h1><Weather/></h1></div></div>
             <div className='customer-cart'>
                 <div className='customer-cartTitle'></div>
                 {isEmpty ? (
