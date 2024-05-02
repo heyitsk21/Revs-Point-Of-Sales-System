@@ -70,13 +70,13 @@ class PlaceOrder(Resource):
         
         allmenuids = '('
         allcustomizationids = {}
-        allmenuidcustomizations = {}
+        allmenuidcustomizations = []
         for item in menuitems:
             menuid = item.get("menuid")
             allmenuids += str(menuid) + ','
             currcust_list = item.get("customizationids", [])
 
-            allmenuidcustomizations[menuid] = currcust_list
+            allmenuidcustomizations.append((menuid,currcust_list))
             
             for cust in currcust_list:
                 if not (cust in allcustomizationids):
@@ -124,15 +124,15 @@ class PlaceOrder(Resource):
             print(str(getOrderID))
             #TODO add to menu items order junction table
             for item in allmenuidcustomizations:
-                conn.connection.cursor().execute("INSERT INTO ordermenuitems (OrderID,MenuID) VALUES ("+str(getOrderID)+","+str(item)+") RETURNING joinid")
+                conn.connection.cursor().execute("INSERT INTO ordermenuitems (OrderID,MenuID) VALUES ("+str(getOrderID)+","+str(item[0])+") RETURNING joinid")
 
                 result =conn.execution_options(stream_results=True).execute(text(f"SELECT JOINID FROM ORDERMENUITEMS ORDER BY JOINID DESC LIMIT 1;"))
                 for row in result:
                     getJoinID = row.joinid
                 print(str(getJoinID))
                 conn.connection.cursor().execute("UPDATE ordermenuitems SET customizationid = "+str(getJoinID)+" where joinid = "+str(getJoinID))
-                if len(allmenuidcustomizations[item]) > 0:
-                    for cust in allmenuidcustomizations[item]:
+                if len(item[1]) > 0:
+                    for cust in item[1]:
                         conn.connection.cursor().execute("INSERT INTO CustomizationOrderMenu (customizationordermenuid,ingredientid) VALUES ("+str(getJoinID)+","+str(cust)+")")
             conn.connection.commit()
         return None
