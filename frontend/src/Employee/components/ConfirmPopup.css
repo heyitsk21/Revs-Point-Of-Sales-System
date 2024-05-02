@@ -27,7 +27,7 @@
     right: 16px;
 }
 
-.confirm-button {
+/* .confirm-button {
     background-color: #005bbd;
     color: #fff;
     border: none;
@@ -35,6 +35,36 @@
     padding: 8px 16px;
     cursor: pointer;
     font-size: 24px;
+} */
+
+.confirm-popup-inner .close {
+    background-color: maroon;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: .5em;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.confirm-popup .close:hover {
+    background-color: #9d3e3e;
+	color: gold;
+}
+
+.confirm-popup-inner .confirm {
+    background-color: maroon;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: .5em;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.confirm-popup .confirm:hover {
+    background-color: #9d3e3e;
+	color: gold;
 }
 
 .label {
