@@ -78,8 +78,12 @@ const OrderHistory = () => {
     useEffect(() => {
         const fetchFilteredOrders = async () => {
             try {
-                const response = await axios.get(`https://team21revsbackend.onrender.com/api/manager/orderhistory?date=${ordersDate}`);
+                const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/orderhistorybydate', {
+                    startdate: ordersDate // Assuming your API expects the startdate field
+                });
+                console.log(response.data);
                 setOrders(response.data);
+                renderOrderItems();
             } catch (error) {
                 console.error('Error fetching filtered orders:', error);
             }
