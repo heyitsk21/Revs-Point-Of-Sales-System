@@ -7,6 +7,16 @@
     align-items: center;
 }
 
+.the-wheat {
+    position: fixed;
+    left: 30%;
+}
+
+.the-wheat img{
+    width: 10%;
+    background-color: #333;
+}
+
 .cust-bar {
     display: flex;
     justify-content: space-between;

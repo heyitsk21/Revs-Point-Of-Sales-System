@@ -81,7 +81,6 @@ export default function Wheater() {
     <div className="Wheater">
         {(typeof data.main != 'undefined') ? (
         <div>
-        <p>Tempature {data.main.temp} &deg;C</p>
         {renderRev()}
         </div>
       ): (

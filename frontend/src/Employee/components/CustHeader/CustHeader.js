@@ -4,6 +4,7 @@ import './../../../Common.css';
 import { useTextSize } from '../../../components/TextSizeContext';
 import { useNavigate } from 'react-router-dom';
 import Translate from '../../../components/translate';
+import Wheater from '../../../components/Wheater';
 
 const CustHeader = ({ onCatChange, toggleHighContrast }) => {
     const navigate = useNavigate();
@@ -42,6 +43,7 @@ const CustHeader = ({ onCatChange, toggleHighContrast }) => {
 
     return (
         <div className='cust-bar'>
+            <div className='the-wheat'><Wheater /></div>
             <div className='cust-welcome'>Welcome To Rev's!</div>
             <div className="cust-dropdown-container">
                 <button className={`manager-dropdown-toggle`} onClick={toggleDropdown}>
