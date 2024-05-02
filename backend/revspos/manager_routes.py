@@ -354,7 +354,7 @@ class Ingredients(Resource):
         GET method for retrieving ingredient information.
         """
         with db.engine.connect() as conn:
-            result = conn.execution_options(stream_results=True).execute(text("select * from ingredients"))
+            result = conn.execution_options(stream_results=True).execute(text("select * from ingredients order by ingredientid"))
             menuitemlist = []
             for row in result:
                 menuitemlist.append({"ingredientid":row.ingredientid, "ingredientname":row.ingredientname, "ppu":row.ppu,"count":row.count,"minamount":row.minamount,"location":row.location,"recommendedamount":row.recommendedamount,"caseamount":row.caseamount})

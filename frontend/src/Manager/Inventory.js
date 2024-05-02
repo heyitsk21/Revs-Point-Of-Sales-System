@@ -80,6 +80,7 @@ function Inventory() {
                 recommendedamount: 0,
                 caseamount: 0
             });
+            fetchInventory();
         } catch (error) {
             console.error('Error adding ingredient:', error);
         }
