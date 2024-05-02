@@ -42,7 +42,7 @@ const OrderHistory = () => {
     /**
      * Retrieves text size settings from context.
      */
-    const { textSize, updateTextSize } = useTextSize();
+    const { textSize } = useTextSize();
 
     /**
      * Reference to the search input field.

@@ -13,8 +13,6 @@ import Translate from './../components/translate';
 function EmployeeTopBar({ toggleHighContrast }) {
     const navigate = useNavigate();
     const { toggleTextSize } = useTextSize();
-    const [loggedIn, setLoggedIn] = useState(false); // State for tracking login status
-    const [username, setUsername] = useState(''); // State for storing username
     const [currentTime, setCurrentTime] = useState(''); // State for storing current time
     const [dropdownVisible, setDropdownVisible] = useState(false); // State for controlling dropdown visibility
     const [leftdropdownVisible, setLeftdropdownVisible] = useState(false); // State for controlling left dropdown visibility
