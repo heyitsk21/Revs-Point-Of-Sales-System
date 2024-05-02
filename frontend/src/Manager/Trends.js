@@ -1,16 +1,42 @@
-import React from 'react';
+/**
+ * React component for managing trends.
+ * @returns {JSX.Element} Trends component
+ */
+import React, { useState } from 'react';
 import './Trends.css';
 import { useTextSize } from '../components/TextSizeContext';
 import ManagerTopBar from '../components/ManagerTopBar';
 import { useNavigate } from 'react-router-dom';
 
 function Trends() {
+    /**
+     * Hook for navigation.
+     * @type {Function}
+     */
     const navigate = useNavigate();
+
+    /**
+     * Hook for managing text size.
+     * @type {Object}
+     */
     const { textSize } = useTextSize();
 
+    /**
+     * State variable for high contrast mode.
+     * @type {boolean} Boolean representing high contrast mode and a function to update it
+     */
+    const [highContrast, setHighContrast] = useState(false);
+
+    /**
+     * Toggles high contrast mode.
+     */
+    const toggleHighContrast = () => {
+        setHighContrast(!highContrast);
+    };
+
     return (
-        <div className={`trends ${textSize === 'large' ? 'large-text' : ''}`}>
-            <ManagerTopBar />
+        <div className={`trends ${textSize === 'large' ? 'large-text' : ''} ${highContrast ? 'high-contrast' : ''}`}>
+            <ManagerTopBar toggleHighContrast={toggleHighContrast} />
             <div className='manager-trends'>
                 <div className="trendsTitle">
                     <h2>Trends</h2>

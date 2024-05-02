@@ -7,8 +7,12 @@ import { useState } from 'react'
 import 'simplebar-react/dist/simplebar.min.css';
 import './CustCart.css';
 
-
+/**
+ * Customer Cart component to display and manage items in the cart.
+ * @returns {JSX.Element} - The JSX element representing the Customer Cart component.
+ */
 const CustCart = () => {
+    // Hook to manage cart state
     const { 
         isEmpty,
         items,
@@ -18,10 +22,15 @@ const CustCart = () => {
         emptyCart,
     } = useCart();
 
+    // State variables for submit and clear order popups
     const [submitPopup, setSubmitPopup] = useState(false);
     const [clearOrderPopup, setClearOrderPopup] = useState(false);
 
+    /**
+     * Function to handle confirm submit action.
+     */
     const handleConfirmSubmit = () => {
+        // Prepare data for submission
         const data = {
             items: items.map((item, index) => ({ 
                 id: item.id, 
@@ -34,6 +43,7 @@ const CustCart = () => {
         setSubmitPopup(data);
     };
 
+    // Render the Customer Cart component
     return (
         <section className='customer-section'>
             <h1>Your Cart</h1>
@@ -73,9 +83,11 @@ const CustCart = () => {
                     <button className="customer-cart-button" onClick={() => setClearOrderPopup(true)} disabled={cartTotal === 0}>Clear Order</button>
                     <button className="customer-cart-button" onClick={handleConfirmSubmit} disabled={cartTotal === 0}>Customize & Continue</button>
             </div>
+            {/* Confirm clear order popup */}
             <ConfirmClearOrder trigger={clearOrderPopup} setTrigger={setClearOrderPopup} emptyCart={emptyCart} >
                 <h3>Are you sure you want to cancel your order?</h3>
             </ConfirmClearOrder>
+            {/* Confirm submit popup */}
             <ConfirmSubmit trigger={submitPopup} setTrigger={setSubmitPopup} emptyCart={emptyCart} >
                 <h3>Would you like to order now?</h3>
             </ConfirmSubmit>
@@ -85,4 +97,3 @@ const CustCart = () => {
 }
 
 export default CustCart;
-        

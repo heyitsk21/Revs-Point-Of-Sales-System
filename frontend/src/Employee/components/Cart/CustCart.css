@@ -21,6 +21,7 @@
     margin-bottom: 1em;
     margin-left: 1em;
 	font-weight: normal;
+	z-index: 1;
 }
 
 .customer-rightSide h2 {
@@ -61,7 +62,7 @@
 		align-items: center;
 	}
 	
-	h3 {
+	.employee-cart h3 {
 		display: flex;
 		flex-direction: column;
 	}
@@ -135,6 +136,9 @@
 	background-color: maroon;
 	color: white;
 	font-size: 1em;
+	border-radius: 5px;
+	border-style: none;
+	padding: .5em;
 }
 
 .customer-adjust button:hover {
@@ -150,8 +154,13 @@
 .customer-cart-button {
     font-size: 1em;
 	margin: 1em;
+	padding: .4em;
 	font-family: "Chakra Petch", sans-serif;
 	background-color: maroon;
+	color: white;
+	border-radius: 5px;
+	border-style: none;
+
 }
 
 .customer-cart-button:hover {

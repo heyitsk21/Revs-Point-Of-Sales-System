@@ -1,15 +1,26 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import './CustHeader.css';
+import './../../../Common.css';
 import { useTextSize } from '../../../components/TextSizeContext';
 import { useNavigate } from 'react-router-dom';
-import Translate from '../../../components/translate'
+import Translate from '../../../components/translate';
 
-
-const CustHeader = ({ onCatChange }) => {
+/**
+ * Header component for the customer view.
+ * @param {object} props - Props passed to the component.
+ * @param {function} props.onCatChange - Function to handle category change.
+ * @param {function} props.toggleHighContrast - Function to toggle high contrast mode.
+ * @returns {JSX.Element} - The JSX element representing the CustHeader component.
+ */
+const CustHeader = ({ onCatChange, toggleHighContrast }) => {
     const navigate = useNavigate();
-    const { textSize, toggleTextSize } = useTextSize();
+    const { toggleTextSize } = useTextSize();
     const [currentTime, setCurrentTime] = useState('');
+    const [dropdownVisible, setDropdownVisible] = useState(false);
 
+    /**
+     * Function to update current time every second.
+     */
     const updateTime = () => {
         const date = new Date();
         const hours = date.getHours().toString().padStart(2, '0');
@@ -18,34 +29,52 @@ const CustHeader = ({ onCatChange }) => {
         setCurrentTime(timeString);
     };
 
+    /**
+     * Function to toggle the visibility of the dropdown menu.
+     */
+    const toggleDropdown = () => {
+        setDropdownVisible(!dropdownVisible);
+    };
+
     useEffect(() => {
         const interval = setInterval(updateTime, 1000);
         return () => clearInterval(interval);
     }, []);
 
-    const speakText = (text) => {
-        const utterance = new SpeechSynthesisUtterance();
-        utterance.text = text;
-        window.speechSynthesis.speak(utterance);
-    };
-
+    /**
+     * Function to handle user logout.
+     */
     const handleLogout = () => {
-        console.log('Button clicked!');
+        console.log('Logout button clicked!');
         localStorage.setItem('authority', 0);
         localStorage.setItem('isLoggedIn', false);
         localStorage.setItem('userInfo', null);
         navigate('/');
     };
 
+    /**
+     * Function to handle toggling high contrast mode.
+     */
+    const handleToggleHighContrast = () => {
+        toggleHighContrast(); 
+    };
+
     return (
-        <div className="cust-top-bar">
-            <div className="cust-user-info">
-                <span>Welcome to Rev's!</span>
-                <span>{currentTime}</span>
+        <div className='cust-bar'>
+            <div className='cust-welcome'>Welcome To Rev's!</div>
+            <div className="cust-dropdown-container">
+                <button className={`manager-dropdown-toggle`} onClick={toggleDropdown}>
+                    <img src="/Images/accessibilityIcon.png" alt="Accessibility" className="manager-dropdown-icon" />
+                    <i className="fa fa-cog"></i>
+                </button>
+                {dropdownVisible && (
+                    <div className="cust-dropdown-menu">
+                        <button className="manager-high-contrast-button" onClick={toggleHighContrast}>Toggle High Contrast</button>
+                        <button onClick={toggleTextSize}>Toggle Text Size</button>
+                        <div className='cust-translate'><Translate /></div>
+                    </div>
+                )}
             </div>
-            <button onClick={handleLogout}>Logout</button>
-            <button onClick={toggleTextSize}>Toggle Text Size</button>
-            <div className='translate'><Translate /></div>
         </div>
     );
 };

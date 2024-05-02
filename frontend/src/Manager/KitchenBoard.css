@@ -2,6 +2,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: 100px;
+    padding-bottom: 80px;
 }
 
 .orders-grid {
@@ -13,4 +15,13 @@
 .order-card {
     border: 1px solid #ccc;
     padding: 10px;
+}
+
+.kitchen-board-container.high-contrast {
+    background-color: black;
+    color: white;
+}
+
+.kitchen-board-container.high-contrast .order-card {
+    border-color: white;
 }

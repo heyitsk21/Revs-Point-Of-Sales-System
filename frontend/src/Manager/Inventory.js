@@ -1,10 +1,22 @@
+/**
+ * Inventory Component.
+ * @module Inventory
+ * @component
+ * @example
+ * return <Inventory />
+ */
 import React, { useState, useEffect } from 'react';
 import './Inventory.css';
+import './../Common.css';
 import { useTextSize } from '../components/TextSizeContext';
 import axios from 'axios';
 import ManagerTopBar from '../components/ManagerTopBar';
 import Restock from './Restock.js';
 
+/**
+ * Inventory functional component.
+ * @returns {JSX.Element} Inventory component
+ */
 function Inventory() {
     const [inventory, setInventory] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -18,9 +30,12 @@ function Inventory() {
         recommendedamount: 0,
         caseamount: 0
     });
-    const [speakEnabled] = useState(false);
+    const [highContrast, setHighContrast] = useState(false); // State variable for High Contrast mode
     const { textSize } = useTextSize();
 
+    /**
+     * Fetches the inventory items from the API.
+     */
     const fetchInventory = async () => {
         try {
             const response = await axios.get('https://team21revsbackend.onrender.com/api/manager/ingredients');
@@ -30,10 +45,17 @@ function Inventory() {
         }
     };
 
+    /**
+     * Sets the selected inventory item.
+     * @param {Object} item - The selected inventory item
+     */
     const handleItemSelected = (item) => {
         setSelectedItem(item);
     };
 
+    /**
+     * Updates the selected inventory item.
+     */
     const handleItemUpdate = async () => {
         try {
             const payload = {
@@ -55,6 +77,9 @@ function Inventory() {
         }
     };
 
+    /**
+     * Submits a new ingredient to be added to the inventory.
+     */
     const handleIngredientSubmit = async () => {
         try {
             const newIngredientData = {
@@ -79,11 +104,17 @@ function Inventory() {
                 recommendedamount: 0,
                 caseamount: 0
             });
+            fetchInventory();
         } catch (error) {
             console.error('Error adding ingredient:', error);
         }
     };
 
+    /**
+     * Deletes the selected inventory item.
+     * @param {number} itemId - The ID of the item to be deleted
+     * @param {number} deleteCount - The count of the item to be deleted
+     */
     const handleIngredientDelete = async (itemId, deleteCount) => {
         if (window.confirm("Are you sure you want to delete this ingredient?")) {
             try {
@@ -96,6 +127,11 @@ function Inventory() {
         }
     };
 
+    /**
+     * Handles input change for the selected inventory item.
+     * @param {Object} e - The event object
+     * @param {string} field - The field to update
+     */
     const handleInputChange = (e, field) => {
         const value = e.target.value;
         setSelectedItem(prevState => ({
@@ -104,47 +140,20 @@ function Inventory() {
         }));
     };
 
-    const speakText = (text) => {
-        const utterance = new SpeechSynthesisUtterance();
-        utterance.text = text;
-        window.speechSynthesis.speak(utterance);
+    /**
+     * Toggles the high contrast mode.
+     */
+    const toggleHighContrast = () => {
+        setHighContrast(prevState => !prevState);
     };
 
-    const debounce = (func, wait) => {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                timeout = null;
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    };
-
-    const handleMouseOver = debounce((event) => {
-        let hoveredElementText = '';
-        if (speakEnabled) {
-            if (event.target.innerText) {
-                hoveredElementText = event.target.innerText;
-            } else if (event.target.value) {
-                hoveredElementText = event.target.value;
-            } else if (event.target.getAttribute('aria-label')) {
-                hoveredElementText = event.target.getAttribute('aria-label');
-            } else if (event.target.getAttribute('aria-labelledby')) {
-                const id = event.target.getAttribute('aria-labelledby');
-                const labelElement = document.getElementById(id);
-                if (labelElement) {
-                    hoveredElementText = labelElement.innerText;
-                }
-            }
-            speakText(hoveredElementText);
-        }
-    }, 1000);
-
+    /**
+     * Renders the inventory items.
+     * @returns {JSX.Element[]} List of inventory item elements
+     */
     const renderInventoryItems = () => {
         return inventory.map(item => (
-            <div key={item.ingredientid} className="inventory-item" onClick={() => handleItemSelected(item)}>
+            <div key={item.ingredientid} className={`inventory-item ${highContrast ? 'high-contrast' : ''}`} onClick={() => handleItemSelected(item)}>
                 <div className='ingredient-name'><span>{item.ingredientname}</span></div>
                 <span>Price Per Unit: ${item.ppu}</span>
                 <span>Count: {item.count}</span>
@@ -161,9 +170,9 @@ function Inventory() {
     }, []);
 
     return (
-        <div>
-            <ManagerTopBar />
-            <div className={`manager-inventory ${textSize === 'large' ? 'large-text' : ''}`}>
+        <div className={`this-inventory ${textSize === 'large' ? 'large-text' : ''} ${highContrast ? 'high-contrast' : ''}`}>
+            <ManagerTopBar toggleHighContrast={toggleHighContrast} />
+            <div className='manager-inventory'>
                 <div className="inventory-details">
                     <h2>Selected Item Details</h2>
                     {selectedItem && (

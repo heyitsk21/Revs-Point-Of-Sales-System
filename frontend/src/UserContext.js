@@ -1,9 +1,15 @@
 import React, { createContext, useState } from 'react';
 
-// Create context
+/**
+ * Context for managing user data.
+ * @type {React.Context}
+ */
 export const UserContext = createContext();
 
-// Create provider
+/**
+ * Provider component for UserContext.
+ * @param {object} children - The children components to be wrapped by the provider.
+ */
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState({});
     const [authority, setAuthority] = useState({});

@@ -9,14 +9,20 @@ import DatePicker from "react-datepicker";
 import SortedTable from '../../components/SortedTable';
 import "react-datepicker/dist/react-datepicker.css";
 
+/**
+ * Component for displaying order trend report.
+ * @returns {JSX.Element} - The JSX element representing the OrderTrend component.
+ */
 function OrderTrend () {
     const navigate = useNavigate();
     const [menuData, setMenuData] = useState([]);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
-    const [speakEnabled, setSpeakEnabled] = useState(false);
     const { textSize, toggleTextSize } = useTextSize();
 
+    /**
+     * Column configuration for the table.
+     */
     const columns = React.useMemo(
         () => [
           {
@@ -35,7 +41,13 @@ function OrderTrend () {
         []
       )
 
-      const downloadFile = ({ data, fileName, fileType }) => {
+    /**
+     * Function to download a file.
+     * @param {object} data - Data to be downloaded.
+     * @param {string} fileName - Name of the file.
+     * @param {string} fileType - Type of the file.
+     */
+    const downloadFile = ({ data, fileName, fileType }) => {
         const blob = new Blob([data], { type: fileType })
         const a = document.createElement('a')
         a.download = fileName
@@ -49,6 +61,10 @@ function OrderTrend () {
         a.remove()
       }
 
+    /**
+     * Function to export data to CSV format.
+     * @param {object} e - Event object.
+     */
     const exportToCsv = e => {
         e.preventDefault()
         let headers = ['MenuItem1,MenuItem2,Amount']
@@ -64,12 +80,11 @@ function OrderTrend () {
         })
       }
 
-    useEffect(() => {
-        if (startDate && endDate) {
-            fetchData(startDate, endDate);
-        }
-    }, [startDate, endDate]);
-
+    /**
+     * Function to fetch data from the backend.
+     * @param {Date} startDate - Start date.
+     * @param {Date} endDate - End date.
+     */
     const fetchData = async (startDate, endDate) => {
         try {
             const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/reports/generateordertrend', {
@@ -83,68 +98,23 @@ function OrderTrend () {
         }
     };
 
-    const speakText = (text) => {
-        const utterance = new SpeechSynthesisUtterance();
-        utterance.text = text;
-        window.speechSynthesis.speak(utterance);
-    };
-
-    const debounce = (func, wait) => {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                timeout = null;
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    };
-
-    const handleMouseOver = debounce((event) => {
-        let hoveredElementText = '';
-        if (speakEnabled) {
-            if (event.target.innerText) {
-                hoveredElementText = event.target.innerText;
-            } else if (event.target.value) {
-                hoveredElementText = event.target.value;
-            } else if (event.target.getAttribute('aria-label')) {
-                hoveredElementText = event.target.getAttribute('aria-label');
-            } else if (event.target.getAttribute('aria-labelledby')) {
-                const id = event.target.getAttribute('aria-labelledby');
-                const labelElement = document.getElementById(id);
-                if (labelElement) {
-                    hoveredElementText = labelElement.innerText;
-                }
-            }
-            speakText(hoveredElementText);
-        }
-    }, 1000);
-
-    const toggleSpeak = () => {
-        if (speakEnabled) {
-            window.speechSynthesis.cancel();
-        }
-        setSpeakEnabled(!speakEnabled);
-    };
-
     return (
         <div className={`order-trend ${textSize === 'large' ? 'large-text' : ''}`}>
             <ManagerTopBar/>
             <div className='report-body'>
                 <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
-                <h2  className="trends-header" onMouseOver={handleMouseOver}>Order Trend Report</h2>
+                <h2  className="trends-header">Order Trend Report</h2>
                 <div className="date-fields">
                     <label>Start Date:</label>
                     <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
                     <label>End Date:</label>
                     <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
                 </div>
-                <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Trend Report</button>
-                <button type='button' onClick={exportToCsv}>
-                Export to CSV
-                </button>
-                <div className="report-list" onMouseOver={handleMouseOver}>
+                <div className='generate-trend-buttons'>
+                  <button onClick={() => fetchData(startDate, endDate)}>Generate Trend Report</button>
+                  <button type='button' onClick={exportToCsv}>Export to CSV</button>
+                </div>
+                <div className="report-list">
                 <SortedTable columns={columns} data={menuData} />
                 </div>
             </div>

@@ -7,10 +7,13 @@ import ManagerTopBar from '../../components/ManagerTopBar';
 
 import SortedTable from '../../components/SortedTable';
 
+/**
+ * Component for displaying the restock report.
+ * @returns {JSX.Element} - The JSX element representing the RestockReport component.
+ */
 function RestockReport () {
     const navigate = useNavigate();
     const [reportData, setReportData] = useState([]);
-    const [speakEnabled, setSpeakEnabled] = useState(false);
     const { textSize, toggleTextSize } = useTextSize();
 
     const columns = React.useMemo(
@@ -31,6 +34,12 @@ function RestockReport () {
         []
       )
 
+      /**
+     * Function to download a file.
+     * @param {object} data - Data to be downloaded.
+     * @param {string} fileName - Name of the file.
+     * @param {string} fileType - Type of the file.
+     */
       const downloadFile = ({ data, fileName, fileType }) => {
         const blob = new Blob([data], { type: fileType })
         const a = document.createElement('a')
@@ -45,6 +54,10 @@ function RestockReport () {
         a.remove()
       }
 
+      /**
+     * Function to export data to CSV format.
+     * @param {object} e - Event object.
+     */
     const exportToCsv = e => {
         e.preventDefault()
         let headers = ['IngredientName,Count,MinAmount']
@@ -60,7 +73,9 @@ function RestockReport () {
         })
       }
 
-
+    /**
+     * Function to fetch data from the backend.
+     */
     useEffect(() => {
         fetchData();
     }, []);
@@ -75,60 +90,15 @@ function RestockReport () {
         }
     };
 
-    const speakText = (text) => {
-        const utterance = new SpeechSynthesisUtterance();
-        utterance.text = text;
-        window.speechSynthesis.speak(utterance);
-    };
-
-    const debounce = (func, wait) => {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                timeout = null;
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    };
-
-    const handleMouseOver = debounce((event) => {
-        let hoveredElementText = '';
-        if (speakEnabled) {
-            if (event.target.innerText) {
-                hoveredElementText = event.target.innerText;
-            } else if (event.target.value) {
-                hoveredElementText = event.target.value;
-            } else if (event.target.getAttribute('aria-label')) {
-                hoveredElementText = event.target.getAttribute('aria-label');
-            } else if (event.target.getAttribute('aria-labelledby')) {
-                const id = event.target.getAttribute('aria-labelledby');
-                const labelElement = document.getElementById(id);
-                if (labelElement) {
-                    hoveredElementText = labelElement.innerText;
-                }
-            }
-            speakText(hoveredElementText);
-        }
-    }, 1000);
-
-    const toggleSpeak = () => {
-        if (speakEnabled) {
-            window.speechSynthesis.cancel();
-        }
-        setSpeakEnabled(!speakEnabled);
-    };
-
     return (
-        <div className={`restock-report ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
+        <div className={`restock-report ${textSize === 'large' ? 'large-text' : ''}`} >
             <ManagerTopBar/>
             <div className='report-body'>
                 <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
-                <h2  className="trends-header" onMouseOver={handleMouseOver}>Restock Report</h2>
-                <button type='button' onClick={exportToCsv}>
-                Export to CSV
-                </button>
+                <h2  className="trends-header">Restock Report</h2>
+                <div className='generate-trend-buttons'>
+                  <button type='button' onClick={exportToCsv}>Export to CSV</button>
+                </div>
                 <div className="report-list">
                 <SortedTable columns={columns} data={reportData} />
                 </div>

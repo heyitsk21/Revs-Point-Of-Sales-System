@@ -1,4 +1,3 @@
-
 import random
 from datetime import datetime,date,time,timedelta
 
@@ -47,26 +46,35 @@ MENUITEMINGREDIENTPOOL = {
 704 : (13, 14, 60)
 }
 
-# CUSTOMIZEDINGREDIENTPOOL = {
-# 1 : 1.50,
-# 2 : 0.75,
-# 6 : 0.20,
-# 13 : 0.70,
-# 14 : 0.50,
-# 33 : 0.20,
-# 46 : 0.10,
-# 60 : 0.25
-# }
-
-
 class OrderGenerator:
-    
+    """
+    Class to generate orders with customization for a restaurant.
+
+    Attributes:
+    - f1: File pointer for Orders.csv.
+    - f2: File pointer for JunctionOrdersMenu.csv.
+    - f3: File pointer for InventoryLog.csv.
+    - f4: File pointer for CustomizationOrderMenuID_Ingredients.csv.
+    """
+
     f1 = None
     f2 = None
     f3 = None
     f4 = None
 
     def CreateOrder(self, date, ID, LogId, CustomizationOrderMenuID):
+        """
+        Creates an order with customization.
+
+        Parameters:
+        - date (datetime.date): Date of the order.
+        - ID (int): ID of the order.
+        - LogId (int): ID for logging.
+        - CustomizationOrderMenuID (list): List containing the customization order menu ID.
+
+        Returns:
+        - LogId (int): Updated log ID.
+        """
         name = random.choice(self.NAMEPOOL)
         #Pick a random name with equal weight to all choices
 
@@ -146,7 +154,10 @@ class OrderGenerator:
         price *= 0.0825
         return price
     
-    def __init__(self): 
+    def __init__(self):
+        """
+        Initializes the OrderGenerator object and opens necessary files.
+        """ 
         with open("names.txt", "r") as file:
             self.NAMEPOOL = [name.strip() for name in file.readlines()]
         self.f1 = open("Orders.csv","w")

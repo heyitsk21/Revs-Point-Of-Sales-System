@@ -17,11 +17,19 @@
   align-items: center; /* Centers items vertically */
 }
 
+#iframe\:1\.container {
+  display: none !important;
+}
+
 .manager-bar-nav {
   display: flex;
   justify-content: space-between;
   width: 70%;
   margin: 0px 2%;
+}
+
+.manager-bar button {
+  border-radius: 1rem;
 }
 
 .manager-bar-nav button {
@@ -33,6 +41,8 @@
   font-size: 18px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  height: 8%;
+  margin: auto;
 }
 
 .manager-top-bar-button {
@@ -50,10 +60,6 @@
 .manager-top-bar-button:hover {
   color: #00bfff;
 }
-
-  .manager-user-options {
-    
-  }
   
   .manager-user-info {
     display: flex;

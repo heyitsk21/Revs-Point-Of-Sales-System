@@ -8,14 +8,23 @@ import ManagerTopBar from '../../components/ManagerTopBar';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 
+/**
+ * Component for displaying product usage report.
+ * @returns {JSX.Element} - The JSX element representing the ProdUsage component.
+ */
 function ProdUsage() {
     const navigate = useNavigate();
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [ingredientData, setIngredientData] = useState([]);
-    const [speakEnabled, setSpeakEnabled] = useState(false);
     const { textSize, toggleTextSize } = useTextSize();
 
+    /**
+     * Function to download a file.
+     * @param {object} data - Data to be downloaded.
+     * @param {string} fileName - Name of the file.
+     * @param {string} fileType - Type of the file.
+     */
     const downloadFile = ({ data, fileName, fileType }) => {
         const blob = new Blob([data], { type: fileType })
         const a = document.createElement('a')
@@ -30,6 +39,10 @@ function ProdUsage() {
         a.remove()
       }
 
+    /**
+     * Function to export data to CSV format.
+     * @param {object} e - Event object.
+     */
     const exportToCsv = e => {
         e.preventDefault()
         let headers = ['IngredientName,Total Amount Used']
@@ -45,12 +58,11 @@ function ProdUsage() {
         })
       }
 
-    useEffect(() => {
-
-            fetchData(startDate, endDate);
-        
-    }, [startDate, endDate]);
-
+    /**
+     * Function to fetch data from the backend.
+     * @param {Date} startDate - Start date.
+     * @param {Date} endDate - End date.
+     */
     const fetchData = async (startDate, endDate) => {
         try {
             const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/reports/generateproductusage', {
@@ -65,55 +77,17 @@ function ProdUsage() {
         }
     };
 
+    /**
+     * Function to calculate the total amount of ingredients used.
+     * @returns {number} - The total amount of ingredients used.
+     */
     const calculateTotal = () => {
         return ingredientData.reduce((acc, ingredient) => acc + Math.abs(parseFloat(ingredient.totalamountchanged)), 0);
     };
 
-    const speakText = (text) => {
-        const utterance = new SpeechSynthesisUtterance();
-        utterance.text = text;
-        window.speechSynthesis.speak(utterance);
-    };
-
-    const debounce = (func, wait) => {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                timeout = null;
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    };
-
-    const handleMouseOver = debounce((event) => {
-        let hoveredElementText = '';
-        if (speakEnabled) {
-            if (event.target.innerText) {
-                hoveredElementText = event.target.innerText;
-            } else if (event.target.value) {
-                hoveredElementText = event.target.value;
-            } else if (event.target.getAttribute('aria-label')) {
-                hoveredElementText = event.target.getAttribute('aria-label');
-            } else if (event.target.getAttribute('aria-labelledby')) {
-                const id = event.target.getAttribute('aria-labelledby');
-                const labelElement = document.getElementById(id);
-                if (labelElement) {
-                    hoveredElementText = labelElement.innerText;
-                }
-            }
-            speakText(hoveredElementText);
-        }
-    }, 1000);
-
-    const toggleSpeak = () => {
-        if (speakEnabled) {
-            window.speechSynthesis.cancel();
-        }
-        setSpeakEnabled(!speakEnabled);
-    };
-
+    /**
+     * Function to render the D3 chart.
+     */
     const renderChart = () => {
         const total = calculateTotal();
         const svgWidth = 1250;
@@ -178,6 +152,12 @@ function ProdUsage() {
         };
 
     useEffect(() => {
+        if (startDate && endDate) {
+            fetchData(startDate, endDate);
+        }
+    }, [startDate, endDate]);
+
+    useEffect(() => {
         if (ingredientData.length > 0) {
             d3.select('.chart').selectAll('*').remove();
             renderChart();
@@ -185,21 +165,21 @@ function ProdUsage() {
     }, [ingredientData]);
 
     return (
-        <div className={`prod-usage ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
+        <div className={`prod-usage ${textSize === 'large' ? 'large-text' : ''}`} >
             <ManagerTopBar/>
             <div className='report-body'>
                 <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
-                <h1 className="trends-header"onMouseOver={handleMouseOver}>Produce Usage (negative)</h1>
+                <h1 className="trends-header">Produce Usage (negative)</h1>
                 <div className="date-fields">
-                    <label onMouseOver={handleMouseOver}>Start Date:</label>
+                    <label>Start Date:</label>
                     <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
-                    <label onMouseOver={handleMouseOver}>End Date:</label>
+                    <label>End Date:</label>
                     <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
                 </div>
-                <button onClick={() => fetchData(startDate, endDate)} onMouseOver={handleMouseOver}>Generate Product Usage</button>
-                <button type='button' onClick={exportToCsv}>
-                Export to CSV
-                </button>
+                <div className='generate-trend-buttons'>
+                    <button onClick={() => fetchData(startDate, endDate)}>Generate Product Usage</button>
+                    <button type='button' onClick={exportToCsv}>Export to CSV</button>
+                </div>
                 <div className="chart"></div>
             </div>
         </div>

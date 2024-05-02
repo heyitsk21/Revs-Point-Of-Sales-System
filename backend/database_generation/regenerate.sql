@@ -38,6 +38,7 @@ CREATE TABLE MenuItems (
 CREATE TABLE Employee (
     EmployeeID SERIAL PRIMARY KEY,
     EmployeeName VARCHAR(100),
+    EmployeeEmail VARCHAR(100),
     IsManager BOOLEAN,
     Salary NUMERIC(10, 2), 
     Password VARCHAR(100)
@@ -51,11 +52,7 @@ CREATE TABLE Orders (
     BasePrice NUMERIC(10, 2), 
     OrderDateTime TIMESTAMP,
     EmployeeID INT, 
-    orderstat ORDERSTATUS,
-    CONSTRAINT fk_employee
-        FOREIGN KEY(EmployeeID) 
-        REFERENCES Employee(EmployeeID)
-
+    orderstat ORDERSTATUS
 );
 
 -- Create InventoryLog table
@@ -100,15 +97,13 @@ CREATE TABLE OrderMenuItems (
     MenuID INT,
     CustomizationID INT,
     PRIMARY KEY (JoinID),
-    CONSTRAINT fk_menu
-        FOREIGN KEY(MenuID) 
-        REFERENCES MenuItems(MenuID),
     CONSTRAINT fk_order
         FOREIGN KEY(OrderID) 
         REFERENCES Orders(OrderID)   
         ON DELETE CASCADE
 );
 
+-- Create CustomizationOrderMenu junction table
 CREATE TABLE CustomizationOrderMenu (
     CustomizationOrderMenuID INT,
     IngredientID INT,
@@ -130,7 +125,7 @@ CREATE TABLE CustomizationOrderMenu (
 
 \COPY MenuItemCustomizations (MenuID, CustomizationID) FROM 'database_generation/MenuItemCustomizations.csv' DELIMITER ',' CSV HEADER;
 
-\COPY Employee (EmployeeID, EmployeeName, IsManager, Salary, Password) FROM 'database_generation/Employee.csv' DELIMITER ',' CSV HEADER;
+\COPY Employee ( EmployeeName, EmployeeEmail,IsManager, Salary, Password) FROM 'database_generation/Employee.csv' DELIMITER ',' CSV HEADER;
 
 \COPY Orders (CustomerName, TaxPrice, BasePrice, OrderDateTime, EmployeeID) FROM 'database_generation/Orders.csv' DELIMITER ',' CSV HEADER;
 

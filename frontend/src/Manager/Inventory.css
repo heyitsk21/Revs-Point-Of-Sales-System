@@ -56,9 +56,9 @@
 }
 
 /* Buttons */
-.ingredient-button {
+.manager-inventory button {
     padding: 10px 20px;
-    background-color: #077a8e;
+    background-color: hsl(189, 91%, 29%);
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -68,7 +68,7 @@
     font-family: "Chakra Petch", sans-serif;
 }
 
-.ingredient-button:hover {
+.manager-inventory button:hover {
     background-color: #0056b3;
 }
 
@@ -128,7 +128,18 @@
     padding: 7px;
 }
 
+.this-inventory.high-contrast *,
+.manager-inventory.high-contrast,
+.manager-restock.high-contrast *,
+.inventory-details.high-contrast,
+.inventory-list.high-contrast,
+.new-ingredient.high-contrast *:not(img) {
+    color: #ffffff;
+    background-color: #000000;
+}
 
-
-/* ManagerBottomBar styles */
-/* Assuming ManagerBottomBar is styled elsewhere or you can add styles here */
+.this-inventory.high-contrast button,
+.manager-inventory.high-contrast button,
+.inventory-details.high-contrast button {
+    outline: 2px solid white;
+}

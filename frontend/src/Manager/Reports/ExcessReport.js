@@ -1,19 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import './Report.css';
 import { useTextSize } from '../../components/TextSizeContext';
-import axios from 'axios'; // Import Axios for making API requests
+import axios from 'axios'; 
 import { useNavigate  } from 'react-router-dom';
 import ManagerTopBar from '../../components/ManagerTopBar';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
+import SortedTable from '../../components/SortedTable';
 
-function ExcessReport () {
+/**
+ * Component for generating excess report.
+ * @returns {JSX.Element} - The JSX element representing the ExcessReport component.
+ */
+export default function ExcessReport () {
     const navigate = useNavigate();
     const [startDate, setStartDate] = useState('');
     const [reportData, setReportData] = useState([]);
-    const [speakEnabled, setSpeakEnabled] = useState(false); // State to track whether speak feature is enabled
     const { textSize, toggleTextSize } = useTextSize();
 
+    /**
+     * Column configuration for the table.
+     */
+    const columns = React.useMemo(
+        () => [
+          {
+            Header: 'Itemname',
+            accessor: 'itemname' 
+          },
+          {
+            Header: 'Menu ID',
+            accessor: 'menuid' 
+          },         
+        ],
+        []
+      )
+
+    /**
+     * Function to download a file.
+     * @param {object} data - Data to be downloaded.
+     * @param {string} fileName - Name of the file.
+     * @param {string} fileType - Type of the file.
+     */
     const downloadFile = ({ data, fileName, fileType }) => {
         const blob = new Blob([data], { type: fileType })
         const a = document.createElement('a')
@@ -28,6 +55,10 @@ function ExcessReport () {
         a.remove()
       }
 
+    /**
+     * Function to export data to CSV format.
+     * @param {object} e - Event object.
+     */
     const exportToCsv = e => {
         e.preventDefault()
         let headers = ['Item ID,Item Name']
@@ -43,6 +74,9 @@ function ExcessReport () {
         })
       }
 
+    /**
+     * Function to fetch excess report data from the backend.
+     */
     const fetchData = async () => {
         try {
             const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/reports/generateexcessreport', {
@@ -55,86 +89,31 @@ function ExcessReport () {
         }
     };
 
+    /**
+     * Event handler for generating excess report.
+     */
     const handleGenerateExcessReport = () => {
-    
             fetchData();
-        
-    };
-
-    const speakText = (text) => {
-        const utterance = new SpeechSynthesisUtterance();
-        utterance.text = text;
-        window.speechSynthesis.speak(utterance);
-    };
-
-    const debounce = (func, wait) => {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                timeout = null;
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    };
-
-    const handleMouseOver = debounce((event) => {
-        let hoveredElementText = '';
-        if (speakEnabled) {
-            if (event.target.innerText) {
-                hoveredElementText = event.target.innerText;
-            } else if (event.target.value) {
-                hoveredElementText = event.target.value;
-            } else if (event.target.getAttribute('aria-label')) {
-                hoveredElementText = event.target.getAttribute('aria-label');
-            } else if (event.target.getAttribute('aria-labelledby')) {
-                const id = event.target.getAttribute('aria-labelledby');
-                const labelElement = document.getElementById(id);
-                if (labelElement) {
-                    hoveredElementText = labelElement.innerText;
-                }
-            }
-            speakText(hoveredElementText);
-        }
-    }, 1000);
-
-    const toggleSpeak = () => {
-        if (speakEnabled) {
-            window.speechSynthesis.cancel();
-        }
-        setSpeakEnabled(!speakEnabled);
     };
 
     return (
-        <div className={`excess-report ${textSize === 'large' ? 'large-text' : ''}`} onMouseOver={handleMouseOver}>
+        <div className={`excess-report ${textSize === 'large' ? 'large-text' : ''}`}>
             <ManagerTopBar/>
             <div className='report-body'>
                 <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
-                <h2  className="trends-header" onMouseOver={handleMouseOver}>Excess Report</h2>
+                <h2  className="trends-header">Excess Report</h2>
                 <div className="date-fields">
-                    <label onMouseOver={handleMouseOver}>Start Date:</label>
+                    <label>Start Date:</label>
                     <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
                 </div>
-                <div className="report-table">
-                    <div className="report-row header">
-                        <div className="report-cell">Ingredient ID</div>
-                        <div className="report-cell">Ingredient Name</div>
-                    </div>
-                    {reportData.map((item, index) => (
-                        <div key={index} className="report-row">
-                            <div className="report-cell" onMouseOver={handleMouseOver}>{item.menuid}</div>
-                            <div className="report-cell" onMouseOver={handleMouseOver}>{item.itemname}</div>
-                        </div>
-                    ))}
+                <div className='generate-trend-buttons'>
+                  <button onClick={handleGenerateExcessReport}>Generate Excess Report</button>
+                  <button type='button' onClick={exportToCsv}>Export to CSV</button>
                 </div>
-                <button onClick={handleGenerateExcessReport} onMouseOver={handleMouseOver}>Generate Excess Report</button>
-                <button type='button' onClick={exportToCsv}>
-                Export to CSV
-                </button>
+                <div className="report-table">
+                    <SortedTable  columns={columns} data={reportData} />
+                </div>
             </div>
         </div>
     );
 };
-
-export default ExcessReport;
