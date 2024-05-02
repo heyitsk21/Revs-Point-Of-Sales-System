@@ -5,6 +5,7 @@ import { Checkbox, useCheckboxState } from 'pretty-checkbox-react/dist-src/index
 import '@djthoms/pretty-checkbox';
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
+import RevThankYou from '../../../components/RevThankYou';
 
 /**
  * ConfirmSubmit component to confirm submitting the order.
@@ -19,16 +20,10 @@ function ConfirmSubmit(props) {
   const [checkboxState, setCheckboxState] = useState({});
 
   /**
-   * Function to generate a unique ID for each item.
-   * @param {object} item - The item object.
-   * @param {number} index - The index of the item.
-   * @returns {string} - The unique ID.
-   *
-  const generateUniqueId = (item, index) => {
-    const id = `${item.id}_${index}`;
-    setUniqueIds(prevState => ({ ...prevState, [id]: id })); // Store unique ID
-    return id;
-  };*/
+   * Controls the visibility of the 'Thank You' review modal.
+   * @type {boolean}
+   */
+  const [showRevThankYou, setShowRevThankYou] = useState(false);
 
   /**
    * Function to send the order to the database.
@@ -81,7 +76,6 @@ function ConfirmSubmit(props) {
       const response = await axios.post('https://team21revsbackend.onrender.com/api/employee/placeorder', orderData);
       console.log('Order submitted successfully:', orderData);
       props.emptyCart();
-      props.setTrigger(false);
     } catch (error) {
       console.error('Error submitting order:', error.response.data);
     }
@@ -120,6 +114,7 @@ function ConfirmSubmit(props) {
     event.preventDefault();
     const name = event.target.name.value;
     sendToDatabase(name);
+    setShowRevThankYou(true);
   }
 
   /**
@@ -194,6 +189,14 @@ function ConfirmSubmit(props) {
               <input type="submit" className='confirm' value="Submit" />
             </form>
         </div>
+        {showRevThankYou && (
+          <RevThankYou
+            onAnimationEnd={() => {
+              setShowRevThankYou(false);
+              props.setTrigger(false); 
+            }}
+          />
+        )}
     </div>
   ) : null;
 }
