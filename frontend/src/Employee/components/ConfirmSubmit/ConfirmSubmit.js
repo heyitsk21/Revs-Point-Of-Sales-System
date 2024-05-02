@@ -59,18 +59,6 @@ function ConfirmSubmit(props) {
         employeeid: employeeID
       };
 
-      /*{
-        "menuitems": [
-          {
-            "menuid": 0,
-            "customizationids": [
-              0
-            ]
-          }
-        ],
-        "customername": "string",
-        "employeeid": 0
-      }*/
       console.log("Order data before sending:", orderData);
 
       const response = await axios.post('https://team21revsbackend.onrender.com/api/employee/placeorder', orderData);
@@ -122,7 +110,7 @@ function ConfirmSubmit(props) {
    * @param {string} uniqueID - The unique ID of the item.
    * @param {string} optionName - The name of the customization option.
    */
-  function handleCheckboxChange(uniqueID, optionID) {
+  function handleCheckboxChange(uniqueID, optionID, optionName) {
     console.log("Before updating checkboxState:");
     console.log("uniqueID:", uniqueID);
     console.log("checkboxState[uniqueID]:", checkboxState[uniqueID]);
@@ -131,9 +119,9 @@ function ConfirmSubmit(props) {
       const newState = { ...prevState };
       newState[uniqueID] = { ...(newState[uniqueID] || {}) };
       if (newState[uniqueID][optionID]) {
-        delete newState[uniqueID][optionID];
+          delete newState[uniqueID][optionID];
       } else {
-        newState[uniqueID][optionID] = true;
+          newState[uniqueID][optionID] = optionName; // Store optionName
       }
 
       console.log("After updating checkboxState:");
@@ -161,7 +149,7 @@ function ConfirmSubmit(props) {
                           <Checkbox
                             color="primary"
                             checked={checkboxState[item.uniqueID]?.[customization.ingredientid] || false}
-                            onChange={() => handleCheckboxChange(item.uniqueID, customization.ingredientid)}
+                            onChange={() => handleCheckboxChange(item.uniqueID, customization.ingredientid, customization.ingredientname)}
                           >
                             {customization.ingredientname}
                           </Checkbox>
@@ -171,9 +159,8 @@ function ConfirmSubmit(props) {
                     return null;
                   })}
                   {options.some(option => option.id === item.id && option.options.length > 0) && (
-                    <p>Selected items: {Object.keys(checkboxState[item.uniqueID] || {}).filter(option => checkboxState[item.uniqueID][option]).join(', ')}</p>
+                    <p>Selected items: {checkboxState[item.uniqueID] && Object.values(checkboxState[item.uniqueID]).join(', ')}</p>
                   )}
-                  {/* <p> - - - </p> */}
                   <hr></hr>
                 </div>
               ))}
