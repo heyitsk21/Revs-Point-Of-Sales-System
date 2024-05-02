@@ -182,6 +182,7 @@ function ConfirmSubmit(props) {
             onAnimationEnd={() => {
               setShowRevThankYou(false);
               props.setTrigger(false); 
+              setCheckboxState({});
             }}
           />
         )}
