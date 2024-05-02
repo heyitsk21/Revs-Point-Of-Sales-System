@@ -73,7 +73,6 @@ input[type="password"] {
     background-color: #007bff;
     color: #ffffff; 
     cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
 .LoginScreen button[type="submit"]:hover,
