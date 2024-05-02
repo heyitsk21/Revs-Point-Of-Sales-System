@@ -7,26 +7,29 @@ import axios from 'axios';
 import Popup from 'reactjs-popup';
 import './Restock.css';
 
-/**
- * React component for managing ingredient restocking.
- * @returns {JSX.Element} Restock component
- */
-export default function Restock() {
+    /**
+     * React component for managing ingredient restocking.
+     * @returns {JSX.Element} Restock component
+     */
+    export default function Restock() {
     /**
      * State variable for storing the list of ingredients.
-     * @type {[Object[], function]} Array containing ingredients data and a function to update it
+     * @type {Array<Object>} An array containing ingredients data.
+     * @function setIngredients Function to update the ingredients data.
      */
     const [ingredients, setIngredients] = useState([]);
-    
+
     /**
      * State variable for the selected ingredient.
-     * @type {[string, function]} String representing the selected ingredient and a function to update it
+     * @type {string} Represents the selected ingredient.
+     * @function setSelectedIngredient Function to update the selected ingredient.
      */
     const [selectedIngredient, setSelectedIngredient] = useState('');
-    
+
     /**
      * State variable for the selected location.
-     * @type {[string, function]} String representing the selected location and a function to update it
+     * @type {string} Represents the selected location.
+     * @function setSelectedLocation Function to update the selected location.
      */
     const [selectedLocation, setSelectedLocation] = useState('');
 
