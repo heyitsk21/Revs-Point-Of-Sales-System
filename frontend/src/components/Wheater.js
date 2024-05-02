@@ -49,8 +49,7 @@ export default function Weather() {
     let geoLocationWatcher;
 
     const fetchData = async (latitude, longitude) => {
-      // Fetch weather data using latitude and longitude
-      await fetch(`https://api.openweathermap.org/data/2.5/weather/?lat=${latitude}&lon=${longitude}&units=metric&APPID=d735d8066386f83fe40b6fc4562811f6`)
+      await fetch(`https://api.openweathermap.org/data/2.5/weather/?lat=${latitude}&lon=${longitude}&units=metric&APPID=d88e44c8b49852f7c40ba58e1877d18c`)
         .then(res => res.json())
         .then(result => {
           setData(result);
@@ -65,7 +64,8 @@ export default function Weather() {
             const { latitude, longitude } = position.coords;
             setLat(latitude);
             setLong(longitude);
-            // Once latitude and longitude are set, fetch weather data
+            console.log(lat);
+            console.log(long);
             fetchData(latitude, longitude);
             navigator.geolocation.clearWatch(geoLocationWatcher);
           },
@@ -77,18 +77,17 @@ export default function Weather() {
         console.error('Geolocation is not supported by this browser.');
       }
     };
-
-    // Attempt to get user's location continuously until successful
     getLocation();
+
+
 
     return () => {
       if (geoLocationWatcher) {
         navigator.geolocation.clearWatch(geoLocationWatcher);
       }
     };
-  }, []);
+  }, [lat,long]);
 
-  // Render Weather component
   return (
     <div className="Weather">
       {data ? (
