@@ -32,22 +32,55 @@ function ConfirmSubmit(props) {
    */
   const sendToDatabase = async (name) => {
     try {
+      if (!name) {
+        console.error("Customer name is required.");
+        return;
+      }
+
+      const employeeID = parseInt(localStorage.getItem('userID'));
+      if (isNaN(employeeID)) {
+        console.error("Employee ID is not a valid integer.");
+        return;
+      }
+
+      console.log("Trigger items:", props.trigger.items);
       const orderData = {
-        menuitems: props.trigger.items.map(item => ({
-          id: item.id,
-          quantity: item.quantity,
-          name: item.name,
-          price: item.price,
-          customizations: Object.keys(checkboxState[item.id] || {}).filter(option => checkboxState[item.id][option])
-        })),
+        menuitems: props.trigger.items.flatMap((item) => 
+          Array.from({ length: item.quantity }, (_, index) => {
+            const uniqueID = generateUniqueId(item, index);
+            console.log("Logging checkboxState[uniqueID] when constructing orderData:", checkboxState[uniqueID]);
+            return {
+              key: generateUniqueId(item, index),
+              menuid: item.id,
+              customizationids: Object.keys(checkboxState[uniqueID] || {}).filter((option) => checkboxState[uniqueID][option]
+              ) || [],
+            };
+          })
+        ),
         customername: name,
-        employeeid: 1 //TODO change to whichever employee is logged in
+        employeeid: employeeID
       };
 
+      /*{
+        "menuitems": [
+          {
+            "menuid": 0,
+            "customizationids": [
+              0
+            ]
+          }
+        ],
+        "customername": "string",
+        "employeeid": 0
+      }*/
+      console.log("Order data before sending:", orderData);
+
       const response = await axios.post('https://team21revsbackend.onrender.com/api/employee/placeorder', orderData);
-      console.log('Order submitted successfully:', response.data);
+      console.log('Order submitted successfully:', orderData);
+      props.emptyCart();
+      props.setTrigger(false);
     } catch (error) {
-      console.error('Error submitting order:', error);
+      console.error('Error submitting order:', error.response.data);
     }
   };
 
@@ -60,7 +93,6 @@ function ConfirmSubmit(props) {
       menuitemid:id
     };
     try {
-        console.log(id);
         const response = await axios.put('https://team21revsbackend.onrender.com/api/manager/menuitemcustomizations', payload);
         const filteredOptions = options.filter(option => option.id !== id);
         setOptions(prevOptions => [...filteredOptions, { id: id, options: response.data }]);
@@ -70,7 +102,6 @@ function ConfirmSubmit(props) {
   };
 
   useEffect(() => {
-    console.log('Trigger items:', props.trigger.items);
     if (props.trigger && props.trigger.items.length > 0) {
       props.trigger.items.forEach(item => {
         fetchOptions(item.id);
@@ -84,10 +115,8 @@ function ConfirmSubmit(props) {
    */
   function handleSubmit(event) {
     event.preventDefault();
-    props.setTrigger(false);
     const name = event.target.name.value;
     sendToDatabase(name);
-    props.emptyCart();
   }
 
   /**
@@ -96,13 +125,21 @@ function ConfirmSubmit(props) {
    * @param {string} optionName - The name of the customization option.
    */
   function handleCheckboxChange(uniqueID, optionName) {
-    setCheckboxState(prevState => ({
-      ...prevState,
-      [uniqueID]: {
-        ...prevState[uniqueID],
-        [optionName]: !prevState[uniqueID]?.[optionName]
-      }
-    }));
+    console.log("Before updating checkboxState:");
+    console.log("uniqueID:", uniqueID);
+    console.log("checkboxState[uniqueID]:", checkboxState[uniqueID]);
+
+    setCheckboxState(prevState => {
+      const newState = { ...prevState };
+      newState[uniqueID] = { ...(newState[uniqueID] || {}) };
+      newState[uniqueID][optionName] = !prevState[uniqueID]?.[optionName];
+
+      console.log("After updating checkboxState:");
+      console.log("uniqueID:", uniqueID);
+      console.log("newState[uniqueID]:", newState[uniqueID]);
+
+      return newState;
+    });
   }
 
   return (props.trigger) ? (
@@ -114,7 +151,7 @@ function ConfirmSubmit(props) {
               {props.trigger.items.map(item => (
                 <div key={item.uniqueID}>
                   {[...Array(item.quantity)].map((_, i) => (
-                    <div key={generateUniqueId(item, props.trigger.items.indexOf(item))}>
+                    <div key={generateUniqueId(item, i)}>
                       <div>{item.name}</div>
                       <div>${(1 * item.price).toFixed(2)}</div>
                       {options.map(option => {

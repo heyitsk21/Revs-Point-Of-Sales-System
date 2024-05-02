@@ -336,6 +336,12 @@ class MenuItems(Resource):
             conn.connection.cursor().execute(delete_menuitemingredients_query)
             conn.connection.commit()
         
+        delete_menuitemingredients_query = "DELETE FROM menuitemcustomizations WHERE MenuID = {inputmenuid}".format(inputmenuid=menuid)
+        with db.engine.connect() as conn:
+            conn.connection.cursor().execute(delete_menuitemingredients_query)
+            conn.connection.commit()
+        
+        
         delete_menuitem_query = "DELETE FROM menuitems WHERE MenuID = {inputmenuid}".format(inputmenuid=menuid)
         with db.engine.connect() as conn:
             conn.connection.cursor().execute(delete_menuitem_query)
@@ -587,11 +593,11 @@ class OrderHistory(Resource):
         """
         with db.engine.connect() as conn:
             limit_query = "LIMIT 100"
-            get_order_query = "SELECT * FROM orders {inputquery}".format(inputquery=limit_query)
+            get_order_query = "SELECT * FROM orders ORDER BY ORDERDATETIME DESC {inputquery} ".format(inputquery=limit_query)
             result = conn.execution_options(stream_results=True).execute(text(get_order_query))
             orderlist = []
             for row in result:
-                orderlist.append({"orderid":row.orderid, "customername":row.customername, "taxprice":row.taxprice,"baseprice":row.baseprice,"orderdatetime":row.orderdatetime,"employeeid":row.employeeid})
+                orderlist.append({"orderid":row.orderid, "customername":row.customername, "taxprice":row.taxprice,"baseprice":row.baseprice,"orderdatetime":row.orderdatetime,"employeeid":row.employeeid,"status":row.orderstat})
         return jsonify(orderlist)
     
     @api.expect(UpdateOrder_model, validate=True)
@@ -667,7 +673,7 @@ class OrderHistoryByDate(Resource):
             result = conn.execution_options(stream_results=True).execute(text(get_order_query))
             orderlist = []
             for row in result:
-                orderlist.append({"orderid":row.orderid, "customername":row.customername, "taxprice":row.taxprice,"baseprice":row.baseprice,"orderdatetime":row.orderdatetime,"employeeid":row.employeeid})
+                orderlist.append({"orderid":row.orderid, "customername":row.customername, "taxprice":row.taxprice,"baseprice":row.baseprice,"orderdatetime":row.orderdatetime,"employeeid":row.employeeid,"status":row.orderstat})
         return jsonify(orderlist)
     
 

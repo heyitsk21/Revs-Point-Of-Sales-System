@@ -3,7 +3,7 @@ import ConfirmSubmit from '../ConfirmSubmit/ConfirmSubmit';
 import ConfirmClearOrder from '../ConfirmClearOrder/ConfirmClearOrder';
 import { useCart } from 'react-use-cart';
 import { useState } from 'react'
-import SimpleBar from 'simplebar-react';
+//import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 import './Cart.css';
 
@@ -93,7 +93,7 @@ const Cart = () => {
                                     <button className="cart-button" onClick={() => setClearOrderPopup(true)}>Clear Order</button>
                                 </td>
                                 <td colSpan="2">
-                                    <button className="cart-button" onClick={handleConfirmSubmit}>Customize & Buy Now</button>
+                                    <button className="cart-button" onClick={handleConfirmSubmit}>Customize & Continue</button>
                                 </td>
                             </tr>
                         </tfoot>
