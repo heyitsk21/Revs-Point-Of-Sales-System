@@ -1,3 +1,7 @@
+/**
+ * Component that defines the application routes.
+ * @returns {JSX.Element} The component defining application routes
+ */
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Employee from './Employee/pages/Employee';

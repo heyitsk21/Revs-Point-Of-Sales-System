@@ -1,3 +1,10 @@
+/**
+ * Kitchen Board Component.
+ * @module KitchenBoard
+ * @component
+ * @example
+ * return <KitchenBoard />
+ */
 import React, { useState, useEffect } from 'react';
 import ManagerTopBar from '../components/ManagerTopBar';
 import Translate from '../components/translate';
@@ -6,7 +13,15 @@ import axios from 'axios';
 import './Manager.css';
 import './KitchenBoard.css';
 
+/**
+ * Kitchen Board functional component.
+ * @returns {JSX.Element} Kitchen Board component
+ */
 function KitchenBoard() {
+    /**
+     * Completes the order with the specified ID.
+     * @param {number} id - The ID of the order to complete
+     */
     const completeOrder = async (id) =>{
         const payload = {
             orderid:id
@@ -18,6 +33,9 @@ function KitchenBoard() {
     const [orders, setOrders] = useState([]);
     const [highContrast, setHighContrast] = useState(false);
 
+    /**
+     * Fetches the orders from the API.
+     */
     const fetchOrders = async () => {
         try {
             const response = await axios.get('https://team21revsbackend.onrender.com/api/kitchen/getinprogressorders');
@@ -27,6 +45,9 @@ function KitchenBoard() {
         }
     };
 
+    /**
+     * Toggles the high contrast mode.
+     */
     const toggleHighContrast = () => {
         setHighContrast(prevState => !prevState);
     };

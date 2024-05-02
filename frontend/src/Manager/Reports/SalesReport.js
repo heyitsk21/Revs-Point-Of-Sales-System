@@ -8,8 +8,10 @@ import DatePicker from "react-datepicker";
 import SortedTable from '../../components/SortedTable';
 import "react-datepicker/dist/react-datepicker.css";
 
-
-
+/**
+ * Component for displaying the sales report.
+ * @returns {JSX.Element} - The JSX element representing the SalesReport component.
+ */
 function SalesReport () {
     const navigate = useNavigate();
     const [startDate, setStartDate] = useState('');
@@ -18,6 +20,12 @@ function SalesReport () {
     const { textSize, toggleTextSize } = useTextSize();
 
 
+    /**
+     * Function to download a file.
+     * @param {object} data - Data to be downloaded.
+     * @param {string} fileName - Name of the file.
+     * @param {string} fileType - Type of the file.
+     */
     const downloadFile = ({ data, fileName, fileType }) => {
         const blob = new Blob([data], { type: fileType })
         const a = document.createElement('a')
@@ -32,6 +40,10 @@ function SalesReport () {
         a.remove()
       }
 
+      /**
+     * Function to export data to CSV format.
+     * @param {object} e - Event object.
+     */
     const exportToCsv = e => {
         e.preventDefault()
         let headers = ['Itemname,MenuId,Ordercount,Totalsales']
@@ -76,6 +88,11 @@ function SalesReport () {
         
     }, [startDate, endDate]);
 
+    /**
+     * Function to fetch data from the backend.
+     * @param {Date} startDate - The start date.
+     * @param {Date} endDate - The end date.
+     */
     const fetchData = async (startDate, endDate) => {
         try {
             const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/reports/generatesalesreport', {

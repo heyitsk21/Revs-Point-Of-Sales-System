@@ -8,12 +8,19 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import SortedTable from '../../components/SortedTable';
 
+/**
+ * Component for generating excess report.
+ * @returns {JSX.Element} - The JSX element representing the ExcessReport component.
+ */
 export default function ExcessReport () {
     const navigate = useNavigate();
     const [startDate, setStartDate] = useState('');
     const [reportData, setReportData] = useState([]);
     const { textSize, toggleTextSize } = useTextSize();
 
+    /**
+     * Column configuration for the table.
+     */
     const columns = React.useMemo(
         () => [
           {
@@ -28,6 +35,12 @@ export default function ExcessReport () {
         []
       )
 
+    /**
+     * Function to download a file.
+     * @param {object} data - Data to be downloaded.
+     * @param {string} fileName - Name of the file.
+     * @param {string} fileType - Type of the file.
+     */
     const downloadFile = ({ data, fileName, fileType }) => {
         const blob = new Blob([data], { type: fileType })
         const a = document.createElement('a')
@@ -42,6 +55,10 @@ export default function ExcessReport () {
         a.remove()
       }
 
+    /**
+     * Function to export data to CSV format.
+     * @param {object} e - Event object.
+     */
     const exportToCsv = e => {
         e.preventDefault()
         let headers = ['Item ID,Item Name']
@@ -57,6 +74,9 @@ export default function ExcessReport () {
         })
       }
 
+    /**
+     * Function to fetch excess report data from the backend.
+     */
     const fetchData = async () => {
         try {
             const response = await axios.post('https://team21revsbackend.onrender.com/api/manager/reports/generateexcessreport', {
@@ -69,6 +89,9 @@ export default function ExcessReport () {
         }
     };
 
+    /**
+     * Event handler for generating excess report.
+     */
     const handleGenerateExcessReport = () => {
             fetchData();
     };
@@ -92,4 +115,3 @@ export default function ExcessReport () {
         </div>
     );
 };
-

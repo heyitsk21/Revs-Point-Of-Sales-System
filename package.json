@@ -13,5 +13,8 @@
     "react-use-cart": "^1.13.0",
     "reactjs-popup": "^2.0.6",
     "simplebar-react": "^3.2.4"
+  },
+  "devDependencies": {
+    "jsdoc": "^4.0.2"
   }
 }
