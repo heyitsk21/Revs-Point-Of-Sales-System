@@ -41,7 +41,7 @@ export default function Weather() {
     }
 
     return (
-      <img id='rev image' src={revpath} alt={'rev'} width="25%" />
+      <img id='rev image' src={revpath} alt={'rev'} width="50%" />
     );
   };
 
