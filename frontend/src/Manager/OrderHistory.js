@@ -110,6 +110,7 @@ const OrderHistory = () => {
                 <div>Customer: {order.customername}</div>
                 <div>Price: ${(parseFloat(order.baseprice) + parseFloat(order.taxprice)).toFixed(2)}</div>
                 <div>Date/Time: {order.orderdatetime}</div>
+                <div>Status: {order.status}</div>
             </div>
         ));
     };

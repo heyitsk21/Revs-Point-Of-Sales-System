@@ -591,7 +591,7 @@ class OrderHistory(Resource):
             result = conn.execution_options(stream_results=True).execute(text(get_order_query))
             orderlist = []
             for row in result:
-                orderlist.append({"orderid":row.orderid, "customername":row.customername, "taxprice":row.taxprice,"baseprice":row.baseprice,"orderdatetime":row.orderdatetime,"employeeid":row.employeeid})
+                orderlist.append({"orderid":row.orderid, "customername":row.customername, "taxprice":row.taxprice,"baseprice":row.baseprice,"orderdatetime":row.orderdatetime,"employeeid":row.employeeid,"status":row.orderstat})
         return jsonify(orderlist)
     
     @api.expect(UpdateOrder_model, validate=True)
@@ -667,7 +667,7 @@ class OrderHistoryByDate(Resource):
             result = conn.execution_options(stream_results=True).execute(text(get_order_query))
             orderlist = []
             for row in result:
-                orderlist.append({"orderid":row.orderid, "customername":row.customername, "taxprice":row.taxprice,"baseprice":row.baseprice,"orderdatetime":row.orderdatetime,"employeeid":row.employeeid})
+                orderlist.append({"orderid":row.orderid, "customername":row.customername, "taxprice":row.taxprice,"baseprice":row.baseprice,"orderdatetime":row.orderdatetime,"employeeid":row.employeeid,"status":row.orderstat})
         return jsonify(orderlist)
     
 
