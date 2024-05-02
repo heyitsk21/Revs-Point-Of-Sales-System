@@ -96,9 +96,9 @@ function RestockReport () {
             <div className='report-body'>
                 <button className="trends-button" onClick={() => navigate('/manager/trends')}>Return</button>
                 <h2  className="trends-header">Restock Report</h2>
-                <button type='button' onClick={exportToCsv}>
-                Export to CSV
-                </button>
+                <div className='generate-trend-buttons'>
+                  <button type='button' onClick={exportToCsv}>Export to CSV</button>
+                </div>
                 <div className="report-list">
                 <SortedTable columns={columns} data={reportData} />
                 </div>

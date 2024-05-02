@@ -15,21 +15,38 @@ export default function Weather() {
    * @returns {JSX.Element} - The JSX element representing the image.
    */
   const renderRev = () => {
-    // Conditional rendering based on weather data
-    if (data) {
-      switch (data) {
-        case 'mist':
-          // Do something for misty weather
-          break;
-        default:
-          // Default case
-          break;
-      }
+    let revpath = "/Images/Revs/rev.png";
+    if(data.weather[0].main){
+        switch(data.weather[0].main){
+            case 'Clouds':
+                revpath = "/Images/Revs/cloudRev.png"
+                break;
+            case 'Snow':
+                revpath = "/Images/Revs/coldRev.png"
+                break;           
+            case 'Clear':
+                revpath = "/Images/Revs/hotRev.png"
+                break;   
+            case 'Rain':
+                revpath = "/Images/Revs/wetRev.png"
+                break;     
+            case 'Thunderstorm':
+                revpath = "/Images/Revs/wetRev.png"
+                break; 
+            case 'Drizzle':
+                revpath = "/Images/Revs/wetRev.png"
+                break;    
+            case 'Mist':
+                revpath = "/Images/Revs/wetRev.png"
+                break;       
+            default:
+                break;
+        }
     }
 
-    // Render Rev image
-    return (
-      <img id='rev image' src={'/Images/Revs/coldRev.png'} alt={'rev'} width="25%" />
+
+    return(
+    <img id='rev image' src={revpath} alt={'rev'} width="10%" />
     );
   };
 
@@ -72,8 +89,16 @@ export default function Weather() {
 
   // Render Weather component
   return (
-    <div className="Weather">
-      {renderRev()}
+    <div className="Wheater">
+        {(typeof data.main != 'undefined') ? (
+        <div>
+        <p>Tempature {data.main.temp} &deg;C</p>
+        {renderRev()}
+        </div>
+      ): (
+        <div></div>
+      )}
+
     </div>
   );
 }

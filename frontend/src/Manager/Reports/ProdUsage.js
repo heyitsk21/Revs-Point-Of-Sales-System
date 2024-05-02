@@ -176,10 +176,10 @@ function ProdUsage() {
                     <label>End Date:</label>
                     <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
                 </div>
-                <button onClick={() => fetchData(startDate, endDate)}>Generate Product Usage</button>
-                <button type='button' onClick={exportToCsv}>
-                Export to CSV
-                </button>
+                <div className='generate-trend-buttons'>
+                    <button onClick={() => fetchData(startDate, endDate)}>Generate Product Usage</button>
+                    <button type='button' onClick={exportToCsv}>Export to CSV</button>
+                </div>
                 <div className="chart"></div>
             </div>
         </div>

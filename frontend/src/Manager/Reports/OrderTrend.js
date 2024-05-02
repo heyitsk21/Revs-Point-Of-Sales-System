@@ -110,10 +110,10 @@ function OrderTrend () {
                     <label>End Date:</label>
                     <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
                 </div>
-                <button onClick={() => fetchData(startDate, endDate)}>Generate Trend Report</button>
-                <button type='button' onClick={exportToCsv}>
-                Export to CSV
-                </button>
+                <div className='generate-trend-buttons'>
+                  <button onClick={() => fetchData(startDate, endDate)}>Generate Trend Report</button>
+                  <button type='button' onClick={exportToCsv}>Export to CSV</button>
+                </div>
                 <div className="report-list">
                 <SortedTable columns={columns} data={menuData} />
                 </div>

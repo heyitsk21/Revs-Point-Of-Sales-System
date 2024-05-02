@@ -106,8 +106,10 @@ export default function ExcessReport () {
                     <label>Start Date:</label>
                     <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
                 </div>
-                <button onClick={handleGenerateExcessReport}>Generate Excess Report</button>
-                <button type='button' onClick={exportToCsv}>Export to CSV</button>
+                <div className='generate-trend-buttons'>
+                  <button onClick={handleGenerateExcessReport}>Generate Excess Report</button>
+                  <button type='button' onClick={exportToCsv}>Export to CSV</button>
+                </div>
                 <div className="report-table">
                     <SortedTable  columns={columns} data={reportData} />
                 </div>

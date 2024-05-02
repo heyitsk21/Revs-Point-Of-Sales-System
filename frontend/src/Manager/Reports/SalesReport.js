@@ -119,8 +119,10 @@ function SalesReport () {
                     <label >End Date:</label>
                     <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
                 </div>
-                <button onClick={() => fetchData(startDate, endDate)}>Generate Sales Report</button>
-                <button type='button' onClick={exportToCsv}> Export to CSV</button>
+                <div className='generate-trend-buttons'>
+                  <button onClick={() => fetchData(startDate, endDate)}>Generate Sales Report</button>
+                  <button type='button' onClick={exportToCsv}> Export to CSV</button>
+                </div>
                 <div className="report-list">
                     {reportData.length > 0 ? (
                          <SortedTable columns={columns} data={reportData} />
