@@ -3,7 +3,7 @@ import ConfirmSubmit from '../ConfirmSubmit/ConfirmSubmit';
 import ConfirmClearOrder from '../ConfirmClearOrder/ConfirmClearOrder';
 import { useCart } from 'react-use-cart';
 import { useState } from 'react'
-import SimpleBar from 'simplebar-react';
+//import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 import './CustCart.css';
 
@@ -71,7 +71,7 @@ const CustCart = () => {
                     <div className='customer-total-price-value'>${cartTotal.toFixed(2)}</div>
                 </div>
                     <button className="customer-cart-button" onClick={() => setClearOrderPopup(true)} disabled={cartTotal === 0}>Clear Order</button>
-                    <button className="customer-cart-button" onClick={handleConfirmSubmit} disabled={cartTotal === 0}>Buy Now</button>
+                    <button className="customer-cart-button" onClick={handleConfirmSubmit} disabled={cartTotal === 0}>Customize & Continue</button>
             </div>
             <ConfirmClearOrder trigger={clearOrderPopup} setTrigger={setClearOrderPopup} emptyCart={emptyCart} >
                 <h3>Are you sure you want to cancel your order?</h3>

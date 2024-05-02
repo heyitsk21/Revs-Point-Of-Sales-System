@@ -29,7 +29,7 @@ const Cart = () => {
                 price: item.price
             }))
         };
-        //console.log('Data passed to ConfirmSubmit: ', data);
+        console.log('Data passed to ConfirmSubmit: ', data);
         setSubmitPopup(data);
     };
 
@@ -83,7 +83,7 @@ const Cart = () => {
                                     <button className="cart-button" onClick={() => setClearOrderPopup(true)}>Clear Order</button>
                                 </td>
                                 <td colSpan="2">
-                                    <button className="cart-button" onClick={handleConfirmSubmit}>Customize & Buy Now</button>
+                                    <button className="cart-button" onClick={handleConfirmSubmit}>Customize & Continue</button>
                                 </td>
                             </tr>
                         </tfoot>

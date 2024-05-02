@@ -25,13 +25,19 @@ function ConfirmSubmit(props) {
         return;
       }
 
+      console.log("Trigger items:", props.trigger.items);
       const orderData = {
-        menuitems: props.trigger.items.flatMap(item => 
-          Array.from({ length: item.quantity }, (_, index) => ({
-            key: `${item.id}_${index}`, // Unique key based on item id and index
-            menuid: item.id,
-            customizationids: Object.keys(checkboxState[`${item.id}_${index}`] || {}).filter(option => checkboxState[`${item.id}_${index}`][option])
-          }))
+        menuitems: props.trigger.items.flatMap((item) => 
+          Array.from({ length: item.quantity }, (_, index) => {
+            const uniqueID = generateUniqueId(item, index);
+            console.log("Logging checkboxState[uniqueID] when constructing orderData:", checkboxState[uniqueID]);
+            return {
+              key: generateUniqueId(item, index),
+              menuid: item.id,
+              customizationids: Object.keys(checkboxState[uniqueID] || {}).filter((option) => checkboxState[uniqueID][option]
+              ) || [],
+            };
+          })
         ),
         customername: name,
         employeeid: employeeID
@@ -49,9 +55,10 @@ function ConfirmSubmit(props) {
         "customername": "string",
         "employeeid": 0
       }*/
+      console.log("Order data before sending:", orderData);
 
       const response = await axios.post('https://team21revsbackend.onrender.com/api/employee/placeorder', orderData);
-      console.log('Order submitted successfully:', response.data);
+      console.log('Order submitted successfully:', orderData);
       props.emptyCart();
       props.setTrigger(false);
     } catch (error) {
@@ -87,13 +94,21 @@ function ConfirmSubmit(props) {
   }
 
   function handleCheckboxChange(uniqueID, optionName) {
-    setCheckboxState(prevState => ({
-      ...prevState,
-      [uniqueID]: {
-        ...prevState[uniqueID],
-        [optionName]: !prevState[uniqueID]?.[optionName]
-      }
-    }));
+    console.log("Before updating checkboxState:");
+    console.log("uniqueID:", uniqueID);
+    console.log("checkboxState[uniqueID]:", checkboxState[uniqueID]);
+
+    setCheckboxState(prevState => {
+      const newState = { ...prevState };
+      newState[uniqueID] = { ...(newState[uniqueID] || {}) };
+      newState[uniqueID][optionName] = !prevState[uniqueID]?.[optionName];
+
+      console.log("After updating checkboxState:");
+      console.log("uniqueID:", uniqueID);
+      console.log("newState[uniqueID]:", newState[uniqueID]);
+
+      return newState;
+    });
   }
 
   return (props.trigger) ? (
@@ -105,7 +120,7 @@ function ConfirmSubmit(props) {
               {props.trigger.items.map(item => (
                 <div key={item.uniqueID}>
                   {[...Array(item.quantity)].map((_, i) => (
-                    <div key={generateUniqueId(item, props.trigger.items.indexOf(item))}>
+                    <div key={generateUniqueId(item, i)}>
                       <div>{item.name}</div>
                       <div>${(1 * item.price).toFixed(2)}</div>
                       {options.map(option => {
