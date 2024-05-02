@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Ordering.css';
 import { useCart } from "react-use-cart";
 import { useTextSize } from '../../../components/TextSizeContext';
 import axios from 'axios'; // Import Axios for making API requests
 import Cart from '../Cart/Cart';
-import SimpleBar from 'simplebar-react';
+// import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 
 /**
@@ -14,10 +14,10 @@ import 'simplebar-react/dist/simplebar.min.css';
  * @returns {JSX.Element} - The JSX element representing the Ordering component.
  */
 const Ordering = ({ onCatChange }) => {
-    const { textSize, toggleTextSize } = useTextSize();
+    const { textSize } = useTextSize();
     const [category, setCategory] = useState('Value Meals');
-    const [selectedMenuSection] = useState(null);  // setSelectedMenuSection
-    const [initialFetchDone, setInitialFetchDone] = useState(false);
+    // const [selectedMenuSection] = useState(null);  // setSelectedMenuSection
+    // const [initialFetchDone, setInitialFetchDone] = useState(false);
     const [burgerList, setBurgerList] = useState([]);
     const [sandwichList, setSandwichList] = useState([]);
     const [saladList, setSaladList] = useState([]);
@@ -30,7 +30,7 @@ const Ordering = ({ onCatChange }) => {
 
     const fetchMenuSection = async (currentIdStart) => {
         try {
-            console.log("IM ORDERING");
+            // console.log("IM ORDERING");
             const response = await axios.post('https://team21revsbackend.onrender.com/api/employee/getmenuitems',  { menugroup: currentIdStart });
             switch (currentIdStart) {
                 case 100:
@@ -62,24 +62,28 @@ const Ordering = ({ onCatChange }) => {
         }
     };
 
-    const fetchMenuSectionsPeriodically = useCallback(() => {
-        fetchMenuSection(100); // Fetch Burger menu items
-        fetchMenuSection(200); // Fetch Sandwiches menu items
-        fetchMenuSection(300);
-        fetchMenuSection(400);
-        fetchMenuSection(500);
-        fetchMenuSection(600);
-        fetchMenuSection(700);
-    }, []);
+    // const fetchMenuSectionsPeriodically = useCallback(() => {
+    //     fetchMenuSection(100); // Fetch Burger menu items
+    //     fetchMenuSection(200); // Fetch Sandwiches menu items
+    //     fetchMenuSection(300);
+    //     fetchMenuSection(400);
+    //     fetchMenuSection(500);
+    //     fetchMenuSection(600);
+    //     fetchMenuSection(700);
+    // }, []);
 
     useEffect(() => {
-        if (!initialFetchDone) {
-            fetchMenuSectionsPeriodically(); // Fetch menu sections initially
-            setInitialFetchDone(true);
-        }
-        const intervalId = setInterval(fetchMenuSectionsPeriodically, 2 * 60 * 1000); // Fetch menu sections every 2 minutes
-        return () => clearInterval(intervalId); // Clear interval on component unmount
-    }, [fetchMenuSectionsPeriodically, initialFetchDone]);
+        fetchMenuSection(600);
+    }, []);
+
+    // useEffect(() => {
+    //     if (!initialFetchDone) {
+    //         fetchMenuSectionsPeriodically(); // Fetch menu sections initially
+    //         setInitialFetchDone(true);
+    //     }
+    //     const intervalId = setInterval(fetchMenuSectionsPeriodically, 2 * 60 * 1000); // Fetch menu sections every 2 minutes
+    //     return () => clearInterval(intervalId); // Clear interval on component unmount
+    // }, [fetchMenuSectionsPeriodically, initialFetchDone]);
 
     /**
      * Function to handle category change and fetch corresponding menu section.
@@ -124,12 +128,12 @@ const Ordering = ({ onCatChange }) => {
 
         if (selectedList) { 
             return selectedList.map(menuitem => (
-                <React.Fragment key={menuitem.menuid}>
+                <div key={menuitem.menuid}>
                     <button className='employee-item-button' onClick={() => { console.log('Adding item:', menuitem); addItem({ id: menuitem.menuid, name: menuitem.itemname, price: menuitem.price, picturepath: menuitem.picturepath });}}>
                         <div>{menuitem.itemname}</div>
                         <div>${menuitem.price}</div>
                     </button>
-                </React.Fragment>
+                </div>
             ));
         } else {
             return null;
