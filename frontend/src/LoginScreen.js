@@ -40,8 +40,8 @@ function LoginScreen(){
      * @param {Object} userData - The user data received from the Google OAuth.
      * @returns {number} The authority level of the user.
      */
-    const getAuthority = (userData) => {
-        const employee = employees.find(emp => emp.employeeemail === userData.email);
+    const getAuthority = (email) => {
+        const employee = employees.find(emp => emp.employeeemail === email);
         console.log("authority: ", employee);
         if (employee) {
             localStorage.setItem('userID', employee.employeeid);
@@ -49,6 +49,20 @@ function LoginScreen(){
             return employee.ismanager ? 3 : 2;
         } else {
             return 1;
+        }
+    };
+
+    const checkPassword = (email, userPassword) => {
+        const employee = employees.find(emp => emp.employeeemail === email);
+        console.log("authority: ", employee);
+        if (employee){
+            if (employee.password === userPassword){
+                return true;
+            }else {
+                return false;
+            }
+        }else {
+            return false;
         }
     };
 
@@ -82,7 +96,7 @@ function LoginScreen(){
                         },
                     }
                 );
-                const authority = getAuthority(res.data);
+                const authority = getAuthority(res.data.email);
                 console.log(res.data);
                 localStorage.setItem('authority', authority);
                 localStorage.setItem('isLoggedIn', true);
@@ -123,11 +137,14 @@ function LoginScreen(){
         event.preventDefault();
         console.log(`Email: ${email}, Password: ${password}`);
         // login logic
-        localStorage.setItem('username', email)
-        localStorage.setItem('authority', 1);
-        localStorage.setItem('isLoggedIn', true);
-        console.log("Now logged in");
-        setTimeout(redirect, 200);
+        if (checkPassword(email, password)){
+            localStorage.setItem('username', email);
+            const authority = getAuthority(email);
+            localStorage.setItem('authority', authority);
+            localStorage.setItem('isLoggedIn', true);
+            console.log("Now logged in");
+            setTimeout(redirect, 200);
+        }
     };
 
     return (

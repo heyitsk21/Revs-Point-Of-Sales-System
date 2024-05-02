@@ -18,12 +18,19 @@ import ManagerTopBar from '../components/ManagerTopBar.js';
  */
 function EmployeeManagement() {
     const [employees, setEmployees] = useState([]);
-    const [selectedEmployee, setSelectedEmployee] = useState(null);
+    const [selectedEmployee, setSelectedEmployee] = useState({
+        employeeid: 0,
+        employeename: "",
+        employeeemail: "",
+        ismanager: "",
+        salary: 0.0,
+        password: "",
+    });
     const [newEmployee, setNewEmployee] = useState({
         employeeid: 0,
         employeename: "",
         employeeemail: "",
-        ismanager: "False",
+        ismanager: "",
         salary: 0.0,
         password: "",
     });
@@ -57,11 +64,16 @@ function EmployeeManagement() {
      */
     const handleEmployeeUpdate = async () => {
         try {
+            let tempIsManager = false;
+            if (selectedEmployee.ismanager === "True"){
+                tempIsManager = true;
+            }
+            
             const payload = {
                 employeeid: selectedEmployee.employeeid,
                 employeeName: selectedEmployee.employeename,
                 employeeEmail: selectedEmployee.employeeemail,
-                isManager: selectedEmployee.ismanager,
+                isManager: tempIsManager,
                 salary: parseFloat(selectedEmployee.salary),
                 password: selectedEmployee.password,
             };
@@ -79,11 +91,16 @@ function EmployeeManagement() {
      */
     const handleEmployeeSubmit = async () => { //TODO
         try {
+            let tempIsManager = false;
+            if (newEmployee.ismanager === "True"){
+                tempIsManager = true;
+            }
+
             const newEmployeeData = {
                 ...newEmployee,
                 employeeName: newEmployee.employeename,
                 employeeEmail: newEmployee.employeeemail,
-                isManager: Boolean(newEmployee.ismanager),
+                isManager: tempIsManager,
                 salary: parseFloat(newEmployee.salary),
                 password: newEmployee.password,
             };
@@ -160,6 +177,23 @@ function EmployeeManagement() {
         fetchEmployees();
     }, []);
 
+    // Function to handle change in dropdown selection for selectedEmployee
+    const handleSelectDropdown = (event) => {
+        setSelectedEmployee(prevState => ({
+            ...prevState,
+            ismanager: event.target.value // Update selected option state
+        }));
+    };
+
+    // Function to handle change in dropdown selection for newEmployee
+    const handleNewDropdown = (event) => {
+        setNewEmployee(prevState => ({
+            ...prevState,
+            ismanager: event.target.value // Update selected option state
+        }));
+    };
+
+
     return (
         <div className={`employeemanager-topbar ${textSize === 'large' ? 'large-text' : ''} ${highContrast ? 'high-contrast' : ''}`}>
             <ManagerTopBar toggleHighContrast={toggleHighContrast} />
@@ -190,11 +224,11 @@ function EmployeeManagement() {
                             </div>
                             <div>
                                 <label>Manager:</label>
-                                <input
-                                    type="text"
-                                    value={selectedEmployee.ismanager}
-                                    onChange={(e) => handleInputChange(e, 'ismanager')}
-                                />
+                                <select id="dropdown" value={selectedEmployee.ismanager} onChange={handleSelectDropdown}>
+                                    <option value="">Select...</option>
+                                    <option value="True">True</option>
+                                    <option value="False">False</option>
+                                </select>
                             </div>
                             <div>
                                 <label>Salary:</label>
@@ -237,11 +271,11 @@ function EmployeeManagement() {
                     </div>
                     <div className='new-employee-user'>
                         <label>Manager:</label>
-                        <input
-                            type="text"
-                            value={newEmployee.ismanager}
-                            onChange={(e) => setNewEmployee({ ...newEmployee, ismanager: e.target.value })}
-                        />
+                        <select id="dropdown" value={newEmployee.ismanager} onChange={handleNewDropdown}>
+                            <option value="">Select...</option>
+                            <option value="True">True</option>
+                            <option value="False">False</option>
+                        </select>
                     </div>
                     <div className='new-employee-user'>
                         <label>Salary:</label>
