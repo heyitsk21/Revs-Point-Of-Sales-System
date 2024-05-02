@@ -23,7 +23,7 @@ function Trends() {
 
     /**
      * State variable for high contrast mode.
-     * @type {[boolean, Function]} Array containing boolean representing high contrast mode and a function to update it
+     * @type {boolean} Boolean representing high contrast mode and a function to update it
      */
     const [highContrast, setHighContrast] = useState(false);
 
