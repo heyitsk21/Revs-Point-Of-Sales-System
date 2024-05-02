@@ -74,7 +74,7 @@ function KitchenBoard() {
                                             <ul>
 
                                                 {item.customizations.map((customization, index) => (
-                                                    <text key={index}>+ {customization}<br></br></text>
+                                                    <text key={index}>+{customization}<br></br></text>
                                 
                                                 ))}
                                             </ul>
